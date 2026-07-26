@@ -1,0 +1,2874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" />
+    <meta name="theme-color" content="#6A1B9A" />
+    <title>H4 Smart Notepad ERP + Smart Call CRM</title>
+
+    <!-- Google Fonts & Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+
+    <style>
+        /* ============================================================
+               CSS VARIABLES & RESET
+            ============================================================ */
+        :root {
+            --md-purple: #6A1B9A;
+            --md-purple-dark: #4A148C;
+            --md-purple-light: #CE93D8;
+            --md-purple-bg: #F3E5F5;
+            --md-gold: #FFD700;
+            --md-gold-dark: #F9A825;
+            --md-gold-light: #FFF8E1;
+            --md-surface: #FFFFFF;
+            --md-surface-dark: #1E1E1E;
+            --md-text: #1C1B1F;
+            --md-text-secondary: #49454F;
+            --md-text-hint: #79747E;
+            --md-outline: #CAC4D0;
+            --md-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            --md-radius: 16px;
+            --md-radius-sm: 10px;
+            --md-transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: var(--font);
+            background: #F8F5FA;
+            color: var(--md-text);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ============================================================
+               SCROLLBAR
+            ============================================================ */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--md-purple-light);
+            border-radius: 4px;
+        }
+
+        /* ============================================================
+               APP SHELL
+            ============================================================ */
+        #app {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ============================================================
+               SIDEBAR (Desktop)
+            ============================================================ */
+        .sidebar {
+            width: 280px;
+            background: var(--md-surface);
+            border-right: 1px solid var(--md-outline);
+            padding: 20px 16px;
+            overflow-y: auto;
+            flex-shrink: 0;
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: transform var(--md-transition);
+        }
+        .sidebar.open {
+            display: flex;
+        }
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 4px 20px 4px;
+            border-bottom: 1px solid var(--md-outline);
+            margin-bottom: 16px;
+        }
+        .sidebar-brand .logo-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--md-purple), var(--md-gold-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 20px;
+        }
+        .sidebar-brand h1 {
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--md-purple), var(--md-gold-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.3px;
+        }
+        .sidebar-brand small {
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--md-text-secondary);
+            display: block;
+            -webkit-text-fill-color: var(--md-text-secondary);
+        }
+        .sidebar-nav {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .sidebar-nav .nav-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--md-text-hint);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 12px 12px 4px 12px;
+        }
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 14px;
+            border-radius: var(--md-radius-sm);
+            color: var(--md-text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all var(--md-transition);
+            cursor: pointer;
+            position: relative;
+        }
+        .sidebar-nav a:hover {
+            background: var(--md-purple-bg);
+            color: var(--md-purple);
+        }
+        .sidebar-nav a.active {
+            background: var(--md-purple);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(106, 27, 154, 0.3);
+        }
+        .sidebar-nav a .material-icons-round {
+            font-size: 22px;
+        }
+        .sidebar-nav a .badge {
+            margin-left: auto;
+            background: var(--md-gold);
+            color: var(--md-purple-dark);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 1px 8px;
+            border-radius: 12px;
+            min-width: 20px;
+            text-align: center;
+        }
+        .sidebar-nav a.active .badge {
+            background: rgba(255, 255, 255, 0.3);
+            color: #fff;
+        }
+
+        /* ============================================================
+               MAIN CONTENT
+            ============================================================ */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: #F8F5FA;
+            min-width: 0;
+        }
+
+        /* ============================================================
+               TOP BAR
+            ============================================================ */
+        .topbar {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            background: var(--md-surface);
+            border-bottom: 1px solid var(--md-outline);
+            gap: 12px;
+            flex-shrink: 0;
+            min-height: 64px;
+            flex-wrap: wrap;
+        }
+        .topbar .menu-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: none;
+            border-radius: 50%;
+            color: var(--md-text-secondary);
+            cursor: pointer;
+            transition: background var(--md-transition);
+        }
+        .topbar .menu-btn:hover {
+            background: var(--md-purple-bg);
+        }
+        .topbar .menu-btn .material-icons-round {
+            font-size: 26px;
+        }
+        .topbar .page-title {
+            font-size: 18px;
+            font-weight: 600;
+            flex: 1;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .topbar .page-title span {
+            color: var(--md-text-secondary);
+            font-weight: 400;
+            font-size: 14px;
+        }
+        .topbar .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .topbar .top-actions button {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--md-text-secondary);
+            cursor: pointer;
+            transition: background var(--md-transition);
+            position: relative;
+        }
+        .topbar .top-actions button:hover {
+            background: var(--md-purple-bg);
+        }
+        .topbar .top-actions button .material-icons-round {
+            font-size: 24px;
+        }
+        .topbar .top-actions .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #E53935;
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            border: 2px solid var(--md-surface);
+        }
+        .topbar .top-actions .search-box {
+            display: flex;
+            align-items: center;
+            background: #F5F3F7;
+            border-radius: 24px;
+            padding: 0 12px;
+            gap: 6px;
+            transition: all var(--md-transition);
+            border: 1px solid transparent;
+            min-width: 160px;
+        }
+        .topbar .top-actions .search-box:focus-within {
+            background: var(--md-surface);
+            border-color: var(--md-purple);
+            box-shadow: 0 0 0 3px rgba(106, 27, 154, 0.15);
+        }
+        .topbar .top-actions .search-box input {
+            border: none;
+            background: transparent;
+            padding: 8px 4px;
+            font-size: 14px;
+            font-family: var(--font);
+            outline: none;
+            flex: 1;
+            min-width: 80px;
+            color: var(--md-text);
+        }
+        .topbar .top-actions .search-box .material-icons-round {
+            font-size: 20px;
+            color: var(--md-text-hint);
+        }
+
+        /* ============================================================
+               PAGE CONTENT
+            ============================================================ */
+        .page-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px 100px 20px;
+        }
+
+        /* ============================================================
+               BOTTOM NAV (Mobile)
+            ============================================================ */
+        .bottom-nav {
+            display: flex;
+            background: var(--md-surface);
+            border-top: 1px solid var(--md-outline);
+            padding: 4px 0 env(safe-area-inset-bottom, 4px) 0;
+            flex-shrink: 0;
+            position: sticky;
+            bottom: 0;
+            z-index: 50;
+            justify-content: space-around;
+        }
+        .bottom-nav button {
+            flex: 1;
+            border: none;
+            background: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 6px 0;
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--md-text-hint);
+            cursor: pointer;
+            transition: color var(--md-transition);
+            font-family: var(--font);
+            gap: 2px;
+            max-width: 72px;
+        }
+        .bottom-nav button .material-icons-round {
+            font-size: 26px;
+            transition: color var(--md-transition);
+        }
+        .bottom-nav button.active {
+            color: var(--md-purple);
+        }
+        .bottom-nav button.active .material-icons-round {
+            color: var(--md-purple);
+        }
+        .bottom-nav button .nav-label {
+            font-size: 9px;
+            line-height: 1.2;
+        }
+        .bottom-nav .nav-fab {
+            position: relative;
+            top: -12px;
+        }
+        .bottom-nav .nav-fab .fab-btn {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--md-purple), var(--md-gold-dark));
+            border: none;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(106, 27, 154, 0.4);
+            cursor: pointer;
+            transition: transform var(--md-transition);
+        }
+        .bottom-nav .nav-fab .fab-btn:hover {
+            transform: scale(1.05);
+        }
+        .bottom-nav .nav-fab .fab-btn .material-icons-round {
+            font-size: 30px;
+            color: #fff;
+        }
+
+        /* ============================================================
+               CARDS & COMPONENTS
+            ============================================================ */
+        .card {
+            background: var(--md-surface);
+            border-radius: var(--md-radius);
+            padding: 16px 18px;
+            box-shadow: var(--md-shadow);
+            transition: all var(--md-transition);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            margin-bottom: 14px;
+        }
+        .card:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .card-header h3 {
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-header h3 .material-icons-round {
+            font-size: 20px;
+            color: var(--md-purple);
+        }
+        .card-header .action-link {
+            font-size: 13px;
+            color: var(--md-purple);
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+        .grid-4 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-card {
+            background: var(--md-surface);
+            border-radius: var(--md-radius-sm);
+            padding: 14px 16px;
+            box-shadow: var(--md-shadow);
+            border-left: 4px solid var(--md-purple);
+            transition: all var(--md-transition);
+        }
+        .stat-card .stat-label {
+            font-size: 12px;
+            color: var(--md-text-secondary);
+            font-weight: 500;
+        }
+        .stat-card .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            margin-top: 2px;
+            color: var(--md-text);
+        }
+        .stat-card .stat-change {
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+        .stat-card .stat-change.up {
+            color: #2E7D32;
+        }
+        .stat-card .stat-change.down {
+            color: #C62828;
+        }
+        .stat-card.gold {
+            border-left-color: var(--md-gold-dark);
+        }
+        .stat-card.green {
+            border-left-color: #2E7D32;
+        }
+        .stat-card.blue {
+            border-left-color: #1565C0;
+        }
+        .stat-card.red {
+            border-left-color: #C62828;
+        }
+
+        /* ============================================================
+               TABLES / LISTS
+            ============================================================ */
+        .list-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0edf2;
+            cursor: pointer;
+            transition: background var(--md-transition);
+        }
+        .list-item:last-child {
+            border-bottom: none;
+        }
+        .list-item:hover {
+            background: #faf8fc;
+            margin: 0 -12px;
+            padding: 12px 12px;
+            border-radius: var(--md-radius-sm);
+        }
+        .list-item .avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--md-purple-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--md-purple);
+            font-weight: 600;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .list-item .avatar.gold {
+            background: var(--md-gold-light);
+            color: var(--md-gold-dark);
+        }
+        .list-item .info {
+            flex: 1;
+            min-width: 0;
+        }
+        .list-item .info .title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .list-item .info .sub {
+            font-size: 12px;
+            color: var(--md-text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .list-item .info .sub .tag {
+            background: var(--md-purple-bg);
+            color: var(--md-purple);
+            padding: 0 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        .list-item .info .sub .tag.gold {
+            background: var(--md-gold-light);
+            color: var(--md-gold-dark);
+        }
+        .list-item .info .sub .tag.green {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+        .list-item .info .sub .tag.red {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+        .list-item .actions {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .list-item .actions button {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--md-text-hint);
+            cursor: pointer;
+            transition: all var(--md-transition);
+        }
+        .list-item .actions button:hover {
+            background: var(--md-purple-bg);
+            color: var(--md-purple);
+        }
+
+        /* ============================================================
+               FORMS
+            ============================================================ */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--md-text-secondary);
+            margin-bottom: 4px;
+        }
+        .form-group .required {
+            color: #C62828;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid var(--md-outline);
+            border-radius: var(--md-radius-sm);
+            font-size: 14px;
+            font-family: var(--font);
+            background: var(--md-surface);
+            transition: all var(--md-transition);
+            color: var(--md-text);
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--md-purple);
+            box-shadow: 0 0 0 3px rgba(106, 27, 154, 0.12);
+        }
+        .form-control::placeholder {
+            color: var(--md-text-hint);
+        }
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2379747E' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 22px;
+            border: none;
+            border-radius: var(--md-radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            font-family: var(--font);
+            cursor: pointer;
+            transition: all var(--md-transition);
+            text-decoration: none;
+        }
+        .btn-primary {
+            background: var(--md-purple);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(106, 27, 154, 0.25);
+        }
+        .btn-primary:hover {
+            background: var(--md-purple-dark);
+            box-shadow: 0 4px 16px rgba(106, 27, 154, 0.35);
+            transform: translateY(-1px);
+        }
+        .btn-gold {
+            background: var(--md-gold);
+            color: var(--md-purple-dark);
+            box-shadow: 0 2px 8px rgba(249, 168, 37, 0.25);
+        }
+        .btn-gold:hover {
+            background: var(--md-gold-dark);
+            transform: translateY(-1px);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--md-purple);
+            border: 1.5px solid var(--md-purple);
+        }
+        .btn-outline:hover {
+            background: var(--md-purple-bg);
+        }
+        .btn-danger {
+            background: #C62828;
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: #B71C1C;
+        }
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 12px;
+        }
+        .btn-block {
+            width: 100%;
+        }
+        .btn .material-icons-round {
+            font-size: 18px;
+        }
+
+        /* ============================================================
+               MODAL
+            ============================================================ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(6px);
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 200;
+            padding: 20px;
+            animation: fadeIn 0.2s ease;
+        }
+        .modal-overlay.open {
+            display: flex;
+        }
+        .modal-overlay .modal {
+            background: var(--md-surface);
+            border-radius: var(--md-radius);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            animation: slideUp 0.3s ease;
+            overflow: hidden;
+        }
+        .modal-overlay .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--md-outline);
+            flex-shrink: 0;
+        }
+        .modal-overlay .modal-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-overlay .modal-header .close-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--md-text-secondary);
+            transition: background var(--md-transition);
+        }
+        .modal-overlay .modal-header .close-btn:hover {
+            background: var(--md-purple-bg);
+        }
+        .modal-overlay .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .modal-overlay .modal-footer {
+            padding: 12px 20px;
+            border-top: 1px solid var(--md-outline);
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* ============================================================
+               TOAST
+            ============================================================ */
+        .toast-container {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+            pointer-events: none;
+            width: 90%;
+            max-width: 420px;
+        }
+        .toast {
+            background: #323232;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: var(--md-radius-sm);
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            animation: toastIn 0.3s ease;
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+        .toast .material-icons-round {
+            font-size: 22px;
+            color: var(--md-gold);
+        }
+        .toast.success .material-icons-round {
+            color: #66BB6A;
+        }
+        .toast.error .material-icons-round {
+            color: #EF5350;
+        }
+        @keyframes toastIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* ============================================================
+               PAGE SPECIFIC
+            ============================================================ */
+        .page {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+        .page.active {
+            display: block;
+        }
+
+        /* ============================================================
+               TIMELINE
+            ============================================================ */
+        .timeline {
+            position: relative;
+            padding-left: 28px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 4px;
+            bottom: 4px;
+            width: 2px;
+            background: var(--md-outline);
+        }
+        .timeline-item {
+            position: relative;
+            padding: 8px 0 16px 16px;
+            border-left: 2px solid var(--md-purple-light);
+            margin-left: -2px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -7px;
+            top: 12px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--md-purple);
+            border: 2px solid var(--md-surface);
+        }
+        .timeline-item .time {
+            font-size: 11px;
+            color: var(--md-text-hint);
+            font-weight: 500;
+        }
+        .timeline-item .content {
+            font-size: 14px;
+            margin-top: 2px;
+        }
+        .timeline-item .content strong {
+            font-weight: 600;
+        }
+
+        /* ============================================================
+               RESPONSIVE
+            ============================================================ */
+        @media (min-width: 768px) {
+            .sidebar {
+                display: flex !important;
+            }
+            .bottom-nav {
+                display: none;
+            }
+            .topbar .menu-btn {
+                display: none;
+            }
+            .page-container {
+                padding: 20px 28px 40px 28px;
+            }
+            .grid-2 {
+                grid-template-columns: 1fr 1fr;
+            }
+            .grid-3 {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+            .grid-4 {
+                grid-template-columns: 1fr 1fr 1fr 1fr;
+            }
+            .modal-overlay {
+                align-items: center;
+            }
+        }
+        @media (max-width: 767px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .grid-3 {
+                grid-template-columns: 1fr 1fr;
+            }
+            .grid-4 {
+                grid-template-columns: 1fr 1fr;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .form-row-3 {
+                grid-template-columns: 1fr 1fr;
+            }
+            .topbar .top-actions .search-box {
+                min-width: 120px;
+            }
+            .topbar .top-actions .search-box input {
+                min-width: 60px;
+                font-size: 13px;
+            }
+            .page-container {
+                padding: 12px 14px 90px 14px;
+            }
+            .modal-overlay {
+                padding: 10px;
+            }
+            .modal-overlay .modal {
+                max-height: 95vh;
+                border-radius: var(--md-radius-sm);
+            }
+            .stat-card .stat-value {
+                font-size: 20px;
+            }
+        }
+        @media (max-width: 400px) {
+            .grid-3 {
+                grid-template-columns: 1fr 1fr;
+            }
+            .grid-4 {
+                grid-template-columns: 1fr 1fr;
+            }
+            .topbar .page-title {
+                font-size: 15px;
+            }
+            .topbar .top-actions .search-box {
+                min-width: 90px;
+            }
+            .bottom-nav button {
+                font-size: 9px;
+            }
+            .bottom-nav button .material-icons-round {
+                font-size: 22px;
+            }
+        }
+
+        /* ============================================================
+               UTILITY
+            ============================================================ */
+        .text-purple {
+            color: var(--md-purple);
+        }
+        .text-gold {
+            color: var(--md-gold-dark);
+        }
+        .text-muted {
+            color: var(--md-text-hint);
+        }
+        .text-center {
+            text-align: center;
+        }
+        .mt-8 {
+            margin-top: 8px;
+        }
+        .mt-12 {
+            margin-top: 12px;
+        }
+        .mt-16 {
+            margin-top: 16px;
+        }
+        .mb-8 {
+            margin-bottom: 8px;
+        }
+        .mb-12 {
+            margin-bottom: 12px;
+        }
+        .mb-16 {
+            margin-bottom: 16px;
+        }
+        .flex {
+            display: flex;
+        }
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .flex-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .gap-8 {
+            gap: 8px;
+        }
+        .gap-12 {
+            gap: 12px;
+        }
+        .gap-16 {
+            gap: 16px;
+        }
+        .w-full {
+            width: 100%;
+        }
+        .hidden {
+            display: none !important;
+        }
+
+        /* empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--md-text-hint);
+        }
+        .empty-state .material-icons-round {
+            font-size: 56px;
+            color: var(--md-outline);
+            margin-bottom: 12px;
+        }
+        .empty-state h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--md-text-secondary);
+        }
+        .empty-state p {
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        /* tabs */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: #F5F3F7;
+            border-radius: var(--md-radius-sm);
+            padding: 4px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            flex-wrap: nowrap;
+        }
+        .tabs .tab {
+            padding: 8px 16px;
+            border: none;
+            background: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            font-family: var(--font);
+            color: var(--md-text-secondary);
+            cursor: pointer;
+            transition: all var(--md-transition);
+            white-space: nowrap;
+        }
+        .tabs .tab.active {
+            background: var(--md-surface);
+            color: var(--md-purple);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+        }
+        .tabs .tab:hover {
+            color: var(--md-purple);
+        }
+
+        /* badge in list */
+        .status-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .status-badge.active {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+        .status-badge.inactive {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+        .status-badge.vip {
+            background: var(--md-gold-light);
+            color: var(--md-gold-dark);
+        }
+        .status-badge.new {
+            background: #E3F2FD;
+            color: #1565C0;
+        }
+        .status-badge.pending {
+            background: #FFF3E0;
+            color: #E65100;
+        }
+        .status-badge.completed {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+        .status-badge.urgent {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+        .status-badge.in-progress {
+            background: #E8EAF6;
+            color: #283593;
+        }
+        .status-badge.on-hold {
+            background: #F5F5F5;
+            color: #616161;
+        }
+
+        /* rating stars */
+        .stars {
+            display: flex;
+            gap: 2px;
+            color: var(--md-gold-dark);
+            font-size: 16px;
+        }
+        .stars .material-icons-round {
+            font-size: 18px;
+        }
+        .stars .empty {
+            color: var(--md-outline);
+        }
+
+        /* call log specific */
+        .call-type-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .call-type-icon.incoming {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+        .call-type-icon.outgoing {
+            background: #E3F2FD;
+            color: #1565C0;
+        }
+        .call-type-icon.missed {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+
+        /* quick action chips */
+        .chip-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            background: #F5F3F7;
+            color: var(--md-text-secondary);
+            cursor: pointer;
+            transition: all var(--md-transition);
+            border: none;
+            font-family: var(--font);
+        }
+        .chip .material-icons-round {
+            font-size: 16px;
+        }
+        .chip:hover {
+            background: var(--md-purple-bg);
+            color: var(--md-purple);
+        }
+        .chip.primary {
+            background: var(--md-purple-bg);
+            color: var(--md-purple);
+        }
+        .chip.gold {
+            background: var(--md-gold-light);
+            color: var(--md-gold-dark);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    APP SHELL
+    ============================================================ -->
+    <div id="app">
+
+        <!-- ============================================================
+        SIDEBAR
+        ============================================================ -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="logo-icon">H4</div>
+                <div>
+                    <h1>H4 ERP</h1>
+                    <small>Smart Notepad + Call CRM</small>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-label">Main</div>
+                <a class="active" data-page="dashboard"><span class="material-icons-round">dashboard</span> Dashboard</a>
+                <a data-page="customers"><span class="material-icons-round">people</span> Customers <span class="badge" id="customerCountBadge">0</span></a>
+                <a data-page="calls"><span class="material-icons-round">phone</span> Smart Call CRM <span class="badge" id="callCountBadge">0</span></a>
+                <a data-page="works"><span class="material-icons-round">assignment</span> Work Management</a>
+                <a data-page="leads"><span class="material-icons-round">trending_up</span> Lead Management</a>
+                <a data-page="reminders"><span class="material-icons-round">notifications</span> Reminders <span class="badge" id="reminderCountBadge">0</span></a>
+
+                <div class="nav-label" style="margin-top:12px;">More</div>
+                <a data-page="timeline"><span class="material-icons-round">history</span> Timeline</a>
+                <a data-page="reports"><span class="material-icons-round">bar_chart</span> Reports</a>
+                <a data-page="settings"><span class="material-icons-round">settings</span> Settings</a>
+            </nav>
+        </aside>
+
+        <!-- ============================================================
+        MAIN CONTENT
+        ============================================================ -->
+        <div class="main-content">
+
+            <!-- TOP BAR -->
+            <header class="topbar">
+                <button class="menu-btn" id="menuToggle"><span class="material-icons-round">menu</span></button>
+                <div class="page-title" id="pageTitle">Dashboard <span>| Overview</span></div>
+                <div class="top-actions">
+                    <div class="search-box">
+                        <span class="material-icons-round">search</span>
+                        <input type="text" id="globalSearch" placeholder="Search..." />
+                    </div>
+                    <button id="addQuickBtn" title="Quick Add"><span class="material-icons-round">add_circle</span></button>
+                    <button id="notifBtn"><span class="material-icons-round">notifications</span><span class="dot"></span></button>
+                </div>
+            </header>
+
+            <!-- PAGE CONTAINER -->
+            <div class="page-container" id="pageContainer">
+
+                <!-- ============================================================
+                PAGE: DASHBOARD
+                ============================================================ -->
+                <div class="page active" id="page-dashboard">
+                    <div class="grid-4" id="statsGrid">
+                        <div class="stat-card"><div class="stat-label">Total Customers</div><div class="stat-value" id="statCustomers">0</div></div>
+                        <div class="stat-card gold"><div class="stat-label">Total Works</div><div class="stat-value" id="statWorks">0</div></div>
+                        <div class="stat-card green"><div class="stat-label">Today's Calls</div><div class="stat-value" id="statTodayCalls">0</div></div>
+                        <div class="stat-card red"><div class="stat-label">Pending Follow-ups</div><div class="stat-value" id="statPendingFollowups">0</div></div>
+                    </div>
+
+                    <div class="grid-2" style="margin-top:6px;">
+                        <div class="card">
+                            <div class="card-header"><h3><span class="material-icons-round">call</span> Recent Calls</h3><span class="action-link" onclick="navigateTo('calls')">View all →</span></div>
+                            <div id="recentCallsList"><div class="empty-state"><p>No recent calls</p></div></div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header"><h3><span class="material-icons-round">assignment</span> Pending Works</h3><span class="action-link" onclick="navigateTo('works')">View all →</span></div>
+                            <div id="pendingWorksList"><div class="empty-state"><p>No pending works</p></div></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header"><h3><span class="material-icons-round">today</span> Today's Reminders</h3><span class="action-link" onclick="navigateTo('reminders')">View all →</span></div>
+                        <div id="todayRemindersList"><div class="empty-state"><p>No reminders for today</p></div></div>
+                    </div>
+                </div>
+
+                <!-- ============================================================
+                PAGE: CUSTOMERS
+                ============================================================ -->
+                <div class="page" id="page-customers">
+                    <div class="flex-between mb-12">
+                        <div class="tabs" id="customerTabs">
+                            <button class="tab active" data-filter="all">All</button>
+                            <button class="tab" data-filter="active">Active</button>
+                            <button class="tab" data-filter="vip">VIP</button>
+                            <button class="tab" data-filter="inactive">Inactive</button>
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="openCustomerModal()"><span class="material-icons-round">add</span> Add</button>
+                    </div>
+                    <div id="customerList"><div class="empty-state"><span class="material-icons-round">people</span><h4>No customers yet</h4><p>Add your first customer to get started.</p></div></div>
+                </div>
+
+                <!-- ============================================================
+                PAGE: SMART CALL CRM
+                ============================================================ -->
+                <div class="page" id="page-calls">
+                    <div class="tabs" id="callTabs">
+                        <button class="tab active" data-filter="all">All</button>
+                        <button class="tab" data-filter="incoming">Incoming</button>
+                        <button class="tab" data-filter="outgoing">Outgoing</button>
+                        <button class="tab" data-filter="missed">Missed</button>
+                        <button class="tab" data-filter="saved">Saved</button>
+                    </div>
+                    <div id="callList"><div class="empty-state"><span class="material-icons-round">phone</span><h4>No calls logged</h4><p>Incoming/outgoing calls will appear here.</p></div></div>
+                </div>
+
+                <!-- ============================================================
+                PAGE: WORK MANAGEMENT
+                ============================================================ -->
+                <div class="page" id="page-works">
+                    <div class="flex-between mb-12">
+                        <div class="tabs" id="workTabs">
+                            <button class="tab active" data-filter="all">All</button>
+                            <button class="tab" data-filter="pending">Pending</button>
+                            <button class="tab" data-filter="in-progress">In Progress</button>
+                            <button class="tab" data-filter="completed">Completed</button>
+                            <button class="tab" data-filter="urgent">Urgent</button>
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="openWorkModal()"><span class="material-icons-round">add</span> Add</button>
+                    </div>
+                    <div id="workList"><div class="empty-state"><span class="material-icons-round">assignment</span><h4>No works created</h4><p>Create your first work order.</p></div></div>
+                </div>
+
+                <!-- ============================================================
+                PAGE: LEADS
+                ============================================================ -->
+                <div class="page" id="page-leads">
+                    <div class="flex-between mb-12">
+                        <div class="tabs" id="leadTabs">
+                            <button class="tab active" data-filter="all">All</button>
+                            <button class="tab" data-filter="new">New</button>
+                            <button class="tab" data-filter="contacted">Contacted</button>
+                            <button class="tab" data-filter="lost">Lost</button>
+                            <button class="tab" data-filter="order-confirmed">Order Confirmed</button>
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="openLeadModal()"><span class="material-icons-round">add</span> Add</button>
+                    </div>
+                    <div id="leadList"><div class="empty-state"><span class="material-icons-round">trending_up</span><h4>No leads yet</h4><p>Start tracking your sales pipeline.</p></div></div>
+                </div>
+
+                <!-- ============================================================
+                PAGE: REMINDERS
+                ============================================================ -->
+                <div class="page" id="page-reminders">
+                    <div class="flex-between mb-12">
+                        <div class="tabs" id="reminderTabs">
+                            <button class="tab active" data-filter="all">All</button>
+                            <button class="tab" data-filter="today">Today</button>
+                            <button class="tab" data-filter="pending">Pending</button>
+                            <button class="tab" data-filter="overdue">Overdue</button>
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="openReminderModal()"><span class="material-icons-round">add</span> Add</button>
+                    </div>
+                    <div id="reminderList"><div class="empty-state"><span class="material-icons-round">notifications</span><h4>No reminders</h4><p>Set reminders for follow-ups, payments, and more.</p></div></div>
+                </div>
+
+                <!-- ============================================================
+                PAGE: TIMELINE
+                ============================================================ -->
+                <div class="page" id="page-timeline">
+                    <div class="card">
+                        <div class="card-header"><h3><span class="material-icons-round">history</span> Activity Timeline</h3></div>
+                        <div id="timelineContainer"><div class="empty-state"><span class="material-icons-round">history</span><h4>No activity yet</h4><p>Actions will be recorded here automatically.</p></div></div>
+                    </div>
+                </div>
+
+                <!-- ============================================================
+                PAGE: REPORTS
+                ============================================================ -->
+                <div class="page" id="page-reports">
+                    <div class="grid-2">
+                        <div class="card"><div class="card-header"><h3><span class="material-icons-round">people</span> Customer Report</h3></div><div id="reportCustomers">Loading...</div></div>
+                        <div class="card"><div class="card-header"><h3><span class="material-icons-round">assignment</span> Work Report</h3></div><div id="reportWorks">Loading...</div></div>
+                        <div class="card"><div class="card-header"><h3><span class="material-icons-round">phone</span> Call Report</h3></div><div id="reportCalls">Loading...</div></div>
+                        <div class="card"><div class="card-header"><h3><span class="material-icons-round">payments</span> Payment Report</h3></div><div id="reportPayments">Loading...</div></div>
+                    </div>
+                </div>
+
+                <!-- ============================================================
+                PAGE: SETTINGS
+                ============================================================ -->
+                <div class="page" id="page-settings">
+                    <div class="card"><h3><span class="material-icons-round">settings</span> Settings</h3>
+                        <div class="form-group"><label>Theme</label>
+                            <select class="form-control" id="themeSelect"><option value="light">Light</option><option value="dark">Dark</option></select>
+                        </div>
+                        <div class="form-group"><label>Offline Storage</label><p class="text-muted" style="font-size:13px;">Data is stored locally in IndexedDB. <span id="storageSize">0 KB</span></p></div>
+                        <button class="btn btn-danger btn-sm" onclick="clearAllData()"><span class="material-icons-round">delete</span> Clear All Data</button>
+                    </div>
+                </div>
+
+            </div><!-- /page-container -->
+
+            <!-- BOTTOM NAV (Mobile) -->
+            <nav class="bottom-nav" id="bottomNav">
+                <button class="active" data-page="dashboard"><span class="material-icons-round">dashboard</span><span class="nav-label">Home</span></button>
+                <button data-page="customers"><span class="material-icons-round">people</span><span class="nav-label">Customers</span></button>
+                <button data-page="calls"><span class="material-icons-round">phone</span><span class="nav-label">Calls</span></button>
+                <div class="nav-fab"><button class="fab-btn" onclick="openQuickAdd()"><span class="material-icons-round">add</span></button></div>
+                <button data-page="works"><span class="material-icons-round">assignment</span><span class="nav-label">Works</span></button>
+                <button data-page="reminders"><span class="material-icons-round">notifications</span><span class="nav-label">Reminders</span></button>
+            </nav>
+
+        </div><!-- /main-content -->
+    </div><!-- /app -->
+
+    <!-- ============================================================
+    MODAL CONTAINER
+    ============================================================ -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalTitle"><span class="material-icons-round">add</span> New</h2>
+                <button class="close-btn" onclick="closeModal()"><span class="material-icons-round">close</span></button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer" id="modalFooter">
+                <button class="btn btn-outline btn-sm" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary btn-sm" id="modalSaveBtn" onclick="modalSave()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    TOAST CONTAINER
+    ============================================================ -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ============================================================
+    JAVASCRIPT — APPLICATION
+    ============================================================ -->
+    <script>
+        // ============================================================
+        // DATA LAYER — IndexedDB
+        // ============================================================
+        const DB_NAME = 'H4ERP_DB';
+        const DB_VERSION = 1;
+        let db = null;
+
+        function openDB() {
+            return new Promise((resolve, reject) => {
+                const req = indexedDB.open(DB_NAME, DB_VERSION);
+                req.onupgradeneeded = (e) => {
+                    const d = e.target.result;
+                    if (!d.objectStoreNames.contains('customers')) {
+                        d.createObjectStore('customers', { keyPath: 'id' });
+                    }
+                    if (!d.objectStoreNames.contains('calls')) {
+                        d.createObjectStore('calls', { keyPath: 'id' });
+                    }
+                    if (!d.objectStoreNames.contains('works')) {
+                        d.createObjectStore('works', { keyPath: 'id' });
+                    }
+                    if (!d.objectStoreNames.contains('leads')) {
+                        d.createObjectStore('leads', { keyPath: 'id' });
+                    }
+                    if (!d.objectStoreNames.contains('reminders')) {
+                        d.createObjectStore('reminders', { keyPath: 'id' });
+                    }
+                    if (!d.objectStoreNames.contains('timeline')) {
+                        d.createObjectStore('timeline', { keyPath: 'id' });
+                    }
+                };
+                req.onsuccess = (e) => { db = e.target.result;
+                    resolve(db); };
+                req.onerror = (e) => reject(e.target.error);
+            });
+        }
+
+        function storeData(storeName, data) {
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(storeName, 'readwrite');
+                const store = tx.objectStore(storeName);
+                const req = store.put(data);
+                req.onsuccess = () => resolve();
+                req.onerror = () => reject(req.error);
+            });
+        }
+
+        function getAllData(storeName) {
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(storeName, 'readonly');
+                const store = tx.objectStore(storeName);
+                const req = store.getAll();
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+            });
+        }
+
+        function deleteData(storeName, id) {
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(storeName, 'readwrite');
+                const store = tx.objectStore(storeName);
+                const req = store.delete(id);
+                req.onsuccess = () => resolve();
+                req.onerror = () => reject(req.error);
+            });
+        }
+
+        function getData(storeName, id) {
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(storeName, 'readonly');
+                const store = tx.objectStore(storeName);
+                const req = store.get(id);
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+            });
+        }
+
+        // ============================================================
+        // HELPERS
+        // ============================================================
+        function genId() { return Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6); }
+
+        function today() { return new Date().toISOString().slice(0, 10); }
+
+        function now() { return new Date().toISOString(); }
+
+        function formatDate(d) { if (!d) return '-'; const dt = new Date(d); return dt.toLocaleDateString('en-IN', { day: '2-digit',
+                month: 'short', year: 'numeric' }); }
+
+        function formatTime(d) { if (!d) return '-'; const dt = new Date(d); return dt.toLocaleTimeString('en-IN', { hour: '2-digit',
+                minute: '2-digit' }); }
+
+        function formatDateTime(d) { if (!d) return '-'; const dt = new Date(d); return dt.toLocaleDateString('en-IN', { day: '2-digit',
+                month: 'short', year: 'numeric' }) + ' ' + dt.toLocaleTimeString('en-IN', { hour: '2-digit',
+                minute: '2-digit' }); }
+
+        function truncate(str, n = 40) { if (!str) return ''; return str.length > n ? str.slice(0, n) + '…' : str; }
+
+        function getInitials(name) { if (!name) return '?'; return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,
+            2); }
+
+        function getStatusColor(status) {
+            const map = {
+                'active': 'active',
+                'inactive': 'inactive',
+                'vip': 'vip',
+                'new': 'new',
+                'pending': 'pending',
+                'completed': 'completed',
+                'urgent': 'urgent',
+                'in-progress': 'in-progress',
+                'on-hold': 'on-hold',
+                'order-confirmed': 'active',
+                'contacted': 'in-progress',
+                'lost': 'inactive',
+                'blocked': 'inactive'
+            };
+            return map[status] || 'pending';
+        }
+
+        function starsHTML(rating) {
+            let html = '';
+            for (let i = 1; i <= 5; i++) {
+                html += `<span class="material-icons-round ${i <= rating ? '' : 'empty'}">${i <= rating ? 'star' : 'star'}</span>`;
+            }
+            return html;
+        }
+
+        function callTypeIcon(type) {
+            const map = { 'incoming': 'call_received', 'outgoing': 'call_made', 'missed': 'call_missed' };
+            return map[type] || 'phone';
+        }
+
+        function callTypeClass(type) { return type || 'incoming'; }
+
+        function getCallTypeLabel(type) { return type ? type.charAt(0).toUpperCase() + type.slice(1) : 'Call'; }
+
+        // ============================================================
+        // TOAST
+        // ============================================================
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icon = type === 'success' ? 'check_circle' : type === 'error' ? 'error' : 'info';
+            toast.innerHTML = `<span class="material-icons-round">${icon}</span> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                setTimeout(() => toast.remove(), 300); }, 3000);
+        }
+
+        // ============================================================
+        // MODAL
+        // ============================================================
+        let modalContext = { type: '', data: null, callback: null };
+
+        function openModal(title, bodyHTML, footerHTML, context = {}) {
+            document.getElementById('modalTitle').innerHTML = title;
+            document.getElementById('modalBody').innerHTML = bodyHTML;
+            document.getElementById('modalFooter').innerHTML = footerHTML || `
+                        <button class="btn btn-outline btn-sm" onclick="closeModal()">Cancel</button>
+                        <button class="btn btn-primary btn-sm" id="modalSaveBtn" onclick="modalSave()">Save</button>
+                    `;
+            modalContext = context;
+            document.getElementById('modalOverlay').classList.add('open');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('open');
+            modalContext = { type: '', data: null, callback: null };
+        }
+
+        function modalSave() {
+            if (modalContext.callback) {
+                modalContext.callback();
+            } else {
+                closeModal();
+            }
+        }
+
+        // ============================================================
+        // NAVIGATION
+        // ============================================================
+        const pageTitles = {
+            'dashboard': 'Dashboard <span>| Overview</span>',
+            'customers': 'Customers <span>| Manage contacts</span>',
+            'calls': 'Smart Call CRM <span>| Call log & management</span>',
+            'works': 'Work Management <span>| Projects & tasks</span>',
+            'leads': 'Lead Management <span>| Sales pipeline</span>',
+            'reminders': 'Reminders <span>| Stay on track</span>',
+            'timeline': 'Timeline <span>| Activity history</span>',
+            'reports': 'Reports <span>| Analytics & insights</span>',
+            'settings': 'Settings <span>| App preferences</span>'
+        };
+
+        let currentPage = 'dashboard';
+
+        function navigateTo(page) {
+            if (page === currentPage) return;
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+            const target = document.getElementById('page-' + page);
+            if (target) target.classList.add('active');
+            // Update sidebar
+            document.querySelectorAll('.sidebar-nav a').forEach(el => el.classList.remove('active'));
+            const sidebarLink = document.querySelector(`.sidebar-nav a[data-page="${page}"]`);
+            if (sidebarLink) sidebarLink.classList.add('active');
+            // Update bottom nav
+            document.querySelectorAll('.bottom-nav button').forEach(el => el.classList.remove('active'));
+            const bottomLink = document.querySelector(`.bottom-nav button[data-page="${page}"]`);
+            if (bottomLink) bottomLink.classList.add('active');
+            // Update title
+            document.getElementById('pageTitle').innerHTML = pageTitles[page] || page;
+            currentPage = page;
+            // Refresh data
+            refreshCurrentPage();
+        }
+
+        // Sidebar & bottom nav clicks
+        document.querySelectorAll('.sidebar-nav a[data-page]').forEach(el => {
+            el.addEventListener('click', () => navigateTo(el.dataset.page));
+        });
+        document.querySelectorAll('.bottom-nav button[data-page]').forEach(el => {
+            el.addEventListener('click', () => navigateTo(el.dataset.page));
+        });
+
+        // Menu toggle for mobile
+        document.getElementById('menuToggle').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+
+        // ============================================================
+        // CUSTOMER MODAL
+        // ============================================================
+        function openCustomerModal(customer = null) {
+            const isEdit = !!customer;
+            const data = customer || {};
+            const title = isEdit ? 'Edit Customer' : 'New Customer';
+            const icon = isEdit ? 'edit' : 'person_add';
+
+            const body = `
+                        <div class="form-row">
+                            <div class="form-group"><label>Customer Name <span class="required">*</span></label>
+                                <input class="form-control" id="custName" value="${data.name || ''}" placeholder="Full name" /></div>
+                            <div class="form-group"><label>Mobile <span class="required">*</span></label>
+                                <input class="form-control" id="custMobile" value="${data.mobile || ''}" placeholder="10-digit" /></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Alternate Number</label>
+                                <input class="form-control" id="custAlt" value="${data.alternate || ''}" placeholder="Alternate" /></div>
+                            <div class="form-group"><label>WhatsApp Number</label>
+                                <input class="form-control" id="custWhatsapp" value="${data.whatsapp || ''}" placeholder="WhatsApp" /></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Email</label>
+                                <input class="form-control" id="custEmail" value="${data.email || ''}" placeholder="email@domain.com" /></div>
+                            <div class="form-group"><label>Customer Type</label>
+                                <select class="form-control" id="custType">
+                                    ${['Individual','Contractor','Builder','Engineer','Architect','Dealer','Distributor','Interior Designer','Company','Other'].map(t =>
+                                        `<option value="${t}" ${data.type===t?'selected':''}>${t}</option>`).join('')}
+                                </select></div>
+                        </div>
+                        <div class="form-group"><label>Address</label>
+                            <input class="form-control" id="custAddress" value="${data.address || ''}" placeholder="Address" /></div>
+                        <div class="form-row">
+                            <div class="form-group"><label>District</label>
+                                <input class="form-control" id="custDistrict" value="${data.district || ''}" placeholder="District" /></div>
+                            <div class="form-group"><label>State</label>
+                                <input class="form-control" id="custState" value="${data.state || ''}" placeholder="State" /></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>PIN Code</label>
+                                <input class="form-control" id="custPincode" value="${data.pincode || ''}" placeholder="PIN" /></div>
+                            <div class="form-group"><label>Google Map Location</label>
+                                <input class="form-control" id="custMap" value="${data.map || ''}" placeholder="Map link" /></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Rating (1-5)</label>
+                                <select class="form-control" id="custRating">
+                                    ${[1,2,3,4,5].map(r => `<option value="${r}" ${data.rating===r?'selected':''}>${r} Star${r>1?'s':''}</option>`).join('')}
+                                </select></div>
+                            <div class="form-group"><label>Status</label>
+                                <select class="form-control" id="custStatus">
+                                    ${['Active','Inactive','VIP','Blocked'].map(s =>
+                                        `<option value="${s.toLowerCase()}" ${data.status===s.toLowerCase()?'selected':''}>${s}</option>`).join('')}
+                                </select></div>
+                        </div>
+                        <div class="form-group"><label>Notes</label>
+                            <textarea class="form-control" id="custNotes" placeholder="Additional notes">${data.notes || ''}</textarea></div>
+                        <div class="form-group"><label>Outstanding Balance (₹)</label>
+                            <input class="form-control" id="custBalance" type="number" value="${data.balance || 0}" placeholder="0" /></div>
+                    `;
+
+            openModal(`<span class="material-icons-round">${icon}</span> ${title}`, body, null, {
+                type: 'customer',
+                data: data,
+                callback: () => saveCustomer(data.id)
+            });
+        }
+
+        async function saveCustomer(existingId) {
+            const name = document.getElementById('custName').value.trim();
+            const mobile = document.getElementById('custMobile').value.trim();
+            if (!name || !mobile) { showToast('Name and Mobile are required.', 'error'); return; }
+
+            const customer = {
+                id: existingId || genId(),
+                name,
+                mobile,
+                alternate: document.getElementById('custAlt').value.trim(),
+                whatsapp: document.getElementById('custWhatsapp').value.trim() || mobile,
+                email: document.getElementById('custEmail').value.trim(),
+                address: document.getElementById('custAddress').value.trim(),
+                district: document.getElementById('custDistrict').value.trim(),
+                state: document.getElementById('custState').value.trim(),
+                pincode: document.getElementById('custPincode').value.trim(),
+                map: document.getElementById('custMap').value.trim(),
+                type: document.getElementById('custType').value,
+                rating: parseInt(document.getElementById('custRating').value) || 3,
+                status: document.getElementById('custStatus').value,
+                notes: document.getElementById('custNotes').value.trim(),
+                balance: parseFloat(document.getElementById('custBalance').value) || 0,
+                createdAt: existingId ? (await getData('customers', existingId))?.createdAt || now() : now(),
+                updatedAt: now()
+            };
+
+            await storeData('customers', customer);
+            await addTimeline(customer.id, 'customer', `Customer ${existingId ? 'updated' : 'created'}: ${customer.name}`,
+                customer);
+            closeModal();
+            showToast(`Customer ${existingId ? 'updated' : 'created'} successfully!`, 'success');
+            refreshCurrentPage();
+        }
+
+        // ============================================================
+        // WORK MODAL
+        // ============================================================
+        function openWorkModal(work = null) {
+            const isEdit = !!work;
+            const data = work || {};
+            const title = isEdit ? 'Edit Work' : 'New Work';
+
+            const body = `
+                        <div class="form-group"><label>Work Title <span class="required">*</span></label>
+                            <input class="form-control" id="workTitle" value="${data.title || ''}" placeholder="e.g. Waterproofing - Tower A" /></div>
+                        <div class="form-group"><label>Description</label>
+                            <textarea class="form-control" id="workDesc" placeholder="Detailed description">${data.description || ''}</textarea></div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Category</label>
+                                <select class="form-control" id="workCategory">
+                                    ${['Waterproofing','Tile Adhesive','Epoxy Flooring','SBR','Cement','Construction','Other'].map(c =>
+                                        `<option value="${c}" ${data.category===c?'selected':''}>${c}</option>`).join('')}
+                                </select></div>
+                            <div class="form-group"><label>Product</label>
+                                <input class="form-control" id="workProduct" value="${data.product || ''}" placeholder="Product name" /></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Expected Start</label>
+                                <input class="form-control" id="workStart" type="date" value="${data.startDate || ''}" /></div>
+                            <div class="form-group"><label>Expected Completion</label>
+                                <input class="form-control" id="workEnd" type="date" value="${data.endDate || ''}" /></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Priority</label>
+                                <select class="form-control" id="workPriority">
+                                    ${['Low','Medium','High','Urgent'].map(p =>
+                                        `<option value="${p.toLowerCase()}" ${data.priority===p.toLowerCase()?'selected':''}>${p}</option>`).join('')}
+                                </select></div>
+                            <div class="form-group"><label>Status</label>
+                                <select class="form-control" id="workStatus">
+                                    ${['New','Pending','In Progress','On Hold','Waiting for Material','Waiting for Customer','Completed','Cancelled'].map(s =>
+                                        `<option value="${s.toLowerCase().replace(/ /g,'-')}" ${data.status===s.toLowerCase().replace(/ /g,'-')?'selected':''}>${s}</option>`).join('')}
+                                </select></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Progress %</label>
+                                <input class="form-control" id="workProgress" type="number" min="0" max="100" value="${data.progress || 0}" /></div>
+                            <div class="form-group"><label>Estimated Duration (days)</label>
+                                <input class="form-control" id="workDuration" type="number" value="${data.duration || ''}" placeholder="Days" /></div>
+                        </div>
+                        <div class="form-group"><label>Assigned Staff</label>
+                            <input class="form-control" id="workStaff" value="${data.staff || ''}" placeholder="Staff names" /></div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Estimated Budget (₹)</label>
+                                <input class="form-control" id="workBudget" type="number" value="${data.budget || 0}" /></div>
+                            <div class="form-group"><label>Quotation Amount (₹)</label>
+                                <input class="form-control" id="workQuotation" type="number" value="${data.quotation || 0}" /></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Advance Received (₹)</label>
+                                <input class="form-control" id="workAdvance" type="number" value="${data.advance || 0}" /></div>
+                            <div class="form-group"><label>Payment Status</label>
+                                <select class="form-control" id="workPaymentStatus">
+                                    ${['Not Paid','Partial','Paid'].map(s =>
+                                        `<option value="${s.toLowerCase().replace(/ /g,'-')}" ${data.paymentStatus===s.toLowerCase().replace(/ /g,'-')?'selected':''}>${s}</option>`).join('')}
+                                </select></div>
+                        </div>
+                        <div class="form-group"><label>Customer ID (optional)</label>
+                            <input class="form-control" id="workCustomerId" value="${data.customerId || ''}" placeholder="Customer ID" /></div>
+                    `;
+
+            openModal(`<span class="material-icons-round">assignment</span> ${title}`, body, null, {
+                type: 'work',
+                data: data,
+                callback: () => saveWork(data.id)
+            });
+        }
+
+        async function saveWork(existingId) {
+            const title = document.getElementById('workTitle').value.trim();
+            if (!title) { showToast('Work title is required.', 'error'); return; }
+
+            const work = {
+                id: existingId || 'WK_' + genId(),
+                title,
+                description: document.getElementById('workDesc').value.trim(),
+                category: document.getElementById('workCategory').value,
+                product: document.getElementById('workProduct').value.trim(),
+                startDate: document.getElementById('workStart').value,
+                endDate: document.getElementById('workEnd').value,
+                priority: document.getElementById('workPriority').value,
+                status: document.getElementById('workStatus').value,
+                progress: parseInt(document.getElementById('workProgress').value) || 0,
+                duration: parseInt(document.getElementById('workDuration').value) || null,
+                staff: document.getElementById('workStaff').value.trim(),
+                budget: parseFloat(document.getElementById('workBudget').value) || 0,
+                quotation: parseFloat(document.getElementById('workQuotation').value) || 0,
+                advance: parseFloat(document.getElementById('workAdvance').value) || 0,
+                paymentStatus: document.getElementById('workPaymentStatus').value,
+                customerId: document.getElementById('workCustomerId').value.trim(),
+                createdAt: existingId ? (await getData('works', existingId))?.createdAt || now() : now(),
+                updatedAt: now()
+            };
+
+            await storeData('works', work);
+            await addTimeline(work.id, 'work', `Work ${existingId ? 'updated' : 'created'}: ${work.title}`, work);
+            closeModal();
+            showToast(`Work ${existingId ? 'updated' : 'created'} successfully!`, 'success');
+            refreshCurrentPage();
+        }
+
+        // ============================================================
+        // LEAD MODAL
+        // ============================================================
+        function openLeadModal(lead = null) {
+            const isEdit = !!lead;
+            const data = lead || {};
+            const title = isEdit ? 'Edit Lead' : 'New Lead';
+
+            const body = `
+                        <div class="form-row">
+                            <div class="form-group"><label>Lead Name <span class="required">*</span></label>
+                                <input class="form-control" id="leadName" value="${data.name || ''}" placeholder="Name" /></div>
+                            <div class="form-group"><label>Mobile <span class="required">*</span></label>
+                                <input class="form-control" id="leadMobile" value="${data.mobile || ''}" placeholder="Mobile" /></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Lead Source</label>
+                                <select class="form-control" id="leadSource">
+                                    ${['Phone','WhatsApp','Facebook','Instagram','Google','Referral','Dealer','Walk-in'].map(s =>
+                                        `<option value="${s.toLowerCase()}" ${data.source===s.toLowerCase()?'selected':''}>${s}</option>`).join('')}
+                                </select></div>
+                            <div class="form-group"><label>Lead Stage</label>
+                                <select class="form-control" id="leadStage">
+                                    ${['New','Contacted','Site Visit Scheduled','Quotation Sent','Negotiation','Order Confirmed','Lost'].map(s =>
+                                        `<option value="${s.toLowerCase().replace(/ /g,'-')}" ${data.stage===s.toLowerCase().replace(/ /g,'-')?'selected':''}>${s}</option>`).join('')}
+                                </select></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Lead Value (₹)</label>
+                                <input class="form-control" id="leadValue" type="number" value="${data.value || 0}" /></div>
+                            <div class="form-group"><label>Probability %</label>
+                                <input class="form-control" id="leadProbability" type="number" min="0" max="100" value="${data.probability || 0}" /></div>
+                        </div>
+                        <div class="form-group"><label>Next Action</label>
+                            <input class="form-control" id="leadNextAction" value="${data.nextAction || ''}" placeholder="Next step" /></div>
+                        <div class="form-group"><label>Notes</label>
+                            <textarea class="form-control" id="leadNotes" placeholder="Notes">${data.notes || ''}</textarea></div>
+                    `;
+
+            openModal(`<span class="material-icons-round">trending_up</span> ${title}`, body, null, {
+                type: 'lead',
+                data: data,
+                callback: () => saveLead(data.id)
+            });
+        }
+
+        async function saveLead(existingId) {
+            const name = document.getElementById('leadName').value.trim();
+            const mobile = document.getElementById('leadMobile').value.trim();
+            if (!name || !mobile) { showToast('Name and Mobile are required.', 'error'); return; }
+
+            const lead = {
+                id: existingId || 'LD_' + genId(),
+                name,
+                mobile,
+                source: document.getElementById('leadSource').value,
+                stage: document.getElementById('leadStage').value,
+                value: parseFloat(document.getElementById('leadValue').value) || 0,
+                probability: parseInt(document.getElementById('leadProbability').value) || 0,
+                nextAction: document.getElementById('leadNextAction').value.trim(),
+                notes: document.getElementById('leadNotes').value.trim(),
+                createdAt: existingId ? (await getData('leads', existingId))?.createdAt || now() : now(),
+                updatedAt: now()
+            };
+
+            await storeData('leads', lead);
+            await addTimeline(lead.id, 'lead', `Lead ${existingId ? 'updated' : 'created'}: ${lead.name}`, lead);
+            closeModal();
+            showToast(`Lead ${existingId ? 'updated' : 'created'} successfully!`, 'success');
+            refreshCurrentPage();
+        }
+
+        // ============================================================
+        // REMINDER MODAL
+        // ============================================================
+        function openReminderModal(reminder = null) {
+            const isEdit = !!reminder;
+            const data = reminder || {};
+            const title = isEdit ? 'Edit Reminder' : 'New Reminder';
+
+            const body = `
+                        <div class="form-group"><label>Title <span class="required">*</span></label>
+                            <input class="form-control" id="remTitle" value="${data.title || ''}" placeholder="Reminder title" /></div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Date <span class="required">*</span></label>
+                                <input class="form-control" id="remDate" type="date" value="${data.date || ''}" /></div>
+                            <div class="form-group"><label>Time</label>
+                                <input class="form-control" id="remTime" type="time" value="${data.time || ''}" /></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Type</label>
+                                <select class="form-control" id="remType">
+                                    ${['Site Visit','Call','Payment','Material','Warranty','Follow-up','Birthday','Custom'].map(t =>
+                                        `<option value="${t.toLowerCase().replace(/ /g,'-')}" ${data.type===t.toLowerCase().replace(/ /g,'-')?'selected':''}>${t}</option>`).join('')}
+                                </select></div>
+                            <div class="form-group"><label>Priority</label>
+                                <select class="form-control" id="remPriority">
+                                    ${['Low','Medium','High'].map(p =>
+                                        `<option value="${p.toLowerCase()}" ${data.priority===p.toLowerCase()?'selected':''}>${p}</option>`).join('')}
+                                </select></div>
+                        </div>
+                        <div class="form-group"><label>Related To (Customer/Work ID)</label>
+                            <input class="form-control" id="remRelated" value="${data.relatedId || ''}" placeholder="ID" /></div>
+                        <div class="form-group"><label>Notes</label>
+                            <textarea class="form-control" id="remNotes" placeholder="Notes">${data.notes || ''}</textarea></div>
+                        <div class="form-group"><label><input type="checkbox" id="remRecurring" ${data.recurring?'checked':''} /> Recurring</label></div>
+                    `;
+
+            openModal(`<span class="material-icons-round">notifications</span> ${title}`, body, null, {
+                type: 'reminder',
+                data: data,
+                callback: () => saveReminder(data.id)
+            });
+        }
+
+        async function saveReminder(existingId) {
+            const title = document.getElementById('remTitle').value.trim();
+            const date = document.getElementById('remDate').value;
+            if (!title || !date) { showToast('Title and Date are required.', 'error'); return; }
+
+            const reminder = {
+                id: existingId || 'RM_' + genId(),
+                title,
+                date,
+                time: document.getElementById('remTime').value || '09:00',
+                type: document.getElementById('remType').value,
+                priority: document.getElementById('remPriority').value,
+                relatedId: document.getElementById('remRelated').value.trim(),
+                notes: document.getElementById('remNotes').value.trim(),
+                recurring: document.getElementById('remRecurring').checked,
+                status: 'pending',
+                createdAt: existingId ? (await getData('reminders', existingId))?.createdAt || now() : now(),
+                updatedAt: now()
+            };
+
+            await storeData('reminders', reminder);
+            await addTimeline(reminder.id, 'reminder', `Reminder ${existingId ? 'updated' : 'created'}: ${reminder.title}`,
+            reminder);
+            closeModal();
+            showToast(`Reminder ${existingId ? 'updated' : 'created'}!`, 'success');
+            refreshCurrentPage();
+        }
+
+        // ============================================================
+        // CALL LOGGING
+        // ============================================================
+        function logCall(number, name = 'Unknown', type = 'incoming', duration = 0, saved = false) {
+            const call = {
+                id: 'CL_' + genId(),
+                number,
+                name: name || 'Unknown',
+                type: type,
+                duration: duration,
+                date: today(),
+                time: new Date().toTimeString().slice(0, 5),
+                timestamp: now(),
+                saved: saved,
+                customerId: null,
+                note: ''
+            };
+            return storeData('calls', call).then(() => {
+                addTimeline(call.id, 'call', `${getCallTypeLabel(type)} call from ${call.name}`, call);
+                refreshCurrentPage();
+                return call;
+            });
+        }
+
+        function saveCallToCustomer(callId) {
+            // Show a modal to select: Create Customer, Create Lead, Create Work, or Ignore
+            const body = `
+                        <p style="margin-bottom:12px;">How would you like to save this call?</p>
+                        <div style="display:flex;flex-direction:column;gap:8px;">
+                            <button class="btn btn-primary btn-block" onclick="saveCallAsCustomer('${callId}')"><span class="material-icons-round">person_add</span> Create Customer</button>
+                            <button class="btn btn-gold btn-block" onclick="saveCallAsLead('${callId}')"><span class="material-icons-round">trending_up</span> Create Lead</button>
+                            <button class="btn btn-outline btn-block" onclick="saveCallAsWork('${callId}')"><span class="material-icons-round">assignment</span> Create Work</button>
+                            <button class="btn btn-danger btn-block" onclick="closeModal();showToast('Call ignored.','info')"><span class="material-icons-round">close</span> Ignore</button>
+                        </div>
+                    `;
+            openModal('<span class="material-icons-round">save</span> Save Call', body,
+                '<button class="btn btn-outline btn-sm" onclick="closeModal()">Cancel</button>', { type: 'call-save',
+                    callId });
+        }
+
+        async function saveCallAsCustomer(callId) {
+            const call = await getData('calls', callId);
+            if (!call) { showToast('Call not found.', 'error'); return; }
+            closeModal();
+            // Pre-fill customer modal
+            const customer = {
+                name: call.name !== 'Unknown' ? call.name : '',
+                mobile: call.number,
+                whatsapp: call.number,
+            };
+            openCustomerModal(customer);
+            // Mark call as saved
+            call.saved = true;
+            await storeData('calls', call);
+            refreshCurrentPage();
+            showToast('Call saved as Customer. Fill in the details.', 'success');
+        }
+
+        async function saveCallAsLead(callId) {
+            const call = await getData('calls', callId);
+            if (!call) { showToast('Call not found.', 'error'); return; }
+            closeModal();
+            const lead = { name: call.name !== 'Unknown' ? call.name : '', mobile: call.number };
+            openLeadModal(lead);
+            call.saved = true;
+            await storeData('calls', call);
+            refreshCurrentPage();
+            showToast('Call saved as Lead. Fill in the details.', 'success');
+        }
+
+        async function saveCallAsWork(callId) {
+            const call = await getData('calls', callId);
+            if (!call) { showToast('Call not found.', 'error'); return; }
+            closeModal();
+            // Pre-fill work with customer info
+            const work = { title: `Work from call: ${call.name}` };
+            openWorkModal(work);
+            call.saved = true;
+            await storeData('calls', call);
+            refreshCurrentPage();
+            showToast('Call saved as Work. Fill in the details.', 'success');
+        }
+
+        // ============================================================
+        // TIMELINE
+        // ============================================================
+        async function addTimeline(id, type, description, data = null) {
+            const entry = {
+                id: 'TL_' + genId(),
+                entityId: id,
+                type: type,
+                description: description,
+                data: data ? JSON.stringify(data) : null,
+                timestamp: now()
+            };
+            await storeData('timeline', entry);
+            return entry;
+        }
+
+        // ============================================================
+        // RENDER FUNCTIONS
+        // ============================================================
+
+        // --- DASHBOARD ---
+        async function renderDashboard() {
+            const customers = await getAllData('customers');
+            const works = await getAllData('works');
+            const calls = await getAllData('calls');
+            const reminders = await getAllData('reminders');
+
+            document.getElementById('statCustomers').textContent = customers.length;
+            document.getElementById('statWorks').textContent = works.length;
+            const todayCalls = calls.filter(c => c.date === today());
+            document.getElementById('statTodayCalls').textContent = todayCalls.length;
+            const pendingFollowups = reminders.filter(r => r.status === 'pending' && r.date <= today());
+            document.getElementById('statPendingFollowups').textContent = pendingFollowups.length;
+
+            // Recent calls (last 5)
+            const recent = calls.slice(-5).reverse();
+            const recentHTML = recent.map(c => `
+                        <div class="list-item" onclick="navigateTo('calls')">
+                            <div class="call-type-icon ${c.type}"><span class="material-icons-round">${callTypeIcon(c.type)}</span></div>
+                            <div class="info"><div class="title">${c.name}</div>
+                                <div class="sub">${c.number} · ${formatTime(c.timestamp)} ${c.saved ? '⭐' : ''}</div></div>
+                            <div class="actions"><button onclick="event.stopPropagation();if(!c.saved)saveCallToCustomer('${c.id}')" title="${c.saved?'Saved':'Save'}">
+                                <span class="material-icons-round">${c.saved?'bookmark':'bookmark_border'}</span></button></div>
+                        </div>
+                    `).join('');
+            document.getElementById('recentCallsList').innerHTML = recent.length ? recentHTML :
+                '<div class="empty-state"><p>No recent calls</p></div>';
+
+            // Pending works
+            const pendingWorks = works.filter(w => w.status !== 'completed' && w.status !== 'cancelled');
+            const pendingHTML = pendingWorks.slice(0, 5).map(w => `
+                        <div class="list-item" onclick="navigateTo('works')">
+                            <div class="avatar gold">${getInitials(w.title)}</div>
+                            <div class="info"><div class="title">${truncate(w.title, 30)}</div>
+                                <div class="sub"><span class="status-badge ${getStatusColor(w.status)}">${w.status}</span>
+                                    ${w.priority === 'urgent' ? '🔴 Urgent' : ''}</div></div>
+                        </div>
+                    `).join('');
+            document.getElementById('pendingWorksList').innerHTML = pendingWorks.length ? pendingHTML :
+                '<div class="empty-state"><p>No pending works</p></div>';
+
+            // Today's reminders
+            const todayReminders = reminders.filter(r => r.date === today() && r.status === 'pending');
+            const remHTML = todayReminders.slice(0, 5).map(r => `
+                        <div class="list-item" onclick="navigateTo('reminders')">
+                            <div class="avatar"><span class="material-icons-round">notifications</span></div>
+                            <div class="info"><div class="title">${r.title}</div>
+                                <div class="sub">${formatDate(r.date)} at ${r.time} · ${r.type} ${r.priority === 'high' ? '🔥' : ''}</div></div>
+                        </div>
+                    `).join('');
+            document.getElementById('todayRemindersList').innerHTML = todayReminders.length ? remHTML :
+                '<div class="empty-state"><p>No reminders for today</p></div>';
+
+            // Update badges
+            document.getElementById('customerCountBadge').textContent = customers.length;
+            document.getElementById('callCountBadge').textContent = calls.length;
+            const pendingReminders = reminders.filter(r => r.status === 'pending' && r.date >= today());
+            document.getElementById('reminderCountBadge').textContent = pendingReminders.length;
+        }
+
+        // --- CUSTOMERS ---
+        async function renderCustomers(filter = 'all') {
+            const customers = await getAllData('customers');
+            let filtered = customers;
+            if (filter !== 'all') filtered = customers.filter(c => c.status === filter);
+
+            if (!filtered.length) {
+                document.getElementById('customerList').innerHTML =
+                    `<div class="empty-state"><span class="material-icons-round">people</span><h4>No customers found</h4><p>${filter !== 'all' ? 'Try a different filter.' : 'Add your first customer.'}</p></div>`;
+                return;
+            }
+
+            const html = filtered.map(c => `
+                        <div class="list-item" onclick="viewCustomer('${c.id}')">
+                            <div class="avatar ${c.status === 'vip' ? 'gold' : ''}">${getInitials(c.name)}</div>
+                            <div class="info"><div class="title">${c.name} ${c.status === 'vip' ? '⭐' : ''}</div>
+                                <div class="sub">${c.mobile} · ${c.type || 'Individual'} · <span class="status-badge ${getStatusColor(c.status)}">${c.status}</span>
+                                    <span class="stars">${starsHTML(c.rating || 3)}</span></div>
+                                <div class="sub" style="font-size:11px;color:var(--md-text-hint);">Balance: ₹${c.balance || 0}</div>
+                            </div>
+                            <div class="actions">
+                                <button onclick="event.stopPropagation();openCustomerModal(${JSON.stringify(c).replace(/"/g,'&quot;')})"><span class="material-icons-round">edit</span></button>
+                                <button onclick="event.stopPropagation();deleteCustomer('${c.id}')"><span class="material-icons-round">delete</span></button>
+                            </div>
+                        </div>
+                    `).join('');
+            document.getElementById('customerList').innerHTML = html;
+        }
+
+        async function viewCustomer(id) {
+            const c = await getData('customers', id);
+            if (!c) { showToast('Customer not found.', 'error'); return; }
+            // Show customer details in a modal
+            const body = `
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <h3 style="display:flex;align-items:center;gap:8px;">${c.name} ${c.status === 'vip' ? '⭐' : ''}
+                                <span class="status-badge ${getStatusColor(c.status)}">${c.status}</span></h3>
+                            <p><strong>Mobile:</strong> ${c.mobile} ${c.whatsapp ? '📱 WhatsApp: '+c.whatsapp : ''}</p>
+                            <p><strong>Email:</strong> ${c.email || '-'}</p>
+                            <p><strong>Type:</strong> ${c.type || 'Individual'}</p>
+                            <p><strong>Rating:</strong> ${starsHTML(c.rating || 3)}</p>
+                            <p><strong>Address:</strong> ${c.address || '-'} ${c.district ? ', '+c.district : ''} ${c.state ? ', '+c.state : ''} ${c.pincode ? '- '+c.pincode : ''}</p>
+                            <p><strong>Balance:</strong> ₹${c.balance || 0}</p>
+                            <p><strong>Notes:</strong> ${c.notes || '-'}</p>
+                            <p><small>Created: ${formatDateTime(c.createdAt)}</small></p>
+                            <hr style="margin:8px 0;border-color:var(--md-outline);"/>
+                            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                <button class="btn btn-primary btn-sm" onclick="closeModal();openCustomerModal(${JSON.stringify(c).replace(/"/g,'&quot;')})"><span class="material-icons-round">edit</span> Edit</button>
+                                <button class="btn btn-gold btn-sm" onclick="closeModal();navigateTo('calls');logCall('${c.mobile}','${c.name}','outgoing',0,true);showToast('Calling ${c.name}...','info')"><span class="material-icons-round">call</span> Call</button>
+                                <button class="btn btn-outline btn-sm" onclick="closeModal();navigateTo('works');openWorkModal({customerId:'${c.id}',title:'Work for ${c.name}'})"><span class="material-icons-round">assignment</span> Add Work</button>
+                            </div>
+                        </div>
+                    `;
+            openModal(`<span class="material-icons-round">person</span> Customer Profile`, body,
+                '<button class="btn btn-outline btn-sm" onclick="closeModal()">Close</button>', { type: 'view' });
+        }
+
+        async function deleteCustomer(id) {
+            if (!confirm('Delete this customer?')) return;
+            await deleteData('customers', id);
+            showToast('Customer deleted.', 'info');
+            refreshCurrentPage();
+        }
+
+        // --- CALLS ---
+        async function renderCalls(filter = 'all') {
+            const calls = await getAllData('calls');
+            let filtered = calls;
+            if (filter === 'incoming') filtered = calls.filter(c => c.type === 'incoming');
+            else if (filter === 'outgoing') filtered = calls.filter(c => c.type === 'outgoing');
+            else if (filter === 'missed') filtered = calls.filter(c => c.type === 'missed');
+            else if (filter === 'saved') filtered = calls.filter(c => c.saved === true);
+
+            // Sort by timestamp descending
+            filtered.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            if (!filtered.length) {
+                document.getElementById('callList').innerHTML =
+                    `<div class="empty-state"><span class="material-icons-round">phone</span><h4>No calls found</h4><p>${filter !== 'all' ? 'Try a different filter.' : 'Calls will appear here automatically.'}</p></div>`;
+                return;
+            }
+
+            const html = filtered.map(c => `
+                        <div class="list-item" onclick="viewCall('${c.id}')">
+                            <div class="call-type-icon ${c.type}"><span class="material-icons-round">${callTypeIcon(c.type)}</span></div>
+                            <div class="info"><div class="title">${c.name} ${c.saved ? '⭐' : ''}</div>
+                                <div class="sub">${c.number} · ${formatDateTime(c.timestamp)} · ${c.duration ? c.duration+'s' : ''}
+                                    ${c.saved ? '<span class="tag primary">Saved</span>' : '<span class="tag" style="background:#f0edf2;">New</span>'}</div>
+                            </div>
+                            <div class="actions">
+                                ${!c.saved ? `<button onclick="event.stopPropagation();saveCallToCustomer('${c.id}')" title="Save"><span class="material-icons-round">bookmark_border</span></button>` :
+                                `<button onclick="event.stopPropagation();" title="Saved"><span class="material-icons-round" style="color:var(--md-gold-dark);">bookmark</span></button>`}
+                                <button onclick="event.stopPropagation();window.location.href='tel:${c.number}'"><span class="material-icons-round">call</span></button>
+                                <button onclick="event.stopPropagation();deleteCall('${c.id}')"><span class="material-icons-round">delete</span></button>
+                            </div>
+                        </div>
+                    `).join('');
+            document.getElementById('callList').innerHTML = html;
+        }
+
+        async function viewCall(id) {
+            const c = await getData('calls', id);
+            if (!c) return;
+            const body = `
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <h3>${getCallTypeLabel(c.type)} Call</h3>
+                            <p><strong>Name:</strong> ${c.name}</p>
+                            <p><strong>Number:</strong> ${c.number}</p>
+                            <p><strong>Date:</strong> ${formatDateTime(c.timestamp)}</p>
+                            <p><strong>Duration:</strong> ${c.duration || 0}s</p>
+                            <p><strong>Saved:</strong> ${c.saved ? '✅ Yes' : '❌ No'}</p>
+                            ${c.note ? `<p><strong>Note:</strong> ${c.note}</p>` : ''}
+                            <hr style="margin:8px 0;border-color:var(--md-outline);"/>
+                            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                <button class="btn btn-primary btn-sm" onclick="closeModal();window.location.href='tel:${c.number}'"><span class="material-icons-round">call</span> Call</button>
+                                <button class="btn btn-gold btn-sm" onclick="closeModal();window.open('https://wa.me/${c.number.replace(/^0+/,'')}','_blank')"><span class="material-icons-round">chat</span> WhatsApp</button>
+                                ${!c.saved ? `<button class="btn btn-outline btn-sm" onclick="closeModal();saveCallToCustomer('${c.id}')"><span class="material-icons-round">bookmark</span> Save</button>` : ''}
+                            </div>
+                        </div>
+                    `;
+            openModal(`<span class="material-icons-round">phone</span> Call Details`, body,
+                '<button class="btn btn-outline btn-sm" onclick="closeModal()">Close</button>', { type: 'view' });
+        }
+
+        async function deleteCall(id) {
+            if (!confirm('Delete this call?')) return;
+            await deleteData('calls', id);
+            showToast('Call deleted.', 'info');
+            refreshCurrentPage();
+        }
+
+        // --- WORKS ---
+        async function renderWorks(filter = 'all') {
+            const works = await getAllData('works');
+            let filtered = works;
+            if (filter === 'pending') filtered = works.filter(w => w.status === 'pending' || w.status === 'new');
+            else if (filter === 'in-progress') filtered = works.filter(w => w.status === 'in-progress');
+            else if (filter === 'completed') filtered = works.filter(w => w.status === 'completed');
+            else if (filter === 'urgent') filtered = works.filter(w => w.priority === 'urgent');
+
+            if (!filtered.length) {
+                document.getElementById('workList').innerHTML =
+                    `<div class="empty-state"><span class="material-icons-round">assignment</span><h4>No works found</h4><p>${filter !== 'all' ? 'Try a different filter.' : 'Create your first work order.'}</p></div>`;
+                return;
+            }
+
+            const html = filtered.map(w => `
+                        <div class="list-item" onclick="viewWork('${w.id}')">
+                            <div class="avatar gold">${getInitials(w.title)}</div>
+                            <div class="info"><div class="title">${truncate(w.title, 32)}</div>
+                                <div class="sub"><span class="status-badge ${getStatusColor(w.status)}">${w.status}</span>
+                                    ${w.priority === 'urgent' ? '<span class="status-badge urgent">Urgent</span>' : ''}
+                                    ${w.category || ''} · ${w.progress || 0}%</div>
+                                <div class="sub" style="font-size:11px;color:var(--md-text-hint);">₹${w.budget || 0} · ${w.customerId ? 'Customer: '+w.customerId : ''}</div>
+                            </div>
+                            <div class="actions">
+                                <button onclick="event.stopPropagation();openWorkModal(${JSON.stringify(w).replace(/"/g,'&quot;')})"><span class="material-icons-round">edit</span></button>
+                                <button onclick="event.stopPropagation();deleteWork('${w.id}')"><span class="material-icons-round">delete</span></button>
+                            </div>
+                        </div>
+                    `).join('');
+            document.getElementById('workList').innerHTML = html;
+        }
+
+        async function viewWork(id) {
+            const w = await getData('works', id);
+            if (!w) return;
+            const body = `
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <h3>${w.title}</h3>
+                            <p><strong>Status:</strong> <span class="status-badge ${getStatusColor(w.status)}">${w.status}</span>
+                                ${w.priority === 'urgent' ? ' 🔴 Urgent' : ''}</p>
+                            <p><strong>Category:</strong> ${w.category || '-'} · <strong>Product:</strong> ${w.product || '-'}</p>
+                            <p><strong>Progress:</strong> ${w.progress || 0}%</p>
+                            <p><strong>Dates:</strong> ${w.startDate ? formatDate(w.startDate) : '-'} → ${w.endDate ? formatDate(w.endDate) : '-'}</p>
+                            <p><strong>Staff:</strong> ${w.staff || 'Unassigned'}</p>
+                            <p><strong>Budget:</strong> ₹${w.budget || 0} · <strong>Quotation:</strong> ₹${w.quotation || 0} · <strong>Advance:</strong> ₹${w.advance || 0}</p>
+                            <p><strong>Payment:</strong> <span class="status-badge ${getStatusColor(w.paymentStatus)}">${w.paymentStatus || 'not-paid'}</span></p>
+                            <p><strong>Description:</strong> ${w.description || '-'}</p>
+                            <hr style="margin:8px 0;border-color:var(--md-outline);"/>
+                            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                <button class="btn btn-primary btn-sm" onclick="closeModal();openWorkModal(${JSON.stringify(w).replace(/"/g,'&quot;')})"><span class="material-icons-round">edit</span> Edit</button>
+                                <button class="btn btn-gold btn-sm" onclick="closeModal();"><span class="material-icons-round">print</span> Print</button>
+                                <button class="btn btn-outline btn-sm" onclick="closeModal();"><span class="material-icons-round">payment</span> Payment</button>
+                            </div>
+                        </div>
+                    `;
+            openModal(`<span class="material-icons-round">assignment</span> Work Details`, body,
+                '<button class="btn btn-outline btn-sm" onclick="closeModal()">Close</button>', { type: 'view' });
+        }
+
+        async function deleteWork(id) {
+            if (!confirm('Delete this work?')) return;
+            await deleteData('works', id);
+            showToast('Work deleted.', 'info');
+            refreshCurrentPage();
+        }
+
+        // --- LEADS ---
+        async function renderLeads(filter = 'all') {
+            const leads = await getAllData('leads');
+            let filtered = leads;
+            if (filter !== 'all') filtered = leads.filter(l => l.stage === filter);
+
+            if (!filtered.length) {
+                document.getElementById('leadList').innerHTML =
+                    `<div class="empty-state"><span class="material-icons-round">trending_up</span><h4>No leads found</h4><p>${filter !== 'all' ? 'Try a different filter.' : 'Start tracking your sales pipeline.'}</p></div>`;
+                return;
+            }
+
+            const html = filtered.map(l => `
+                        <div class="list-item" onclick="viewLead('${l.id}')">
+                            <div class="avatar"><span class="material-icons-round">trending_up</span></div>
+                            <div class="info"><div class="title">${l.name}</div>
+                                <div class="sub">${l.mobile} · <span class="status-badge ${getStatusColor(l.stage)}">${l.stage}</span>
+                                    ₹${l.value || 0} · ${l.probability || 0}%</div>
+                                <div class="sub" style="font-size:11px;color:var(--md-text-hint);">${l.source || '-'} · ${l.nextAction || 'No next action'}</div>
+                            </div>
+                            <div class="actions">
+                                <button onclick="event.stopPropagation();openLeadModal(${JSON.stringify(l).replace(/"/g,'&quot;')})"><span class="material-icons-round">edit</span></button>
+                                <button onclick="event.stopPropagation();deleteLead('${l.id}')"><span class="material-icons-round">delete</span></button>
+                            </div>
+                        </div>
+                    `).join('');
+            document.getElementById('leadList').innerHTML = html;
+        }
+
+        async function viewLead(id) {
+            const l = await getData('leads', id);
+            if (!l) return;
+            const body = `
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <h3>${l.name}</h3>
+                            <p><strong>Mobile:</strong> ${l.mobile}</p>
+                            <p><strong>Stage:</strong> <span class="status-badge ${getStatusColor(l.stage)}">${l.stage}</span></p>
+                            <p><strong>Source:</strong> ${l.source || '-'}</p>
+                            <p><strong>Value:</strong> ₹${l.value || 0} · <strong>Probability:</strong> ${l.probability || 0}%</p>
+                            <p><strong>Next Action:</strong> ${l.nextAction || '-'}</p>
+                            <p><strong>Notes:</strong> ${l.notes || '-'}</p>
+                            <hr style="margin:8px 0;border-color:var(--md-outline);"/>
+                            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                <button class="btn btn-primary btn-sm" onclick="closeModal();openLeadModal(${JSON.stringify(l).replace(/"/g,'&quot;')})"><span class="material-icons-round">edit</span> Edit</button>
+                                <button class="btn btn-gold btn-sm" onclick="closeModal();window.location.href='tel:${l.mobile}'"><span class="material-icons-round">call</span> Call</button>
+                            </div>
+                        </div>
+                    `;
+            openModal(`<span class="material-icons-round">trending_up</span> Lead Details`, body,
+                '<button class="btn btn-outline btn-sm" onclick="closeModal()">Close</button>', { type: 'view' });
+        }
+
+        async function deleteLead(id) {
+            if (!confirm('Delete this lead?')) return;
+            await deleteData('leads', id);
+            showToast('Lead deleted.', 'info');
+            refreshCurrentPage();
+        }
+
+        // --- REMINDERS ---
+        async function renderReminders(filter = 'all') {
+            const reminders = await getAllData('reminders');
+            let filtered = reminders;
+            if (filter === 'today') filtered = reminders.filter(r => r.date === today());
+            else if (filter === 'pending') filtered = reminders.filter(r => r.status === 'pending');
+            else if (filter === 'overdue') filtered = reminders.filter(r => r.status === 'pending' && r.date < today());
+
+            filtered.sort((a, b) => a.date.localeCompare(b.date));
+
+            if (!filtered.length) {
+                document.getElementById('reminderList').innerHTML =
+                    `<div class="empty-state"><span class="material-icons-round">notifications</span><h4>No reminders found</h4><p>${filter !== 'all' ? 'Try a different filter.' : 'Set reminders to stay on track.'}</p></div>`;
+                return;
+            }
+
+            const html = filtered.map(r => `
+                        <div class="list-item" onclick="viewReminder('${r.id}')">
+                            <div class="avatar"><span class="material-icons-round">${r.type === 'call' ? 'phone' : r.type === 'payment' ? 'payments' : r.type === 'site-visit' ? 'place' : 'notifications'}</span></div>
+                            <div class="info"><div class="title">${r.title}</div>
+                                <div class="sub">${formatDate(r.date)} at ${r.time} · ${r.type}
+                                    ${r.priority === 'high' ? '🔥' : r.priority === 'medium' ? '⚡' : ''}
+                                    <span class="status-badge ${r.status === 'pending' ? 'pending' : 'completed'}">${r.status}</span></div>
+                            </div>
+                            <div class="actions">
+                                <button onclick="event.stopPropagation();openReminderModal(${JSON.stringify(r).replace(/"/g,'&quot;')})"><span class="material-icons-round">edit</span></button>
+                                <button onclick="event.stopPropagation();deleteReminder('${r.id}')"><span class="material-icons-round">delete</span></button>
+                            </div>
+                        </div>
+                    `).join('');
+            document.getElementById('reminderList').innerHTML = html;
+        }
+
+        async function viewReminder(id) {
+            const r = await getData('reminders', id);
+            if (!r) return;
+            const body = `
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <h3>${r.title}</h3>
+                            <p><strong>Date:</strong> ${formatDate(r.date)} at ${r.time}</p>
+                            <p><strong>Type:</strong> ${r.type} · <strong>Priority:</strong> ${r.priority}</p>
+                            <p><strong>Status:</strong> <span class="status-badge ${r.status === 'pending' ? 'pending' : 'completed'}">${r.status}</span></p>
+                            <p><strong>Related:</strong> ${r.relatedId || '-'}</p>
+                            <p><strong>Notes:</strong> ${r.notes || '-'}</p>
+                            <p><strong>Recurring:</strong> ${r.recurring ? 'Yes' : 'No'}</p>
+                            <hr style="margin:8px 0;border-color:var(--md-outline);"/>
+                            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                <button class="btn btn-primary btn-sm" onclick="closeModal();openReminderModal(${JSON.stringify(r).replace(/"/g,'&quot;')})"><span class="material-icons-round">edit</span> Edit</button>
+                                <button class="btn btn-gold btn-sm" onclick="closeModal();r.status='completed';storeData('reminders',r);refreshCurrentPage();showToast('Reminder completed!','success')"><span class="material-icons-round">check_circle</span> Complete</button>
+                            </div>
+                        </div>
+                    `;
+            openModal(`<span class="material-icons-round">notifications</span> Reminder Details`, body,
+                '<button class="btn btn-outline btn-sm" onclick="closeModal()">Close</button>', { type: 'view' });
+        }
+
+        async function deleteReminder(id) {
+            if (!confirm('Delete this reminder?')) return;
+            await deleteData('reminders', id);
+            showToast('Reminder deleted.', 'info');
+            refreshCurrentPage();
+        }
+
+        // --- TIMELINE ---
+        async function renderTimeline() {
+            const entries = await getAllData('timeline');
+            entries.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            if (!entries.length) {
+                document.getElementById('timelineContainer').innerHTML =
+                    `<div class="empty-state"><span class="material-icons-round">history</span><h4>No activity yet</h4><p>Actions will be recorded here automatically.</p></div>`;
+                return;
+            }
+
+            const html = entries.slice(0, 50).map(e => `
+                        <div class="timeline-item">
+                            <div class="time">${formatDateTime(e.timestamp)}</div>
+                            <div class="content"><strong>${e.type.charAt(0).toUpperCase()+e.type.slice(1)}</strong> — ${e.description}</div>
+                        </div>
+                    `).join('');
+            document.getElementById('timelineContainer').innerHTML =
+                `<div class="timeline">${html}</div>`;
+        }
+
+        // --- REPORTS ---
+        async function renderReports() {
+            const customers = await getAllData('customers');
+            const works = await getAllData('works');
+            const calls = await getAllData('calls');
+            const leads = await getAllData('leads');
+
+            document.getElementById('reportCustomers').innerHTML =
+                `<p>Total: <strong>${customers.length}</strong> · Active: ${customers.filter(c=>c.status==='active').length} · VIP: ${customers.filter(c=>c.status==='vip').length}</p>`;
+
+            const completedWorks = works.filter(w => w.status === 'completed');
+            const totalBudget = works.reduce((s, w) => s + (w.budget || 0), 0);
+            document.getElementById('reportWorks').innerHTML =
+                `<p>Total: <strong>${works.length}</strong> · Completed: ${completedWorks.length} · Budget: ₹${totalBudget.toLocaleString()}</p>`;
+
+            document.getElementById('reportCalls').innerHTML =
+                `<p>Total: <strong>${calls.length}</strong> · Incoming: ${calls.filter(c=>c.type==='incoming').length} · Saved: ${calls.filter(c=>c.saved).length}</p>`;
+
+            const totalLeadValue = leads.reduce((s, l) => s + (l.value || 0), 0);
+            document.getElementById('reportPayments').innerHTML =
+                `<p>Leads Value: ₹${totalLeadValue.toLocaleString()} · Works Quotation: ₹${works.reduce((s,w)=>s+(w.quotation||0),0).toLocaleString()}</p>`;
+        }
+
+        // ============================================================
+        // REFRESH
+        // ============================================================
+        async function refreshCurrentPage() {
+            const page = currentPage;
+            switch (page) {
+                case 'dashboard':
+                    await renderDashboard();
+                    break;
+                case 'customers':
+                    await renderCustomers(document.querySelector('#customerTabs .tab.active')?.dataset.filter || 'all');
+                    break;
+                case 'calls':
+                    await renderCalls(document.querySelector('#callTabs .tab.active')?.dataset.filter || 'all');
+                    break;
+                case 'works':
+                    await renderWorks(document.querySelector('#workTabs .tab.active')?.dataset.filter || 'all');
+                    break;
+                case 'leads':
+                    await renderLeads(document.querySelector('#leadTabs .tab.active')?.dataset.filter || 'all');
+                    break;
+                case 'reminders':
+                    await renderReminders(document.querySelector('#reminderTabs .tab.active')?.dataset.filter || 'all');
+                    break;
+                case 'timeline':
+                    await renderTimeline();
+                    break;
+                case 'reports':
+                    await renderReports();
+                    break;
+                case 'settings':
+                    // nothing to refresh
+                    break;
+            }
+        }
+
+        // ============================================================
+        // TAB HANDLING
+        // ============================================================
+        document.querySelectorAll('.tabs').forEach(tabGroup => {
+            tabGroup.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabGroup.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    refreshCurrentPage();
+                });
+            });
+        });
+
+        // ============================================================
+        // QUICK ADD
+        // ============================================================
+        function openQuickAdd() {
+            const body = `
+                        <div style="display:flex;flex-direction:column;gap:10px;">
+                            <button class="btn btn-primary btn-block" onclick="closeModal();openCustomerModal()"><span class="material-icons-round">person_add</span> New Customer</button>
+                            <button class="btn btn-gold btn-block" onclick="closeModal();openWorkModal()"><span class="material-icons-round">assignment</span> New Work</button>
+                            <button class="btn btn-outline btn-block" onclick="closeModal();openLeadModal()"><span class="material-icons-round">trending_up</span> New Lead</button>
+                            <button class="btn btn-danger btn-block" onclick="closeModal();openReminderModal()"><span class="material-icons-round">notifications</span> New Reminder</button>
+                            <button class="btn btn-outline btn-block" style="border-color:var(--md-gold-dark);color:var(--md-gold-dark);" onclick="closeModal();logCall('','New Call','incoming',0,false);showToast('Call logged.','info');refreshCurrentPage()"><span class="material-icons-round">phone</span> Log Call</button>
+                        </div>
+                    `;
+            openModal('<span class="material-icons-round">add_circle</span> Quick Add', body,
+                '<button class="btn btn-outline btn-sm" onclick="closeModal()">Cancel</button>', { type: 'quick' });
+        }
+
+        document.getElementById('addQuickBtn').addEventListener('click', openQuickAdd);
+
+        // ============================================================
+        // GLOBAL SEARCH
+        // ============================================================
+        document.getElementById('globalSearch').addEventListener('input', async (e) => {
+            const q = e.target.value.trim().toLowerCase();
+            if (!q) { refreshCurrentPage(); return; }
+
+            const customers = await getAllData('customers');
+            const works = await getAllData('works');
+            const leads = await getAllData('leads');
+
+            const results = [];
+
+            customers.forEach(c => {
+                if (c.name.toLowerCase().includes(q) || c.mobile.includes(q) || (c.email && c.email.toLowerCase()
+                        .includes(q))) {
+                    results.push({ type: 'Customer', name: c.name, id: c.id, sub: c.mobile });
+                }
+            });
+            works.forEach(w => {
+                if (w.title.toLowerCase().includes(q) || (w.customerId && w.customerId.includes(q))) {
+                    results.push({ type: 'Work', name: w.title, id: w.id, sub: w.status });
+                }
+            });
+            leads.forEach(l => {
+                if (l.name.toLowerCase().includes(q) || l.mobile.includes(q)) {
+                    results.push({ type: 'Lead', name: l.name, id: l.id, sub: l.stage });
+                }
+            });
+
+            if (!results.length) {
+                showToast('No results found.', 'info');
+                return;
+            }
+
+            const html = results.slice(0, 10).map(r => `
+                        <div class="list-item" onclick="navigateTo('${r.type.toLowerCase()}s')">
+                            <div class="avatar">${getInitials(r.name)}</div>
+                            <div class="info"><div class="title">${r.name}</div>
+                                <div class="sub">${r.type} · ${r.sub}</div></div>
+                        </div>
+                    `).join('');
+
+            // Show in a modal
+            openModal('<span class="material-icons-round">search</span> Search Results', html,
+                '<button class="btn btn-outline btn-sm" onclick="closeModal()">Close</button>', { type: 'search' });
+        });
+
+        // ============================================================
+        // SETTINGS
+        // ============================================================
+        document.getElementById('themeSelect').addEventListener('change', (e) => {
+            const theme = e.target.value;
+            if (theme === 'dark') {
+                document.documentElement.style.setProperty('--md-surface', '#1E1E1E');
+                document.documentElement.style.setProperty('--md-text', '#E0E0E0');
+                document.documentElement.style.setProperty('--md-text-secondary', '#B0B0B0');
+                document.documentElement.style.setProperty('--md-text-hint', '#888');
+                document.documentElement.style.setProperty('--md-outline', '#333');
+                document.documentElement.style.setProperty('--md-purple-bg', '#2A1B3A');
+                document.body.style.background = '#121212';
+                document.querySelector('.main-content').style.background = '#121212';
+            } else {
+                document.documentElement.style.setProperty('--md-surface', '#FFFFFF');
+                document.documentElement.style.setProperty('--md-text', '#1C1B1F');
+                document.documentElement.style.setProperty('--md-text-secondary', '#49454F');
+                document.documentElement.style.setProperty('--md-text-hint', '#79747E');
+                document.documentElement.style.setProperty('--md-outline', '#CAC4D0');
+                document.documentElement.style.setProperty('--md-purple-bg', '#F3E5F5');
+                document.body.style.background = '#F8F5FA';
+                document.querySelector('.main-content').style.background = '#F8F5FA';
+            }
+        });
+
+        // ============================================================
+        // CLEAR ALL DATA
+        // ============================================================
+        async function clearAllData() {
+            if (!confirm('⚠️ This will permanently delete ALL data. Are you sure?')) return;
+            const stores = ['customers', 'calls', 'works', 'leads', 'reminders', 'timeline'];
+            for (const s of stores) {
+                const data = await getAllData(s);
+                for (const item of data) {
+                    await deleteData(s, item.id);
+                }
+            }
+            showToast('All data cleared.', 'info');
+            refreshCurrentPage();
+        }
+
+        // ============================================================
+        // DEMO DATA — seed with sample data
+        // ============================================================
+        async function seedDemoData() {
+            const existing = await getAllData('customers');
+            if (existing.length > 0) return;
+
+            const sampleCustomers = [
+                { id: 'CUST_1', name: 'Rajesh Construction', mobile: '9876543210', type: 'Contractor', status: 'active',
+                    rating: 4, balance: 15000, district: 'Mumbai', state: 'Maharashtra', pincode: '400001',
+                    createdAt: now(), updatedAt: now() },
+                { id: 'CUST_2', name: 'Priya Interiors', mobile: '9876543211', type: 'Interior Designer',
+                    status: 'vip', rating: 5, balance: 0, district: 'Pune', state: 'Maharashtra', pincode: '411001',
+                    createdAt: now(), updatedAt: now() },
+                { id: 'CUST_3', name: 'Suresh Builders', mobile: '9876543212', type: 'Builder', status: 'active',
+                    rating: 3, balance: 45000, district: 'Delhi', state: 'Delhi', pincode: '110001', createdAt: now(),
+                    updatedAt: now() },
+            ];
+
+            for (const c of sampleCustomers) {
+                await storeData('customers', c);
+                await addTimeline(c.id, 'customer', `Customer created: ${c.name}`, c);
+            }
+
+            const sampleWorks = [
+                { id: 'WK_1', title: 'Waterproofing - Tower A', category: 'Waterproofing', status: 'in-progress',
+                    priority: 'high', progress: 60, budget: 250000, quotation: 280000, advance: 50000,
+                    paymentStatus: 'partial', customerId: 'CUST_1', staff: 'Amit, Rahul', createdAt: now(),
+                    updatedAt: now() },
+                { id: 'WK_2', title: 'Epoxy Flooring - Office', category: 'Epoxy Flooring', status: 'pending',
+                    priority: 'medium', progress: 0, budget: 120000, quotation: 135000, advance: 0,
+                    paymentStatus: 'not-paid', customerId: 'CUST_2', staff: 'Vikram', createdAt: now(),
+                    updatedAt: now() },
+            ];
+
+            for (const w of sampleWorks) {
+                await storeData('works', w);
+                await addTimeline(w.id, 'work', `Work created: ${w.title}`, w);
+            }
+
+            const sampleCalls = [
+                { id: 'CL_1', number: '9876543210', name: 'Rajesh Construction', type: 'incoming', duration: 120,
+                    date: today(), time: '10:30', timestamp: now(), saved: true, customerId: 'CUST_1',
+                createdAt: now() },
+                { id: 'CL_2', number: '9876543211', name: 'Priya Interiors', type: 'outgoing', duration: 45,
+                    date: today(), time: '11:15', timestamp: now(), saved: true, customerId: 'CUST_2',
+                    createdAt: now() },
+                { id: 'CL_3', number: '9876543213', name: 'Unknown', type: 'missed', duration: 0, date: today(),
+                    time: '09:00', timestamp: now(), saved: false, createdAt: now() },
+            ];
+
+            for (const c of sampleCalls) {
+                await storeData('calls', c);
+                await addTimeline(c.id, 'call', `${getCallTypeLabel(c.type)} call from ${c.name}`, c);
+            }
+
+            const sampleReminders = [
+                { id: 'RM_1', title: 'Site Visit - Tower A', date: today(), time: '14:00', type: 'site-visit',
+                    priority: 'high', relatedId: 'WK_1', status: 'pending', createdAt: now(), updatedAt: now() },
+                { id: 'RM_2', title: 'Payment Follow-up - Suresh', date: today(), time: '16:30', type: 'payment',
+                    priority: 'medium', relatedId: 'CUST_3', status: 'pending', createdAt: now(), updatedAt: now() },
+            ];
+
+            for (const r of sampleReminders) {
+                await storeData('reminders', r);
+                await addTimeline(r.id, 'reminder', `Reminder created: ${r.title}`, r);
+            }
+
+            const sampleLeads = [
+                { id: 'LD_1', name: 'Green Valley Project', mobile: '9876543215', source: 'referral',
+                    stage: 'negotiation', value: 750000, probability: 70, nextAction: 'Send revised quotation',
+                    createdAt: now(), updatedAt: now() },
+                { id: 'LD_2', name: 'Sunrise Residency', mobile: '9876543216', source: 'google', stage: 'new',
+                    value: 450000, probability: 30, nextAction: 'Schedule site visit', createdAt: now(),
+                    updatedAt: now() },
+            ];
+
+            for (const l of sampleLeads) {
+                await storeData('leads', l);
+                await addTimeline(l.id, 'lead', `Lead created: ${l.name}`, l);
+            }
+
+            showToast('Demo data loaded successfully!', 'success');
+            refreshCurrentPage();
+        }
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        async function init() {
+            await openDB();
+            await seedDemoData();
+            await refreshCurrentPage();
+
+            // Update storage size periodically
+            updateStorageSize();
+            setInterval(updateStorageSize, 30000);
+
+            // Simulate incoming call (for demo)
+            // Uncomment to test: setTimeout(() => { logCall('9876543217', 'Demo Caller', 'incoming', 0, false); }, 3000);
+
+            console.log('🚀 H4 ERP initialized.');
+        }
+
+        async function updateStorageSize() {
+            try {
+                const estimate = await navigator.storage?.estimate?.();
+                if (estimate) {
+                    const size = (estimate.usage / 1024).toFixed(1);
+                    document.getElementById('storageSize').textContent = size + ' KB';
+                }
+            } catch (_) {}
+        }
+
+        // Start the app
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
