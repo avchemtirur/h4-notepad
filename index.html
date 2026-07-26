@@ -2575,7 +2575,7 @@
         window.closeSheet = closeSheet;
         window.playAlarm = playAlarm;
         window.stopAlarm = stopAlarm;
-// ============================================================
+// // ============================================================
 // KEYBOARD HANDLING (FIXED)
 // ============================================================
 (function () {
@@ -2587,9 +2587,7 @@
     function updateLayout() {
 
         const vv = window.visualViewport;
-
-        const keyboardHeight =
-            Math.max(0, window.innerHeight - vv.height);
+        const keyboardHeight = Math.max(0, window.innerHeight - vv.height);
 
         document.documentElement.style.setProperty(
             "--keyboard-offset",
@@ -2597,20 +2595,13 @@
         );
 
         if (overlay && overlay.classList.contains("open")) {
-
             overlay.style.paddingBottom =
-                (window.innerWidth <= 480 ? 70 : 60) +
-                keyboardHeight + "px";
-
+                (window.innerWidth <= 480 ? 70 : 60) + keyboardHeight + "px";
         } else if (overlay) {
-
             overlay.style.paddingBottom = "";
-
         }
 
-        // Keyboard closed → reset
         if (keyboardHeight < 20) {
-
             document.documentElement.style.setProperty(
                 "--keyboard-offset",
                 "0px"
@@ -2619,10 +2610,10 @@
             if (overlay) {
                 overlay.style.paddingBottom = "";
             }
-
         }
-
     }
+
+    window.updateLayout = updateLayout;
 
     window.visualViewport.addEventListener("resize", updateLayout);
     window.addEventListener("resize", updateLayout);
