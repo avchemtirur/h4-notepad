@@ -1309,6 +1309,53 @@
         .alarm-active-indicator.show {
             display: block;
         }
+/* ============================================================
+   MOBILE LAYOUT FIXES (appended)
+   ============================================================ */
+
+/* Move bottom sheet 60px higher by default */
+.bottom-sheet-overlay.open {
+    padding-bottom: 60px;
+}
+
+/* On smaller screens, give a bit more room */
+@media (max-width: 480px) {
+    .bottom-sheet-overlay.open {
+        padding-bottom: 70px;
+    }
+}
+
+/* Dynamic offset for keyboard – controlled via JS variable */
+:root {
+    --keyboard-offset: 0px;
+}
+
+/* Give extra padding to bottom nav and note list to avoid keyboard overlap */
+.bottom-nav {
+    padding-bottom: calc(4px + env(safe-area-inset-bottom) + var(--keyboard-offset, 0px));
+}
+
+.note-list-container {
+    padding-bottom: calc(100px + var(--keyboard-offset, 0px));
+}
+
+/* Ensure the FAB button stays above the keyboard */
+.nav-fab .fab-btn {
+    /* already positioned, but we keep it as is */
+}
+
+/* When sheet is open, push the sheet higher if keyboard is active */
+.bottom-sheet-overlay.open .bottom-sheet {
+    /* the overlay padding already handles the shift */
+}
+
+/* Keep the bottom nav sticky and visible */
+.bottom-nav {
+    position: sticky;
+    bottom: 0;
+    z-index: 40;
+    background: var(--md-surface);
+}
     </style>
 </head>
 <body>
@@ -2513,6 +2560,73 @@
         window.closeSheet = closeSheet;
         window.playAlarm = playAlarm;
         window.stopAlarm = stopAlarm;
+// ============================================================
+// KEYBOARD HANDLING (appended)
+// ============================================================
+(function() {
+    // Use VisualViewport API to detect keyboard height
+    if (window.visualViewport) {
+        let lastKeyboardHeight = 0;
+
+        function updateLayout() {
+            const viewport = window.visualViewport;
+            if (!viewport) return;
+
+            const windowHeight = window.innerHeight;
+            const keyboardHeight = Math.max(0, windowHeight - viewport.height);
+
+            // Store the offset as a CSS variable for other elements to use
+            document.documentElement.style.setProperty('--keyboard-offset', keyboardHeight + 'px');
+
+            // Adjust bottom sheet overlay padding if it's open
+            const overlay = document.getElementById('sheetOverlay');
+            if (overlay) {
+                // Base offset is 60px (or 70px on small screens) – we add the keyboard height
+                const baseOffset = window.innerWidth <= 480 ? 70 : 60;
+                if (overlay.classList.contains('open')) {
+                    overlay.style.paddingBottom = (baseOffset + keyboardHeight) + 'px';
+                } else {
+                    // Reset to base when closed (will be set by CSS default)
+                    overlay.style.paddingBottom = '';
+                }
+            }
+
+            // Update bottom nav padding – already uses --keyboard-offset
+            // Note: the CSS uses the variable, so we just need to set it.
+            lastKeyboardHeight = keyboardHeight;
+        }
+
+        // Listen to viewport resize events (keyboard open/close)
+        window.visualViewport.addEventListener('resize', updateLayout);
+
+        // Also listen to orientation change
+        window.addEventListener('orientationchange', function() {
+            setTimeout(updateLayout, 300);
+        });
+
+        // Initial update
+        updateLayout();
+
+        // Override the sheet open/close to re-calc padding when toggled
+        // We'll hook into the existing open/close functions by patching them.
+        // But to keep it non-intrusive, we can observe class changes on the overlay.
+        const overlay = document.getElementById('sheetOverlay');
+        if (overlay) {
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.attributeName === 'class') {
+                        // Re-run update when class changes (open/close)
+                        updateLayout();
+                    }
+                });
+            });
+            observer.observe(overlay, { attributes: true });
+        }
+
+        // Also re-run on window resize (safe fallback)
+        window.addEventListener('resize', updateLayout);
+    }
+})();
     </script>
 </body>
 </html>
