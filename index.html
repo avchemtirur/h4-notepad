@@ -2572,8 +2572,11 @@
             const viewport = window.visualViewport;
             if (!viewport) return;
 
-            const windowHeight = window.innerHeight;
-            const keyboardHeight = Math.max(0, windowHeight - viewport.height);
+            const keyboardHeight = Math.max(
+    0,
+    (window.visualViewport.height + window.visualViewport.offsetTop) -
+    window.visualViewport.height
+);
 
             // Store the offset as a CSS variable for other elements to use
             document.documentElement.style.setProperty('--keyboard-offset', keyboardHeight + 'px');
