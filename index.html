@@ -574,7 +574,14 @@
             border-top: 1px solid var(--md-outline);
             padding: 4px 8px calc(4px + var(--safe-bottom));
             flex-shrink: 0;
-            position: sticky;
+            .bottom-nav{
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-width: 480px;
+    margin: auto;
+}
             bottom: 0;
             z-index: 40;
             justify-content: space-around;
