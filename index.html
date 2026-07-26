@@ -36,6 +36,7 @@
             --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             --bg-body: #F8F5FA;
             --safe-bottom: env(safe-area-inset-bottom, 0px);
+            --keyboard-height: 0px;
         }
 
         * {
@@ -56,6 +57,7 @@
             flex-direction: column;
             user-select: none;
             -webkit-font-smoothing: antialiased;
+            position: relative;
         }
 
         /* ============================================================
@@ -669,6 +671,7 @@
             animation: slideUp 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
             box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.15);
+            position: relative;
         }
         .bottom-sheet .sheet-handle {
             width: 40px;
@@ -735,6 +738,7 @@
             overflow-y: auto;
             padding: 8px 20px 8px 20px;
             -webkit-overflow-scrolling: touch;
+            padding-bottom: 20px;
         }
 
         .bottom-sheet .sheet-footer {
@@ -891,7 +895,7 @@
         }
 
         /* ============================================================
-           NOTIFICATION TOAST
+           TOAST
         ============================================================ */
         .toast-container {
             position: fixed;
@@ -944,111 +948,190 @@
         }
 
         /* ============================================================
-           REMINDER NOTIFICATION (in-app)
+           REMINDER NOTIFICATION — IMPROVED
         ============================================================ */
         .reminder-notification {
             position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             z-index: 150;
-            width: 92%;
-            max-width: 440px;
-            background: var(--md-surface);
-            border-radius: var(--md-radius);
-            box-shadow: var(--md-shadow-heavy);
-            padding: 16px 18px;
-            border-left: 5px solid var(--md-gold-dark);
-            animation: slideDown 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.35s ease;
+            padding: 20px;
         }
         .reminder-notification.show {
-            display: block;
+            display: flex;
         }
-        .reminder-notification .notif-header {
+
+        .reminder-notification .notif-card {
+            background: var(--md-surface);
+            border-radius: var(--md-radius);
+            max-width: 420px;
+            width: 100%;
+            box-shadow: var(--md-shadow-heavy);
+            overflow: hidden;
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 6px solid var(--md-gold-dark);
+        }
+
+        .reminder-notification .notif-card .notif-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 6px;
+            gap: 12px;
+            padding: 16px 18px 8px 18px;
+            background: var(--md-gold-light);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
         }
-        .reminder-notification .notif-header .material-icons-round {
+        .reminder-notification .notif-card .notif-header .material-icons-round {
             color: var(--md-gold-dark);
-            font-size: 26px;
+            font-size: 28px;
+            animation: pulse 1.2s ease-in-out infinite;
         }
-        .reminder-notification .notif-header h4 {
-            font-size: 15px;
-            font-weight: 600;
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.15);
+            }
+        }
+        .reminder-notification .notif-card .notif-header h4 {
+            font-size: 17px;
+            font-weight: 700;
             flex: 1;
+            color: var(--md-text);
         }
-        .reminder-notification .notif-header .close-notif {
+        .reminder-notification .notif-card .notif-header .close-notif {
             background: none;
             border: none;
             color: var(--md-text-hint);
             cursor: pointer;
-            padding: 4px;
+            padding: 6px;
+            border-radius: 50%;
+            transition: background var(--md-transition);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .reminder-notification .notif-body {
-            font-size: 14px;
+        .reminder-notification .notif-card .notif-header .close-notif:hover {
+            background: var(--md-purple-bg);
+        }
+        .reminder-notification .notif-card .notif-header .close-notif .material-icons-round {
+            font-size: 22px;
+            animation: none;
+        }
+
+        .reminder-notification .notif-card .notif-body {
+            padding: 14px 18px 12px 18px;
+            font-size: 15px;
             color: var(--md-text-secondary);
-            margin-bottom: 8px;
+            line-height: 1.6;
         }
-        .reminder-notification .notif-body .notif-name {
+        .reminder-notification .notif-card .notif-body .notif-name {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--md-text);
+        }
+        .reminder-notification .notif-card .notif-body .notif-mobile {
             font-weight: 600;
             color: var(--md-text);
         }
-        .reminder-notification .notif-body .notif-mobile {
+        .reminder-notification .notif-card .notif-body .notif-detail-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+        .reminder-notification .notif-card .notif-body .notif-detail-row .label {
+            font-weight: 500;
             color: var(--md-text);
         }
-        .reminder-notification .notif-actions {
+        .reminder-notification .notif-card .notif-body .notif-detail-row .product-badge {
+            background: var(--md-purple-bg);
+            color: var(--md-purple);
+            padding: 0 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .reminder-notification .notif-card .notif-body .notif-detail-row .location-badge {
+            background: var(--md-gold-light);
+            color: var(--md-gold-dark);
+            padding: 0 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .reminder-notification .notif-card .notif-body .notif-note {
+            margin-top: 8px;
+            padding: 10px 12px;
+            background: var(--md-surface-dim);
+            border-radius: var(--md-radius-sm);
+            font-size: 14px;
+            color: var(--md-text-secondary);
+            border-left: 3px solid var(--md-purple-light);
+        }
+
+        .reminder-notification .notif-card .notif-actions {
             display: flex;
             gap: 8px;
+            padding: 10px 18px 16px 18px;
             flex-wrap: wrap;
-            margin-top: 6px;
+            border-top: 1px solid rgba(0, 0, 0, 0.04);
+            justify-content: center;
         }
-        .reminder-notification .notif-actions button {
-            padding: 8px 18px;
+        .reminder-notification .notif-card .notif-actions button {
+            padding: 10px 20px;
             border: none;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
             font-family: var(--font);
             cursor: pointer;
             transition: all var(--md-transition);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            flex: 1;
+            min-width: 80px;
+            justify-content: center;
         }
-        .reminder-notification .notif-actions .notif-call {
+        .reminder-notification .notif-card .notif-actions button .material-icons-round {
+            font-size: 20px;
+        }
+        .reminder-notification .notif-card .notif-actions .notif-call {
             background: #2E7D32;
             color: #fff;
         }
-        .reminder-notification .notif-actions .notif-call:hover {
+        .reminder-notification .notif-card .notif-actions .notif-call:hover {
             background: #1B5E20;
+            transform: translateY(-1px);
         }
-        .reminder-notification .notif-actions .notif-done {
+        .reminder-notification .notif-card .notif-actions .notif-done {
             background: var(--md-purple);
             color: #fff;
         }
-        .reminder-notification .notif-actions .notif-done:hover {
+        .reminder-notification .notif-card .notif-actions .notif-done:hover {
             background: var(--md-purple-dark);
+            transform: translateY(-1px);
         }
-        .reminder-notification .notif-actions .notif-snooze {
+        .reminder-notification .notif-card .notif-actions .notif-snooze {
             background: var(--md-surface-dim);
             color: var(--md-text-secondary);
         }
-        .reminder-notification .notif-actions .notif-snooze:hover {
+        .reminder-notification .notif-card .notif-actions .notif-snooze:hover {
             background: var(--md-outline);
-        }
-
-        @keyframes slideDown {
-            from {
-                transform: translateX(-50%) translateY(-30px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(-50%) translateY(0);
-                opacity: 1;
-            }
+            transform: translateY(-1px);
         }
 
         /* ============================================================
@@ -1065,6 +1148,16 @@
         @keyframes slideUp {
             from {
                 transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideDown {
+            from {
+                transform: translateY(-30px);
                 opacity: 0;
             }
             to {
@@ -1096,6 +1189,11 @@
             .note-card .card-top .info .name-row .name {
                 font-size: 14px;
             }
+            .reminder-notification .notif-card .notif-actions button {
+                font-size: 13px;
+                padding: 10px 14px;
+                min-width: 60px;
+            }
         }
         @media (max-width: 380px) {
             .topbar .brand h1 {
@@ -1118,6 +1216,13 @@
             }
             .step .form-row {
                 grid-template-columns: 1fr;
+            }
+            .reminder-notification .notif-card .notif-actions {
+                flex-direction: column;
+            }
+            .reminder-notification .notif-card .notif-actions button {
+                flex: none;
+                width: 100%;
             }
         }
 
@@ -1172,6 +1277,37 @@
         .note-list-container::-webkit-scrollbar-thumb {
             background: var(--md-purple-light);
             border-radius: 4px;
+        }
+
+        /* ============================================================
+           KEYBOARD SAFE AREA (for bottom sheet)
+        ============================================================ */
+        .bottom-sheet .sheet-body {
+            padding-bottom: 20px;
+        }
+
+        /* Ensure the bottom nav and FAB stay above keyboard */
+        .bottom-nav {
+            position: relative;
+            z-index: 40;
+        }
+
+        /* Alarm indicator pulse */
+        .alarm-active-indicator {
+            display: none;
+            position: fixed;
+            top: 60px;
+            right: 16px;
+            width: 12px;
+            height: 12px;
+            background: #E53935;
+            border-radius: 50%;
+            z-index: 50;
+            animation: pulse 0.8s ease-in-out infinite;
+            box-shadow: 0 0 16px rgba(229, 57, 53, 0.5);
+        }
+        .alarm-active-indicator.show {
+            display: block;
         }
     </style>
 </head>
@@ -1413,27 +1549,42 @@
     </div>
 
     <!-- ============================================================
-    REMINDER NOTIFICATION
+    REMINDER NOTIFICATION — IMPROVED
     ============================================================ -->
     <div class="reminder-notification" id="reminderNotif">
-        <div class="notif-header">
-            <span class="material-icons-round">notifications_active</span>
-            <h4>⏰ Reminder</h4>
-            <button class="close-notif" id="closeNotif">
-                <span class="material-icons-round">close</span>
-            </button>
-        </div>
-        <div class="notif-body" id="notifBody">
-            <span class="notif-name" id="notifName">Name</span> · <span class="notif-mobile" id="notifMobile">Phone</span>
-            <br />
-            <span id="notifProduct">Product</span> · <span id="notifNote">Note</span>
-        </div>
-        <div class="notif-actions">
-            <button class="notif-call" id="notifCallBtn"><span class="material-icons-round">call</span> Call</button>
-            <button class="notif-done" id="notifDoneBtn"><span class="material-icons-round">check</span> Done</button>
-            <button class="notif-snooze" id="notifSnoozeBtn"><span class="material-icons-round">snooze</span> Snooze</button>
+        <div class="notif-card">
+            <div class="notif-header">
+                <span class="material-icons-round">notifications_active</span>
+                <h4>⏰ Reminder</h4>
+                <button class="close-notif" id="closeNotif">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+            <div class="notif-body" id="notifBody">
+                <div><span class="notif-name" id="notifName">Name</span> · <span class="notif-mobile" id="notifMobile">Phone</span></div>
+                <div class="notif-detail-row">
+                    <span class="product-badge" id="notifProduct">Product</span>
+                    <span class="location-badge" id="notifLocation">Location</span>
+                </div>
+                <div class="notif-note" id="notifNote">Note</div>
+            </div>
+            <div class="notif-actions">
+                <button class="notif-call" id="notifCallBtn"><span class="material-icons-round">call</span> Call</button>
+                <button class="notif-done" id="notifDoneBtn"><span class="material-icons-round">check</span> Done</button>
+                <button class="notif-snooze" id="notifSnoozeBtn"><span class="material-icons-round">snooze</span> Snooze</button>
+            </div>
         </div>
     </div>
+
+    <!-- ============================================================
+    ALARM INDICATOR
+    ============================================================ -->
+    <div class="alarm-active-indicator" id="alarmIndicator"></div>
+
+    <!-- ============================================================
+    HIDDEN AUDIO ELEMENT FOR ALARM
+    ============================================================ -->
+    <audio id="alarmAudio" src="alarm.mp3" loop preload="auto" style="display:none;"></audio>
 
     <!-- ============================================================
     TOAST CONTAINER
@@ -1578,6 +1729,102 @@
                 toast.style.transform = 'translateY(10px)';
                 setTimeout(() => toast.remove(), 300);
             }, 2800);
+        }
+
+        // ============================================================
+        // ALARM SYSTEM (NEW)
+        // ============================================================
+        let alarmAudio = null;
+        let alarmActive = false;
+        let alarmVibrationInterval = null;
+
+        function initAlarm() {
+            alarmAudio = document.getElementById('alarmAudio');
+            if (!alarmAudio) {
+                alarmAudio = new Audio('alarm.mp3');
+                alarmAudio.loop = true;
+                alarmAudio.preload = 'auto';
+                document.body.appendChild(alarmAudio);
+            }
+        }
+
+        function playAlarm() {
+            if (alarmActive) return;
+            alarmActive = true;
+            try {
+                if (alarmAudio) {
+                    alarmAudio.currentTime = 0;
+                    alarmAudio.play().catch(e => console.warn('Alarm play failed:', e));
+                }
+            } catch (e) { console.warn('Alarm error:', e); }
+
+            // Show alarm indicator
+            document.getElementById('alarmIndicator').classList.add('show');
+
+            // Vibration
+            if (navigator.vibrate) {
+                // Vibrate in a pattern: long, short, long, short...
+                let pattern = [500, 300, 500, 300, 500];
+                navigator.vibrate(pattern);
+                // Keep vibrating in intervals
+                if (alarmVibrationInterval) clearInterval(alarmVibrationInterval);
+                alarmVibrationInterval = setInterval(() => {
+                    if (alarmActive && navigator.vibrate) {
+                        navigator.vibrate([500, 300, 500]);
+                    } else {
+                        clearInterval(alarmVibrationInterval);
+                        alarmVibrationInterval = null;
+                    }
+                }, 3000);
+            }
+
+            // Request notification permission if not granted
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+
+            // Show browser notification
+            showBrowserNotification();
+        }
+
+        function stopAlarm() {
+            alarmActive = false;
+            try {
+                if (alarmAudio) {
+                    alarmAudio.pause();
+                    alarmAudio.currentTime = 0;
+                }
+            } catch (e) { /* ignore */ }
+
+            document.getElementById('alarmIndicator').classList.remove('show');
+
+            if (alarmVibrationInterval) {
+                clearInterval(alarmVibrationInterval);
+                alarmVibrationInterval = null;
+            }
+            if (navigator.vibrate) {
+                navigator.vibrate(0);
+            }
+        }
+
+        function showBrowserNotification() {
+            if (!('Notification' in window)) return;
+            if (Notification.permission === 'granted') {
+                const notifName = document.getElementById('notifName')?.textContent || 'Reminder';
+                const notifMobile = document.getElementById('notifMobile')?.textContent || '';
+                const notifProduct = document.getElementById('notifProduct')?.textContent || '';
+                const notifNote = document.getElementById('notifNote')?.textContent || '';
+                try {
+                    const notification = new Notification('⏰ H4 Smart Notepad Reminder', {
+                        body: `${notifName} · ${notifMobile}\n${notifProduct}\n${notifNote}`,
+                        icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"%3E%3Crect width="64" height="64" rx="16" fill="%236A1B9A"/%3E%3Ctext x="32" y="40" font-size="28" text-anchor="middle" fill="%23FFD700" font-family="sans-serif" font-weight="bold"%3EH4%3C/text%3E%3C/svg%3E',
+                        tag: 'h4-reminder',
+                        requireInteraction: true,
+                        vibrate: [200, 100, 200, 100, 200]
+                    });
+                    setTimeout(() => notification.close(), 30000);
+                } catch (e) { /* ignore */ }
+            }
         }
 
         // ============================================================
@@ -1887,6 +2134,13 @@
                 note.status = 'completed';
                 note.updatedAt = now();
                 await storeNote(note);
+                // Stop alarm if this note was triggering it
+                if (alarmActive) {
+                    const notifName = document.getElementById('notifName')?.textContent || '';
+                    if (notifName === note.name) {
+                        stopAlarm();
+                    }
+                }
                 showToast('Marked as completed!', 'success');
                 await loadNotes();
             }
@@ -1894,13 +2148,23 @@
 
         async function deleteNoteById(id) {
             if (!confirm('Delete this note?')) return;
+            // Stop alarm if this note was triggering it
+            if (alarmActive) {
+                const note = await getNote(id);
+                if (note) {
+                    const notifName = document.getElementById('notifName')?.textContent || '';
+                    if (notifName === note.name) {
+                        stopAlarm();
+                    }
+                }
+            }
             await deleteNote(id);
             showToast('Note deleted.', 'info');
             await loadNotes();
         }
 
         // ============================================================
-        // REMINDER CHECK
+        // REMINDER CHECK — Enhanced
         // ============================================================
         let reminderShown = false;
 
@@ -1930,20 +2194,27 @@
             document.getElementById('notifName').textContent = note.name;
             document.getElementById('notifMobile').textContent = note.mobile;
             document.getElementById('notifProduct').textContent = note.product;
-            document.getElementById('notifNote').textContent = note.note;
+            document.getElementById('notifLocation').textContent = note.location || '—';
+            document.getElementById('notifNote').textContent = note.note || '—';
 
             // Set call button
             document.getElementById('notifCallBtn').onclick = () => {
                 callNumber(note.mobile);
+                stopAlarm();
                 notif.classList.remove('show');
+                reminderShown = false;
             };
             document.getElementById('notifDoneBtn').onclick = async () => {
+                stopAlarm();
                 await markDone(note.id);
                 notif.classList.remove('show');
+                reminderShown = false;
                 showToast('Reminder completed!', 'success');
             };
             document.getElementById('notifSnoozeBtn').onclick = () => {
+                stopAlarm();
                 notif.classList.remove('show');
+                reminderShown = false;
                 // Snooze: add 15 minutes
                 const rem = new Date(note.reminderDateTime);
                 rem.setMinutes(rem.getMinutes() + 15);
@@ -1954,16 +2225,27 @@
                 });
             };
 
-            notif.classList.add('show');
-            // Auto-hide after 30 seconds
-            setTimeout(() => {
+            // Close button
+            document.getElementById('closeNotif').onclick = () => {
+                stopAlarm();
                 notif.classList.remove('show');
-            }, 30000);
-        }
+                reminderShown = false;
+            };
 
-        document.getElementById('closeNotif').addEventListener('click', () => {
-            document.getElementById('reminderNotif').classList.remove('show');
-        });
+            // Play alarm, vibrate, show notification
+            playAlarm();
+            notif.classList.add('show');
+
+            // Auto-close after 2 minutes if no action
+            clearTimeout(notif._autoClose);
+            notif._autoClose = setTimeout(() => {
+                if (notif.classList.contains('show')) {
+                    stopAlarm();
+                    notif.classList.remove('show');
+                    reminderShown = false;
+                }
+            }, 120000);
+        }
 
         // ============================================================
         // UPDATE BADGE
@@ -2078,7 +2360,9 @@
                     closeSheet();
                 }
                 if (document.getElementById('reminderNotif').classList.contains('show')) {
+                    stopAlarm();
                     document.getElementById('reminderNotif').classList.remove('show');
+                    reminderShown = false;
                 }
             }
             // Enter to go next in sheet
@@ -2097,6 +2381,20 @@
                         }
                     }
                 }
+            }
+        });
+
+        // ============================================================
+        // VISIBILITY CHANGE — Re-check reminders on reopen
+        // ============================================================
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible') {
+                // Re-check reminders when app becomes visible again
+                loadNotes().then(() => {
+                    checkReminders();
+                });
+                // Update status time
+                updateStatusTime();
             }
         });
 
@@ -2181,16 +2479,19 @@
         // ============================================================
         async function init() {
             await openDB();
+            initAlarm();
             await seedDemoData();
             await loadNotes();
 
-            // Check reminders every 30 seconds
-            setInterval(checkReminders, 30000);
+            // Check reminders every 20 seconds (more frequent for alarm)
+            setInterval(checkReminders, 20000);
+
+            // Also check on visibility change (already set above)
 
             console.log('📝 H4 Smart Notepad initialized.');
             console.log(`📊 ${allNotes.length} notes loaded.`);
 
-            // Request notification permission for future
+            // Request notification permission
             if ('Notification' in window && Notification.permission === 'default') {
                 Notification.requestPermission();
             }
@@ -2210,9 +2511,8 @@
         window.saveNote = saveNote;
         window.openSheet = openSheet;
         window.closeSheet = closeSheet;
+        window.playAlarm = playAlarm;
+        window.stopAlarm = stopAlarm;
     </script>
-<audio id="alarmSound" preload="auto" loop>
-    <source src="alarm.mp3" type="audio/mpeg">
-</audio>
 </body>
 </html>
