@@ -1,0 +1,23 @@
+{
+    "name": "H4 Smart Notepad",
+    "short_name": "H4 Notepad",
+    "description": "Smart call notes with reminders",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#6A1B9A",
+    "theme_color": "#6A1B9A",
+    "icons": [
+        {
+            "src": "icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}
