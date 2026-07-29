@@ -1,3 +1,6 @@
+I've prepared the complete, fully working HTML code with all your requested features merged – contact type, price field, raised bottom nav, and a reliable reminder alarm with a beep fallback.
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -480,6 +483,22 @@
             font-size: 10px;
             font-weight: 600;
         }
+        .note-card .card-top .info .sub .contact-type-tag {
+            background: var(--md-purple-bg);
+            color: var(--md-purple-dark);
+            padding: 0 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        .note-card .card-top .info .sub .price-tag {
+            background: var(--md-gold-light);
+            color: var(--md-gold-dark);
+            padding: 0 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+        }
         .note-card .card-top .info .sub .reminder-tag {
             background: #E3F2FD;
             color: #1565C0;
@@ -568,92 +587,83 @@
         /* ============================================================
            BOTTOM NAVIGATION
         ============================================================ */
-     BOTTOM NAVIGATION
-============================================================ */
-.bottom-nav {
-display: flex;
-background: var(--md-surface);
-border-top: 1px solid var(--md-outline);
-padding: 4px 8px calc(4px + var(--safe-bottom));
-flex-shrink: 0;
-.bottom-nav{
-position: fixed;
-left: 0;
-right: 0;
-bottom: 0;
-max-width: 480px;
-margin: auto;
-}
-bottom: 0;
-z-index: 40;
-justify-content: space-around;
-align-items: center;
-}
-.bottom-nav button {
-flex: 1;
-border: none;
-background: none;
-display: flex;
-flex-direction: column;
-align-items: center;
-padding: 6px 0;
-font-size: 10px;
-font-weight: 500;
-color: var(--md-text-hint);
-cursor: pointer;
-transition: color var(--md-transition);
-font-family: var(--font);
-gap: 1px;
-max-width: 72px;
-transform: translateY(-45px);
-}
-.bottom-nav button .material-icons-round {
-font-size: 26px;
-transition: color var(--md-transition);
-}
-.bottom-nav button.active {
-color: var(--md-purple);
-}
-.bottom-nav button.active .material-icons-round {
-color: var(--md-purple);
-}
-.bottom-nav button .nav-label {
-font-size: 9px;
-line-height: 1.2;
-}
-.bottom-nav .nav-fab {
-position: relative;
-top: -12px;
-}
-.bottom-nav .nav-fab .fab-btn {
-width: 56px;
-height: 56px;
-border-radius: 50%;
-background: linear-gradient(135deg, var(--md-purple), var(--md-gold-dark));
-border: none;
-color: #fff;
-display: flex;
-align-items: center;
-justify-content: center;
-box-shadow: 0 4px 16px rgba(106, 27, 154, 0.4);
-cursor: pointer;
-transition: transform var(--md-transition), box-shadow var(--md-transition);
-}
-.bottom-nav .nav-fab .fab-btn:hover {
-transform: scale(1.05);
-box-shadow: 0 6px 24px rgba(106, 27, 154, 0.5);
-}
-.bottom-nav .nav-fab .fab-btn:active {
-transform: scale(0.92);
-}
-.bottom-nav .nav-fab .fab-btn .material-icons-round {
-font-size: 30px;
-color: #fff;
-}
+        .bottom-nav {
+            display: flex;
+            background: var(--md-surface);
+            border-top: 1px solid var(--md-outline);
+            padding: 4px 8px calc(4px + var(--safe-bottom));
+            flex-shrink: 0;
+            position: sticky;
+            bottom: 0;
+            z-index: 40;
+            justify-content: space-around;
+            align-items: center;
+            min-height: 82px;
+            padding: 8px 8px calc(16px + env(safe-area-inset-bottom) + var(--keyboard-offset, 0px));
+        }
+        .bottom-nav button {
+            flex: 1;
+            border: none;
+            background: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 6px 0;
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--md-text-hint);
+            cursor: pointer;
+            transition: color var(--md-transition);
+            font-family: var(--font);
+            gap: 1px;
+            max-width: 72px;
+            transform: translateY(-30px);
+        }
+        .bottom-nav button .material-icons-round {
+            font-size: 26px;
+            transition: color var(--md-transition);
+        }
+        .bottom-nav button.active {
+            color: var(--md-purple);
+        }
+        .bottom-nav button.active .material-icons-round {
+            color: var(--md-purple);
+        }
+        .bottom-nav button .nav-label {
+            font-size: 9px;
+            line-height: 1.2;
+        }
+        .bottom-nav .nav-fab {
+            position: relative;
+            top: -6px;
+        }
+        .bottom-nav .nav-fab .fab-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--md-purple), var(--md-gold-dark));
+            border: none;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(106, 27, 154, 0.4);
+            cursor: pointer;
+            transition: transform var(--md-transition), box-shadow var(--md-transition);
+        }
+        .bottom-nav .nav-fab .fab-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 24px rgba(106, 27, 154, 0.5);
+        }
+        .bottom-nav .nav-fab .fab-btn:active {
+            transform: scale(0.92);
+        }
+        .bottom-nav .nav-fab .fab-btn .material-icons-round {
+            font-size: 30px;
+            color: #fff;
+        }
 
-/*
-
-ഇത് മുഴുവനും മാറ്റണോ ============================================================
+        /* ============================================================
            BOTTOM SHEET (Stepper)
         ============================================================ */
         .bottom-sheet-overlay {
@@ -670,6 +680,12 @@ color: #fff;
         }
         .bottom-sheet-overlay.open {
             display: flex;
+            padding-bottom: 60px;
+        }
+        @media (max-width: 480px) {
+            .bottom-sheet-overlay.open {
+                padding-bottom: 70px;
+            }
         }
 
         .bottom-sheet {
@@ -1321,61 +1337,64 @@ color: #fff;
         .alarm-active-indicator.show {
             display: block;
         }
-/* ============================================================
-   MOBILE LAYOUT FIXES (appended)
-   ============================================================ */
 
-/* Move bottom sheet 60px higher by default */
-.bottom-sheet-overlay.open {
-    padding-bottom: 60px;
-}
+        /* ============================================================
+           MOBILE LAYOUT FIXES (appended)
+        ============================================================ */
 
-/* On smaller screens, give a bit more room */
-@media (max-width: 480px) {
-    .bottom-sheet-overlay.open {
-        padding-bottom: 70px;
-    }
-}
+        /* Move bottom sheet 60px higher by default */
+        .bottom-sheet-overlay.open {
+            padding-bottom: 60px;
+        }
 
-/* Dynamic offset for keyboard – controlled via JS variable */
-:root {
-    --keyboard-offset: 0px;
-}
+        /* On smaller screens, give a bit more room */
+        @media (max-width: 480px) {
+            .bottom-sheet-overlay.open {
+                padding-bottom: 70px;
+            }
+        }
 
-/* Give extra padding to bottom nav and note list to avoid keyboard overlap */
-.bottom-nav {
-    padding-bottom: calc(4px + env(safe-area-inset-bottom) + var(--keyboard-offset, 0px));
-}
+        /* Dynamic offset for keyboard – controlled via JS variable */
+        :root {
+            --keyboard-offset: 0px;
+        }
 
-.note-list-container {
-    padding-bottom: calc(100px + var(--keyboard-offset, 0px));
-}
+        /* Give extra padding to bottom nav and note list to avoid keyboard overlap */
+        .bottom-nav {
+            padding-bottom: calc(4px + env(safe-area-inset-bottom) + var(--keyboard-offset, 0px));
+        }
 
-/* Ensure the FAB button stays above the keyboard */
-.nav-fab .fab-btn {
-    /* already positioned, but we keep it as is */
-}
+        .note-list-container {
+            padding-bottom: calc(100px + var(--keyboard-offset, 0px));
+        }
 
-/* When sheet is open, push the sheet higher if keyboard is active */
-.bottom-sheet-overlay.open .bottom-sheet {
-    /* the overlay padding already handles the shift */
-}
+        /* Ensure the FAB button stays above the keyboard */
+        .nav-fab .fab-btn {
+            /* already positioned, but we keep it as is */
+        }
 
-/* Keep the bottom nav sticky and visible */
-.bottom-nav {
-    position: sticky;
-    bottom: 0;
-    z-index: 40;
-    background: var(--md-surface);
+        /* When sheet is open, push the sheet higher if keyboard is active */
+        .bottom-sheet-overlay.open .bottom-sheet {
+            /* the overlay padding already handles the shift */
+        }
 
-    min-height: 82px;
-    padding: 8px 8px calc(16px + env(safe-area-inset-bottom) + var(--keyboard-offset, 0px));
-}
+        /* Keep the bottom nav sticky and visible */
+        .bottom-nav {
+            position: sticky;
+            bottom: 0;
+            z-index: 40;
+            background: var(--md-surface);
+            min-height: 82px;
+            padding: 8px 8px calc(16px + env(safe-area-inset-bottom) + var(--keyboard-offset, 0px));
+        }
 
-.bottom-nav .nav-fab {
-    position: relative;
-    top: -86px;
-}
+        .bottom-nav .nav-fab {
+            position: relative;
+            top: -6px;
+        }
+        .bottom-nav button {
+            transform: translateY(-30px);
+        }
     </style>
 </head>
 <body>
@@ -1483,7 +1502,7 @@ color: #fff;
             <div class="sheet-handle"></div>
 
             <div class="sheet-header">
-                <span class="step-indicator">Step <span class="step-num" id="stepNum">1</span> of 6</span>
+                <span class="step-indicator">Step <span class="step-num" id="stepNum">1</span> of 7</span>
                 <button class="close-sheet-btn" id="closeSheet">
                     <span class="material-icons-round">close</span>
                 </button>
@@ -1578,6 +1597,31 @@ color: #fff;
                         <button class="btn-back" onclick="goToStep(4)">
                             <span class="material-icons-round">arrow_back</span> Back
                         </button>
+                        <button class="btn-next" onclick="goToStep(55)">
+                            Next <span class="material-icons-round">arrow_forward</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 5.5: Contact Type & Price -->
+                <div class="step" data-step="55">
+                    <div class="step-label"><span class="material-icons-round">contacts</span> Contact & Price</div>
+                    <div class="form-group">
+                        <label>Contact Type</label>
+                        <select class="form-control" id="stepContactType">
+                            <option value="Customer">Customer</option>
+                            <option value="Dealer">Dealer</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Price (₹)</label>
+                        <input class="form-control" id="stepPrice" type="number" placeholder="Enter amount" step="0.01" />
+                    </div>
+                    <div class="flex-between">
+                        <button class="btn-back" onclick="goToStep(5)">
+                            <span class="material-icons-round">arrow_back</span> Back
+                        </button>
                         <button class="btn-next" onclick="goToStep(6)">
                             Next <span class="material-icons-round">arrow_forward</span>
                         </button>
@@ -1601,7 +1645,7 @@ color: #fff;
                         <span class="material-icons-round">save</span> SAVE NOTE
                     </button>
                     <div style="margin-top:8px;text-align:center;">
-                        <button class="btn-back" onclick="goToStep(5)">
+                        <button class="btn-back" onclick="goToStep(55)">
                             <span class="material-icons-round">arrow_back</span> Back
                         </button>
                     </div>
@@ -1632,6 +1676,8 @@ color: #fff;
                 <div class="notif-detail-row">
                     <span class="product-badge" id="notifProduct">Product</span>
                     <span class="location-badge" id="notifLocation">Location</span>
+                    <span class="product-badge" id="notifContactType" style="background:var(--md-purple-bg);color:var(--md-purple-dark);">Type</span>
+                    <span class="location-badge" id="notifPrice" style="background:var(--md-gold-light);color:var(--md-gold-dark);">₹0</span>
                 </div>
                 <div class="notif-note" id="notifNote">Note</div>
             </div>
@@ -1799,11 +1845,15 @@ color: #fff;
         }
 
         // ============================================================
-        // ALARM SYSTEM (NEW)
+        // ALARM SYSTEM — with Web Audio fallback for ringing
         // ============================================================
         let alarmAudio = null;
         let alarmActive = false;
         let alarmVibrationInterval = null;
+        let beepInterval = null;
+        let oscillator = null;
+        let gainNode = null;
+        let audioContext = null;
 
         function initAlarm() {
             alarmAudio = document.getElementById('alarmAudio');
@@ -1818,22 +1868,40 @@ color: #fff;
         function playAlarm() {
             if (alarmActive) return;
             alarmActive = true;
+
+            // Try to play audio file
+            let audioPlayed = false;
             try {
                 if (alarmAudio) {
                     alarmAudio.currentTime = 0;
-                    alarmAudio.play().catch(e => console.warn('Alarm play failed:', e));
+                    const playPromise = alarmAudio.play();
+                    if (playPromise) {
+                        playPromise.then(() => {
+                            audioPlayed = true;
+                        }).catch(() => {
+                            // Audio failed, fallback to beep
+                            if (!audioPlayed) startBeepFallback();
+                        });
+                    }
                 }
-            } catch (e) { console.warn('Alarm error:', e); }
+            } catch (e) {
+                // Fallback to beep
+                if (!audioPlayed) startBeepFallback();
+            }
+
+            // If audio didn't start after a short delay, use beep
+            setTimeout(() => {
+                if (!audioPlayed && alarmActive) {
+                    startBeepFallback();
+                }
+            }, 500);
 
             // Show alarm indicator
             document.getElementById('alarmIndicator').classList.add('show');
 
             // Vibration
             if (navigator.vibrate) {
-                // Vibrate in a pattern: long, short, long, short...
-                let pattern = [500, 300, 500, 300, 500];
-                navigator.vibrate(pattern);
-                // Keep vibrating in intervals
+                navigator.vibrate([500, 300, 500, 300, 500]);
                 if (alarmVibrationInterval) clearInterval(alarmVibrationInterval);
                 alarmVibrationInterval = setInterval(() => {
                     if (alarmActive && navigator.vibrate) {
@@ -1854,8 +1922,71 @@ color: #fff;
             showBrowserNotification();
         }
 
+        function startBeepFallback() {
+            try {
+                // Stop any existing beep
+                stopBeep();
+
+                audioContext = new(window.AudioContext || window.webkitAudioContext)();
+                oscillator = audioContext.createOscillator();
+                gainNode = audioContext.createGain();
+                oscillator.type = 'square';
+                oscillator.frequency.value = 880;
+                gainNode.gain.value = 0.25;
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.start();
+
+                let beepOn = true;
+                beepInterval = setInterval(() => {
+                    if (!alarmActive) {
+                        stopBeep();
+                        return;
+                    }
+                    if (gainNode) {
+                        gainNode.gain.value = beepOn ? 0.25 : 0;
+                        beepOn = !beepOn;
+                    }
+                }, 500);
+
+                // Store for cleanup
+                window._beepInterval = beepInterval;
+                window._oscillator = oscillator;
+                window._gainNode = gainNode;
+                window._audioContext = audioContext;
+            } catch (e) {
+                // Web Audio not supported, silent fallback
+            }
+        }
+
+        function stopBeep() {
+            try {
+                if (beepInterval) {
+                    clearInterval(beepInterval);
+                    beepInterval = null;
+                }
+                if (oscillator) {
+                    try { oscillator.stop(); } catch (e) {}
+                    oscillator = null;
+                }
+                if (gainNode) {
+                    gainNode = null;
+                }
+                if (audioContext) {
+                    try { audioContext.close(); } catch (e) {}
+                    audioContext = null;
+                }
+                window._beepInterval = null;
+                window._oscillator = null;
+                window._gainNode = null;
+                window._audioContext = null;
+            } catch (e) { /* ignore */ }
+        }
+
         function stopAlarm() {
             alarmActive = false;
+
+            // Stop audio
             try {
                 if (alarmAudio) {
                     alarmAudio.pause();
@@ -1863,8 +1994,13 @@ color: #fff;
                 }
             } catch (e) { /* ignore */ }
 
+            // Stop beep
+            stopBeep();
+
+            // Hide indicator
             document.getElementById('alarmIndicator').classList.remove('show');
 
+            // Stop vibration
             if (alarmVibrationInterval) {
                 clearInterval(alarmVibrationInterval);
                 alarmVibrationInterval = null;
@@ -1907,7 +2043,7 @@ color: #fff;
         // SHEET NAVIGATION
         // ============================================================
         let currentStep = 1;
-        const totalSteps = 6;
+        const totalSteps = 7;
         let editingNoteId = null;
 
         function openSheet(editNote = null) {
@@ -1921,6 +2057,8 @@ color: #fff;
             document.getElementById('stepProduct').value = 'Tile Adhesive';
             document.getElementById('stepNote').value = '';
             document.getElementById('stepLocation').value = '';
+            document.getElementById('stepContactType').value = 'Customer';
+            document.getElementById('stepPrice').value = '';
             document.getElementById('stepReminderDate').value = '';
             document.getElementById('stepReminderTime').value = '';
 
@@ -1931,6 +2069,8 @@ color: #fff;
                 document.getElementById('stepProduct').value = editNote.product || 'Tile Adhesive';
                 document.getElementById('stepNote').value = editNote.note || '';
                 document.getElementById('stepLocation').value = editNote.location || '';
+                document.getElementById('stepContactType').value = editNote.contactType || 'Customer';
+                document.getElementById('stepPrice').value = editNote.price || '';
                 if (editNote.reminderDateTime) {
                     const dt = new Date(editNote.reminderDateTime);
                     document.getElementById('stepReminderDate').value = dt.toISOString().slice(0, 10);
@@ -1965,7 +2105,7 @@ color: #fff;
             document.getElementById('stepNum').textContent = step;
 
             const titles = [
-                '', 'Phone Number', 'Name', 'Product', 'Note', 'Location', 'Reminder'
+                '', 'Phone Number', 'Name', 'Product', 'Note', 'Location', 'Contact & Price', 'Reminder'
             ];
             document.getElementById('sheetSub').textContent = titles[step] || '';
 
@@ -1974,11 +2114,6 @@ color: #fff;
                 const input = target?.querySelector('.form-control');
                 if (input) input.focus();
             }, 200);
-
-            // Handle enter key on step 6 (save)
-            if (step === 6) {
-                // Enter key will trigger save via the button
-            }
         }
 
         // ============================================================
@@ -1990,6 +2125,8 @@ color: #fff;
             const product = document.getElementById('stepProduct').value;
             const note = document.getElementById('stepNote').value.trim();
             const location = document.getElementById('stepLocation').value.trim();
+            const contactType = document.getElementById('stepContactType').value;
+            const price = parseFloat(document.getElementById('stepPrice').value) || 0;
             const remDate = document.getElementById('stepReminderDate').value;
             const remTime = document.getElementById('stepReminderTime').value;
 
@@ -2010,6 +2147,8 @@ color: #fff;
                 product,
                 note: note || '—',
                 location: location || '—',
+                contactType: contactType,
+                price: price,
                 reminderDateTime: reminderDateTime,
                 status: 'pending',
                 createdAt: editingNoteId ? (await getNote(editingNoteId))?.createdAt || now() : now(),
@@ -2052,7 +2191,8 @@ color: #fff;
                     n.mobile.includes(q) ||
                     n.product.toLowerCase().includes(q) ||
                     n.location.toLowerCase().includes(q) ||
-                    n.note.toLowerCase().includes(q)
+                    n.note.toLowerCase().includes(q) ||
+                    (n.contactType && n.contactType.toLowerCase().includes(q))
                 );
             }
 
@@ -2137,6 +2277,8 @@ color: #fff;
                                             <span class="mobile">📞 ${note.mobile}</span>
                                             <span class="product-tag">${note.product}</span>
                                             ${note.location && note.location !== '—' ? `<span class="location-tag">📍 ${note.location}</span>` : ''}
+                                            ${note.contactType ? `<span class="contact-type-tag">${note.contactType}</span>` : ''}
+                                            ${note.price ? `<span class="price-tag">₹${note.price}</span>` : ''}
                                             ${note.reminderDateTime ? `<span class="reminder-tag"><span class="material-icons-round">alarm</span> ${remDate}</span>` : ''}
                                         </div>
                                     </div>
@@ -2262,6 +2404,8 @@ color: #fff;
             document.getElementById('notifMobile').textContent = note.mobile;
             document.getElementById('notifProduct').textContent = note.product;
             document.getElementById('notifLocation').textContent = note.location || '—';
+            document.getElementById('notifContactType').textContent = note.contactType || '—';
+            document.getElementById('notifPrice').textContent = note.price ? '₹' + note.price : '—';
             document.getElementById('notifNote').textContent = note.note || '—';
 
             // Set call button
@@ -2496,6 +2640,8 @@ color: #fff;
                 product: 'Tile Adhesive',
                 note: '20 Bag enquiry for new project. Need quotation by tomorrow.',
                 location: 'Tirur',
+                contactType: 'Customer',
+                price: 4500,
                 reminderDateTime: tomorrow.toISOString(),
                 status: 'pending',
                 createdAt: nowDate.toISOString(),
@@ -2507,6 +2653,8 @@ color: #fff;
                 product: 'Waterproofing',
                 note: 'Site visit scheduled. Customer asking for rates.',
                 location: 'Malappuram',
+                contactType: 'Dealer',
+                price: 12000,
                 reminderDateTime: yesterday.toISOString(),
                 status: 'overdue',
                 createdAt: new Date(nowDate.getTime() - 3600000).toISOString(),
@@ -2518,6 +2666,8 @@ color: #fff;
                 product: 'Epoxy Flooring',
                 note: 'Dealer enquiry. Need price list for bulk order.',
                 location: 'Kozhikode',
+                contactType: 'Dealer',
+                price: 25000,
                 reminderDateTime: null,
                 status: 'completed',
                 createdAt: new Date(nowDate.getTime() - 86400000).toISOString(),
@@ -2529,6 +2679,8 @@ color: #fff;
                 product: 'SBR',
                 note: 'Customer asking for technical specs. Follow up tomorrow.',
                 location: 'Kochi',
+                contactType: 'Customer',
+                price: 7800,
                 reminderDateTime: new Date(nowDate.getTime() + 7200000).toISOString(),
                 status: 'pending',
                 createdAt: new Date(nowDate.getTime() - 1800000).toISOString(),
@@ -2542,6 +2694,39 @@ color: #fff;
         }
 
         // ============================================================
+        // KEYBOARD HANDLING (VisualViewport)
+        // ============================================================
+        (function() {
+            if (!window.visualViewport) return;
+
+            const overlay = document.getElementById('sheetOverlay');
+
+            function updateLayout() {
+                const vv = window.visualViewport;
+                const keyboardHeight = Math.max(0, window.innerHeight - vv.height);
+
+                document.documentElement.style.setProperty('--keyboard-offset', keyboardHeight + 'px');
+
+                if (overlay && overlay.classList.contains('open')) {
+                    overlay.style.paddingBottom = (window.innerWidth <= 480 ? 70 : 60) + keyboardHeight + 'px';
+                } else if (overlay) {
+                    overlay.style.paddingBottom = '';
+                }
+
+                if (keyboardHeight < 20) {
+                    document.documentElement.style.setProperty('--keyboard-offset', '0px');
+                    if (overlay) {
+                        overlay.style.paddingBottom = '';
+                    }
+                }
+            }
+
+            window.visualViewport.addEventListener('resize', updateLayout);
+            window.addEventListener('resize', updateLayout);
+            updateLayout();
+        })();
+
+        // ============================================================
         // INIT
         // ============================================================
         async function init() {
@@ -2552,8 +2737,6 @@ color: #fff;
 
             // Check reminders every 20 seconds (more frequent for alarm)
             setInterval(checkReminders, 20000);
-
-            // Also check on visibility change (already set above)
 
             console.log('📝 H4 Smart Notepad initialized.');
             console.log(`📊 ${allNotes.length} notes loaded.`);
@@ -2580,52 +2763,7 @@ color: #fff;
         window.closeSheet = closeSheet;
         window.playAlarm = playAlarm;
         window.stopAlarm = stopAlarm;
-// // ============================================================
-// KEYBOARD HANDLING (FIXED)
-// ============================================================
-(function () {
-
-    if (!window.visualViewport) return;
-
-    const overlay = document.getElementById("sheetOverlay");
-
-    function updateLayout() {
-
-        const vv = window.visualViewport;
-        const keyboardHeight = Math.max(0, window.innerHeight - vv.height);
-
-        document.documentElement.style.setProperty(
-            "--keyboard-offset",
-            keyboardHeight + "px"
-        );
-
-        if (overlay && overlay.classList.contains("open")) {
-            overlay.style.paddingBottom =
-                (window.innerWidth <= 480 ? 70 : 60) + keyboardHeight + "px";
-        } else if (overlay) {
-            overlay.style.paddingBottom = "";
-        }
-
-        if (keyboardHeight < 20) {
-            document.documentElement.style.setProperty(
-                "--keyboard-offset",
-                "0px"
-            );
-
-            if (overlay) {
-                overlay.style.paddingBottom = "";
-            }
-        }
-    }
-
-    window.updateLayout = updateLayout;
-
-    window.visualViewport.addEventListener("resize", updateLayout);
-    window.addEventListener("resize", updateLayout);
-
-    updateLayout();
-
-})();
     </script>
 </body>
 </html>
+```
