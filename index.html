@@ -1,4 +1,4 @@
-I've prepared the complete, fully working HTML code with all your requested features merged – contact type, price field, raised bottom nav, and a reliable reminder alarm with a beep fallback.
+I've fixed the issue – the "Next" button from Location now correctly moves to the Contact & Price step. Here's the complete, working code with proper step numbering.
 
 ```html
 <!DOCTYPE html>
@@ -1597,14 +1597,14 @@ I've prepared the complete, fully working HTML code with all your requested feat
                         <button class="btn-back" onclick="goToStep(4)">
                             <span class="material-icons-round">arrow_back</span> Back
                         </button>
-                        <button class="btn-next" onclick="goToStep(55)">
+                        <button class="btn-next" onclick="goToStep(6)">
                             Next <span class="material-icons-round">arrow_forward</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- STEP 5.5: Contact Type & Price -->
-                <div class="step" data-step="55">
+                <!-- STEP 6: Contact Type & Price -->
+                <div class="step" data-step="6">
                     <div class="step-label"><span class="material-icons-round">contacts</span> Contact & Price</div>
                     <div class="form-group">
                         <label>Contact Type</label>
@@ -1622,14 +1622,14 @@ I've prepared the complete, fully working HTML code with all your requested feat
                         <button class="btn-back" onclick="goToStep(5)">
                             <span class="material-icons-round">arrow_back</span> Back
                         </button>
-                        <button class="btn-next" onclick="goToStep(6)">
+                        <button class="btn-next" onclick="goToStep(7)">
                             Next <span class="material-icons-round">arrow_forward</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- STEP 6: Reminder + Save -->
-                <div class="step" data-step="6">
+                <!-- STEP 7: Reminder + Save -->
+                <div class="step" data-step="7">
                     <div class="step-label"><span class="material-icons-round">alarm</span> Reminder</div>
                     <div class="form-row">
                         <div class="form-group">
@@ -1645,7 +1645,7 @@ I've prepared the complete, fully working HTML code with all your requested feat
                         <span class="material-icons-round">save</span> SAVE NOTE
                     </button>
                     <div style="margin-top:8px;text-align:center;">
-                        <button class="btn-back" onclick="goToStep(55)">
+                        <button class="btn-back" onclick="goToStep(6)">
                             <span class="material-icons-round">arrow_back</span> Back
                         </button>
                     </div>
