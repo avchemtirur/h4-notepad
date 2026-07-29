@@ -1,5 +1,3 @@
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2372,7 +2370,7 @@
         }
 
         // ============================================================
-        // REMINDER CHECK — Enhanced
+        // REMINDER CHECK — Enhanced with wake-up on load
         // ============================================================
         let reminderShown = false;
 
@@ -2380,13 +2378,27 @@
             const now = new Date();
             const pending = allNotes.filter(n => n.status === 'pending' && n.reminderDateTime);
             let due = null;
+
+            // Check for reminders within ±2 minutes of current time
             for (const n of pending) {
                 const rem = new Date(n.reminderDateTime);
-                // Show reminder if within ±2 minutes
                 const diff = (rem - now) / 1000;
                 if (diff > -10 && diff < 120) {
                     due = n;
                     break;
+                }
+            }
+
+            // If none found, also check for reminders that are overdue by up to 5 minutes
+            // (useful when app is reopened after the reminder time)
+            if (!due) {
+                for (const n of pending) {
+                    const rem = new Date(n.reminderDateTime);
+                    const diff = (rem - now) / 1000;
+                    if (diff > -300 && diff <= -10) { // overdue up to 5 minutes
+                        due = n;
+                        break;
+                    }
                 }
             }
 
@@ -2620,77 +2632,9 @@
         updateStatusTime();
 
         // ============================================================
-        // DEMO DATA (seed if empty)
+        // DEMO DATA — REMOVED (start with empty list)
         // ============================================================
-        async function seedDemoData() {
-            const existing = await getAllNotes();
-            if (existing.length > 0) return;
-
-            const nowDate = new Date();
-            const tomorrow = new Date(nowDate);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const yesterday = new Date(nowDate);
-            yesterday.setDate(yesterday.getDate() - 1);
-
-            const demos = [{
-                id: genId(),
-                name: 'Rahul Sharma',
-                mobile: '9876543210',
-                product: 'Tile Adhesive',
-                note: '20 Bag enquiry for new project. Need quotation by tomorrow.',
-                location: 'Tirur',
-                contactType: 'Customer',
-                price: 4500,
-                reminderDateTime: tomorrow.toISOString(),
-                status: 'pending',
-                createdAt: nowDate.toISOString(),
-                updatedAt: nowDate.toISOString()
-            }, {
-                id: genId(),
-                name: 'Priya Nair',
-                mobile: '9876543211',
-                product: 'Waterproofing',
-                note: 'Site visit scheduled. Customer asking for rates.',
-                location: 'Malappuram',
-                contactType: 'Dealer',
-                price: 12000,
-                reminderDateTime: yesterday.toISOString(),
-                status: 'overdue',
-                createdAt: new Date(nowDate.getTime() - 3600000).toISOString(),
-                updatedAt: new Date(nowDate.getTime() - 3600000).toISOString()
-            }, {
-                id: genId(),
-                name: 'Suresh Menon',
-                mobile: '9876543212',
-                product: 'Epoxy Flooring',
-                note: 'Dealer enquiry. Need price list for bulk order.',
-                location: 'Kozhikode',
-                contactType: 'Dealer',
-                price: 25000,
-                reminderDateTime: null,
-                status: 'completed',
-                createdAt: new Date(nowDate.getTime() - 86400000).toISOString(),
-                updatedAt: new Date(nowDate.getTime() - 86400000).toISOString()
-            }, {
-                id: genId(),
-                name: 'Ananya Krishnan',
-                mobile: '9876543213',
-                product: 'SBR',
-                note: 'Customer asking for technical specs. Follow up tomorrow.',
-                location: 'Kochi',
-                contactType: 'Customer',
-                price: 7800,
-                reminderDateTime: new Date(nowDate.getTime() + 7200000).toISOString(),
-                status: 'pending',
-                createdAt: new Date(nowDate.getTime() - 1800000).toISOString(),
-                updatedAt: new Date(nowDate.getTime() - 1800000).toISOString()
-            }];
-
-            for (const d of demos) {
-                await storeNote(d);
-            }
-            showToast('📝 Demo notes loaded!', 'success');
-        }
+        // No seed data – user starts fresh.
 
         // ============================================================
         // KEYBOARD HANDLING (VisualViewport)
@@ -2731,10 +2675,10 @@
         async function init() {
             await openDB();
             initAlarm();
-            await seedDemoData();
+            // No demo data – start empty.
             await loadNotes();
 
-            // Check reminders every 20 seconds (more frequent for alarm)
+            // Check reminders every 20 seconds
             setInterval(checkReminders, 20000);
 
             console.log('📝 H4 Smart Notepad initialized.');
@@ -2765,4 +2709,3 @@
     </script>
 </body>
 </html>
-```
