@@ -1,187 +1,226 @@
 // ============================================================
 // H4 Smart Notepad - Service Worker
-// Version: 1.0.0
+// Version: 2.0.0
 // ============================================================
 
-const CACHE_NAME = 'h4-notepad-v1';
+const CACHE_NAME = 'h4-notepad-v2';
+
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
     './manifest.webmanifest',
     './icon-192.png',
-    './icon-512.png',
-    './alarm.mp3',
-    'https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap',
-    'https://fonts.googleapis.com/icon?family=Material+Icons+Round',
-    'https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js',
-    'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore-compat.js',
-    'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth-compat.js'
+    './icon-512.png'
 ];
 
 // ============================================================
-// INSTALL EVENT - Cache all assets
+// INSTALL
 // ============================================================
-self.addEventListener('install', (event) => {
-    console.log('[Service Worker] Installing...');
+self.addEventListener('install', event => {
+    console.log('[H4 SW] Installing...');
+
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then((cache) => {
-                console.log('[Service Worker] Caching assets...');
-                return cache.addAll(ASSETS_TO_CACHE);
-            })
-            .then(() => {
-                console.log('[Service Worker] Installation complete!');
-                return self.skipWaiting();
-            })
-            .catch((error) => {
-                console.error('[Service Worker] Cache failed:', error);
+            .then(cache => cache.addAll(ASSETS_TO_CACHE))
+            .then(() => self.skipWaiting())
+            .catch(error => {
+                console.error('[H4 SW] Cache error:', error);
             })
     );
 });
 
 // ============================================================
-// ACTIVATE EVENT - Clean up old caches
+// ACTIVATE
 // ============================================================
-self.addEventListener('activate', (event) => {
-    console.log('[Service Worker] Activating...');
-    const cacheWhitelist = [CACHE_NAME];
+self.addEventListener('activate', event => {
+    console.log('[H4 SW] Activating...');
+
     event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cacheName) => {
-                    if (cacheWhitelist.indexOf(cacheName) === -1) {
-                        console.log('[Service Worker] Deleting old cache:', cacheName);
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-        }).then(() => {
-            console.log('[Service Worker] Activation complete!');
-            return self.clients.claim();
-        })
+        caches.keys()
+            .then(cacheNames => {
+                return Promise.all(
+                    cacheNames.map(cacheName => {
+                        if (cacheName !== CACHE_NAME) {
+                            return caches.delete(cacheName);
+                        }
+                    })
+                );
+            })
+            .then(() => self.clients.claim())
     );
 });
 
 // ============================================================
-// FETCH EVENT - Serve from cache, fallback to network
+// FETCH
 // ============================================================
-self.addEventListener('fetch', (event) => {
+self.addEventListener('fetch', event => {
+
+    // Only handle GET requests
+    if (event.request.method !== 'GET') {
+        return;
+    }
+
     event.respondWith(
         caches.match(event.request)
-            .then((cachedResponse) => {
-                // Return cached response if available
+            .then(cachedResponse => {
+
                 if (cachedResponse) {
                     return cachedResponse;
                 }
 
-                // Otherwise, fetch from network
                 return fetch(event.request)
-                    .then((response) => {
-                        // Don't cache if not a valid response
-                        if (!response || response.status !== 200 || response.type !== 'basic') {
+                    .then(response => {
+
+                        // Only cache successful basic responses
+                        if (
+                            !response ||
+                            response.status !== 200 ||
+                            response.type !== 'basic'
+                        ) {
                             return response;
                         }
 
-                        // Clone the response
-                        const responseToCache = response.clone();
+                        const responseClone = response.clone();
 
-                        // Cache the fetched response
                         caches.open(CACHE_NAME)
-                            .then((cache) => {
-                                try {
-                                    cache.put(event.request, responseToCache);
-                                } catch (e) {
-                                    // Ignore caching errors for large files
-                                }
-                            });
+                            .then(cache => {
+                                cache.put(event.request, responseClone);
+                            })
+                            .catch(() => {});
 
                         return response;
                     })
                     .catch(() => {
-                        // Fallback for offline - return a generic offline page
-                        return new Response(
-                            'You are offline. Please check your internet connection.',
-                            {
-                                status: 503,
-                                statusText: 'Service Unavailable',
-                                headers: new Headers({
-                                    'Content-Type': 'text/plain'
-                                })
-                            }
-                        );
+
+                        // Offline fallback for navigation requests
+                        if (event.request.mode === 'navigate') {
+                            return caches.match('./index.html');
+                        }
+
+                        return new Response('', {
+                            status: 503,
+                            statusText: 'Offline'
+                        });
                     });
             })
     );
 });
 
 // ============================================================
-// NOTIFICATION CLICK EVENT - Handle notification clicks
+// NOTIFICATION CLICK
 // ============================================================
-self.addEventListener('notificationclick', (event) => {
-    console.log('[Service Worker] Notification clicked:', event.notification);
+self.addEventListener('notificationclick', event => {
+
+    console.log('[H4 SW] Notification clicked');
 
     const notification = event.notification;
+    const data = notification.data || {};
+
     notification.close();
 
-    // Open or focus the app
     event.waitUntil(
+
         clients.matchAll({
             type: 'window',
             includeUncontrolled: true
-        }).then((clientList) => {
-            // If a window client is already open, focus it
+        })
+        .then(clientList => {
+
+            // Preferred URL
+            let targetUrl = './';
+
+            if (data.noteId) {
+                targetUrl =
+                    './index.html?reminderNote=' +
+                    encodeURIComponent(data.noteId);
+            }
+
+            // Find existing H4 window
             for (const client of clientList) {
-                if (client.url && 'focus' in client) {
+
+                if (
+                    client.url &&
+                    'focus' in client
+                ) {
+
+                    if (
+                        'navigate' in client &&
+                        data.noteId
+                    ) {
+                        return client
+                            .navigate(targetUrl)
+                            .then(() => client.focus());
+                    }
+
                     return client.focus();
                 }
             }
-            // Otherwise, open a new window
+
+            // Open new window
             if (clients.openWindow) {
-                return clients.openWindow('./');
+                return clients.openWindow(targetUrl);
             }
+
         })
     );
 });
 
 // ============================================================
-// NOTIFICATION CLOSE EVENT - Clean up when notification is dismissed
+// NOTIFICATION CLOSE
 // ============================================================
-self.addEventListener('notificationclose', (event) => {
-    console.log('[Service Worker] Notification closed:', event.notification);
+self.addEventListener('notificationclose', event => {
+    console.log('[H4 SW] Notification closed');
 });
 
 // ============================================================
-// PUSH EVENT - Handle push notifications (future use)
+// PUSH NOTIFICATION
 // ============================================================
-self.addEventListener('push', (event) => {
-    console.log('[Service Worker] Push received:', event);
+self.addEventListener('push', event => {
 
     let data = {
         title: '⏰ H4 Reminder',
-        body: 'You have a reminder!',
-        icon: 'icon-192.png',
-        badge: 'icon-192.png',
-        vibrate: [500, 300, 500],
-        requireInteraction: true
+        body: 'You have a customer follow-up reminder.',
+        icon: './icon-192.png',
+        badge: './icon-192.png',
+        vibrate: [500, 300, 500, 300, 800],
+        requireInteraction: true,
+        data: {}
     };
 
     if (event.data) {
+
         try {
-            const parsed = event.data.json();
-            data = { ...data, ...parsed };
-        } catch (e) {
-            data.body = event.data.text() || data.body;
+            const incoming = event.data.json();
+
+            data = {
+                ...data,
+                ...incoming
+            };
+
+        } catch (error) {
+
+            try {
+                data.body = event.data.text();
+            } catch (e) {}
+
         }
     }
 
     event.waitUntil(
-        self.registration.showNotification(data.title, {
-            body: data.body,
-            icon: data.icon,
-            badge: data.badge,
-            vibrate: data.vibrate,
-            requireInteraction: data.requireInteraction,
-            data: data.data || {}
-        })
+
+        self.registration.showNotification(
+            data.title,
+            {
+                body: data.body,
+                icon: data.icon,
+                badge: data.badge,
+                vibrate: data.vibrate,
+                requireInteraction: true,
+                tag: data.tag || 'h4-reminder',
+                renotify: true,
+                data: data.data || {}
+            }
+        )
+
     );
 });
