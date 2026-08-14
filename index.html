@@ -73,8 +73,8 @@
            SCROLLBAR
         ============================================================ */
         ::-webkit-scrollbar {
-            width: 10px;
-            height: 4px;
+            width: 3px;
+            height: 3px;
         }
         ::-webkit-scrollbar-track {
             background: transparent;
@@ -1502,7 +1502,47 @@
         .bottom-nav button {
             transform: translateY(-30px);
         }
-    </style>
+    
+        /* ============================================================
+           H4 FOLLOW-UP READABILITY OVERRIDES
+        ============================================================ */
+        .note-card .name { font-size: 19px !important; font-weight: 700 !important; }
+        .note-card .mobile { font-size: 16px !important; font-weight: 600 !important; color: var(--md-text) !important; }
+        .note-card .note-text {
+            font-size: 18px !important;
+            font-weight: 500 !important;
+            line-height: 1.5 !important;
+            padding: 12px 0 !important;
+            color: var(--md-text) !important;
+        }
+        .note-card .note-text .label { font-size: 17px !important; }
+        .reminder-tag { font-size: 12px !important; font-weight: 700 !important; }
+        .reminder-notification .notif-card { max-width: 440px; border-left-width: 7px; }
+        .reminder-notification .notif-header { padding: 18px 20px 12px !important; }
+        .reminder-notification .notif-header h4 { font-size: 20px !important; }
+        .reminder-notification .notif-body { padding: 18px 20px 16px !important; }
+        .reminder-notification .notif-name { font-size: 22px !important; font-weight: 800 !important; display: inline-block; }
+        .reminder-notification .notif-mobile { font-size: 18px !important; font-weight: 700 !important; }
+        .reminder-notification .notif-detail-row { margin-top: 12px !important; gap: 7px !important; }
+        .reminder-notification .notif-detail-row .badge { font-size: 15px !important; padding: 5px 10px !important; }
+        .reminder-notification .notif-note {
+            margin-top: 14px !important;
+            padding: 14px !important;
+            font-size: 18px !important;
+            font-weight: 500 !important;
+            line-height: 1.5 !important;
+        }
+        .reminder-notification .notif-actions { padding: 14px 20px 20px !important; gap: 10px !important; }
+        .reminder-notification .notif-actions button { min-height: 52px !important; font-size: 16px !important; }
+        .reminder-notification .notif-actions button .material-icons-round { font-size: 23px !important; }
+        @media (max-width:480px) {
+            .note-card .name { font-size: 19px !important; }
+            .note-card .note-text { font-size: 18px !important; }
+            .reminder-notification { padding: 16px !important; }
+            .reminder-notification .notif-name { font-size: 22px !important; }
+            .reminder-notification .notif-note { font-size: 18px !important; }
+        }
+</style>
 </head>
 <body>
 
@@ -1756,9 +1796,6 @@
             <div class="notif-header">
                 <span class="material-icons-round">notifications_active</span>
                 <h4>🔔 REMINDER</h4>
-                <button class="close-notif" id="closeNotif">
-                    <span class="material-icons-round">close</span>
-                </button>
             </div>
             <div class="notif-body" id="notifBody">
                 <div><span class="notif-name" id="notifName">Name</span> · <span class="notif-mobile" id="notifMobile">Phone</span></div>
@@ -1773,7 +1810,6 @@
             <div class="notif-actions">
                 <button class="notif-call" id="notifCallBtn"><span class="material-icons-round">call</span> CALL</button>
                 <button class="notif-done" id="notifDoneBtn"><span class="material-icons-round">check</span> DONE</button>
-                <button class="notif-snooze" id="notifSnoozeBtn"><span class="material-icons-round">snooze</span> Snooze</button>
             </div>
         </div>
     </div>
@@ -1805,7 +1841,6 @@
     <!-- ============================================================
     HIDDEN AUDIO ELEMENT
     ============================================================ -->
-    <audio id="alarmAudio" src="alarm.mp3" loop preload="auto" style="display:none;"></audio>
 
     <!-- ============================================================
     TOAST CONTAINER
@@ -1911,13 +1946,33 @@
 
         function genReminderId() { return 'rem_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6); }
 
-        function today() { return new Date().toISOString().slice(0, 10); }
+        function pad2(n) { return String(n).padStart(2, '0'); }
+
+        // Device-local calendar date (important for India / Android).
+        function today() {
+            const d = new Date();
+            return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+        }
 
         function now() { return new Date().toISOString(); }
 
+        // Store reminder timestamps as local wall-clock values, without UTC conversion.
+        // Example: 2026-08-20T17:00:00 always means 20 Aug 5:00 PM on the device.
+        function localDateTimeString(d) {
+            return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}T${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
+        }
+
+        function parseLocalDateTime(value) {
+            if (!value) return null;
+            if (value instanceof Date) return value;
+            const m = String(value).match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?/);
+            if (m) return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]), Number(m[4]), Number(m[5]), Number(m[6] || 0));
+            return new Date(value);
+        }
+
         function formatDate(d) {
             if (!d) return '-';
-            const dt = new Date(d);
+            const dt = parseLocalDateTime(d);
             return dt.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
         }
 
@@ -1929,7 +1984,7 @@
 
         function formatDateTime(d) {
             if (!d) return '-';
-            const dt = new Date(d);
+            const dt = parseLocalDateTime(d);
             return dt.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }) + ' ' +
                 dt.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
         }
@@ -1941,30 +1996,19 @@
 
         function getStatus(note) {
             if (note.status === 'completed') return 'completed';
-            // Check if all reminders are completed or cancelled
             if (note.reminders && note.reminders.length > 0) {
-                const allDone = note.reminders.every(r => r.completed === true || r.cancelled === true);
-                if (allDone) {
-                    // If all are done but note isn't marked completed, check if final was triggered
-                    const finalRem = note.reminders.find(r => r.type === 'final');
-                    if (finalRem && finalRem.triggered) return 'overdue';
-                    return 'pending';
-                }
-                // Check if any reminder is overdue (not triggered and datetime passed)
+                const active = note.reminders.filter(r => !r.completed && !r.cancelled);
+                if (!active.length) return 'pending';
                 const now = new Date();
-                const hasOverdue = note.reminders.some(r => {
-                    if (r.completed || r.cancelled || r.triggered) return false;
-                    const remDt = new Date(r.dateTime);
-                    return remDt < now;
-                });
+                const hasDue = active.some(r => r.triggered && parseLocalDateTime(r.dateTime) <= now);
+                if (hasDue) return 'due';
+                const hasOverdue = active.some(r => !r.triggered && parseLocalDateTime(r.dateTime) < now);
                 if (hasOverdue) return 'overdue';
                 return 'pending';
             }
-            // Legacy: single reminder
             if (note.reminderDateTime) {
-                const now = new Date();
-                const rem = new Date(note.reminderDateTime);
-                if (rem < now) return 'overdue';
+                const rem = parseLocalDateTime(note.reminderDateTime);
+                if (rem < new Date()) return 'overdue';
             }
             return 'pending';
         }
@@ -2036,122 +2080,69 @@
         // ============================================================
         // ALARM SYSTEM
         // ============================================================
-        let alarmAudio = null;
         let alarmActive = false;
         let alarmVibrationInterval = null;
         let beepInterval = null;
+        let audioContext = null;
         let oscillator = null;
         let gainNode = null;
-        let audioContext = null;
 
-        function initAlarm() {
-            alarmAudio = document.getElementById('alarmAudio');
-            if (!alarmAudio) {
-                alarmAudio = new Audio('alarm.mp3');
-                alarmAudio.loop = true;
-                alarmAudio.preload = 'auto';
-                document.body.appendChild(alarmAudio);
-            }
+        // Built-in alarm: no alarm.mp3 required.
+        function initAlarm() { /* Web Audio is created only after a user interaction/reminder trigger. */ }
+
+        function startBeepFallback() {
+            if (!alarmActive) return;
+            try {
+                stopBeep();
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const playTone = () => {
+                    if (!alarmActive || !audioContext) return;
+                    oscillator = audioContext.createOscillator();
+                    gainNode = audioContext.createGain();
+                    oscillator.type = 'sine';
+                    oscillator.frequency.setValueAtTime(880, audioContext.currentTime);
+                    gainNode.gain.setValueAtTime(0.001, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.28, audioContext.currentTime + 0.03);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.38);
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    oscillator.start();
+                    oscillator.stop(audioContext.currentTime + 0.4);
+                };
+                playTone();
+                beepInterval = setInterval(playTone, 700);
+            } catch (e) { /* silent if Web Audio is unavailable */ }
+        }
+
+        function stopBeep() {
+            if (beepInterval) { clearInterval(beepInterval); beepInterval = null; }
+            try { if (oscillator) oscillator.stop(); } catch (e) {}
+            oscillator = null;
+            gainNode = null;
+            if (audioContext) { try { audioContext.close(); } catch (e) {} audioContext = null; }
         }
 
         function playAlarm() {
             if (alarmActive) return;
             alarmActive = true;
-
-            let audioPlayed = false;
-            try {
-                if (alarmAudio) {
-                    alarmAudio.currentTime = 0;
-                    const playPromise = alarmAudio.play();
-                    if (playPromise) {
-                        playPromise.then(() => { audioPlayed = true; }).catch(() => {
-                            if (!audioPlayed) startBeepFallback();
-                        });
-                    }
-                }
-            } catch (e) {
-                if (!audioPlayed) startBeepFallback();
-            }
-
-            setTimeout(() => {
-                if (!audioPlayed && alarmActive) {
-                    startBeepFallback();
-                }
-            }, 500);
-
             document.getElementById('alarmIndicator').classList.add('show');
-
+            startBeepFallback();
             if (navigator.vibrate) {
-                navigator.vibrate([500, 300, 500, 300, 500]);
+                navigator.vibrate([600, 300, 600, 300, 900]);
                 if (alarmVibrationInterval) clearInterval(alarmVibrationInterval);
                 alarmVibrationInterval = setInterval(() => {
-                    if (alarmActive && navigator.vibrate) {
-                        navigator.vibrate([500, 300, 500]);
-                    } else {
-                        clearInterval(alarmVibrationInterval);
-                        alarmVibrationInterval = null;
-                    }
+                    if (alarmActive) navigator.vibrate([600, 300, 600]);
                 }, 3000);
-            }
-
-            if ('Notification' in window && Notification.permission === 'default') {
-                Notification.requestPermission();
             }
             showBrowserNotification();
         }
 
-        function startBeepFallback() {
-            try {
-                stopBeep();
-                audioContext = new(window.AudioContext || window.webkitAudioContext)();
-                oscillator = audioContext.createOscillator();
-                gainNode = audioContext.createGain();
-                oscillator.type = 'square';
-                oscillator.frequency.value = 880;
-                gainNode.gain.value = 0.25;
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                oscillator.start();
-
-                let beepOn = true;
-                beepInterval = setInterval(() => {
-                    if (!alarmActive) { stopBeep(); return; }
-                    if (gainNode) {
-                        gainNode.gain.value = beepOn ? 0.25 : 0;
-                        beepOn = !beepOn;
-                    }
-                }, 500);
-
-                window._beepInterval = beepInterval;
-                window._oscillator = oscillator;
-                window._gainNode = gainNode;
-                window._audioContext = audioContext;
-            } catch (e) { /* ignore */ }
-        }
-
-        function stopBeep() {
-            try {
-                if (beepInterval) { clearInterval(beepInterval);
-                    beepInterval = null; }
-                if (oscillator) { try { oscillator.stop(); } catch (e) {} oscillator = null; }
-                if (gainNode) { gainNode = null; }
-                if (audioContext) { try { audioContext.close(); } catch (e) {} audioContext = null; }
-                window._beepInterval = null;
-                window._oscillator = null;
-                window._gainNode = null;
-                window._audioContext = null;
-            } catch (e) { /* ignore */ }
-        }
-
         function stopAlarm() {
             alarmActive = false;
-            try { if (alarmAudio) { alarmAudio.pause();
-                    alarmAudio.currentTime = 0; } } catch (e) { /* ignore */ }
             stopBeep();
             document.getElementById('alarmIndicator').classList.remove('show');
-            if (alarmVibrationInterval) { clearInterval(alarmVibrationInterval);
-                alarmVibrationInterval = null; }
-            if (navigator.vibrate) { navigator.vibrate(0); }
+            if (alarmVibrationInterval) { clearInterval(alarmVibrationInterval); alarmVibrationInterval = null; }
+            if (navigator.vibrate) navigator.vibrate(0);
         }
 
         function showBrowserNotification() {
@@ -2160,11 +2151,13 @@
             if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
                 navigator.serviceWorker.ready.then(reg => {
                     reg.showNotification("⏰ H4 Reminder", {
-                        body: `${notifName} - ${notifItem}`,
+                        body: `${notifName} - ${notifItem}\n${document.getElementById('notifNote')?.textContent || ''}`,
                         icon: "icon-192.png",
                         badge: "icon-192.png",
-                        vibrate: [500, 300, 500],
-                        requireInteraction: true
+                        vibrate: [600, 300, 600],
+                        requireInteraction: true,
+                        tag: 'h4-reminder-' + (document.getElementById('reminderNotif')?.dataset.noteId || Date.now()),
+                        data: { noteId: document.getElementById('reminderNotif')?.dataset.noteId || '' }
                     });
                 }).catch(() => { fallbackNotification(); });
             } else {
@@ -2339,7 +2332,7 @@
                     reminders.push({
                         id: genReminderId(),
                         type: types[idx],
-                        dateTime: dt.toISOString(),
+                        dateTime: localDateTimeString(dt),
                         triggered: false,
                         completed: false,
                         cancelled: false
@@ -2376,7 +2369,7 @@
                 const triggered = note.reminders.filter(r => r.triggered && !r.completed && !r.cancelled);
                 if (triggered.length > 0) {
                     const t = triggered[0];
-                    return '🔔 ' + formatDateTime(t.dateTime) + ' (due)';
+                    return '🔔 Due: ' + formatDateTime(t.dateTime);
                 }
                 return '✅ All done';
             }
@@ -2388,7 +2381,7 @@
                 next.type === 'day_before_morning' ? 'Day before (AM)' :
                 next.type === 'day_before_evening' ? 'Day before (PM)' :
                 next.type === 'same_day_morning' ? 'Day of (AM)' : '';
-            return formatDateTime(dt) + (label ? ' · ' + label : '');
+            return 'Next: ' + formatDateTime(dt) + (label ? ' · ' + label : '');
         }
 
         // ============================================================
@@ -2770,7 +2763,7 @@
             for (const note of filteredNotes) {
                 const status = note.status || 'pending';
                 const statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
-                const statusEmoji = status === 'pending' ? '🟡' : status === 'completed' ? '🟢' : '🔴';
+                const statusEmoji = status === 'pending' ? '🟡' : status === 'due' ? '🟠' : status === 'completed' ? '🟢' : '🔴';
                 const initials = getInitials(note.name);
                 const isGold = note.status === 'completed';
 
@@ -2926,7 +2919,7 @@
                 // Find a reminder that is due (not triggered, not completed, not cancelled)
                 const due = note.reminders.find(r => {
                     if (r.triggered || r.completed || r.cancelled) return false;
-                    const remDt = new Date(r.dateTime);
+                    const remDt = parseLocalDateTime(r.dateTime);
                     const diff = (remDt - now) / 1000;
                     return diff > -10 && diff < 120; // within ±10 seconds to 2 minutes
                 });
@@ -2936,8 +2929,12 @@
                     if (lastTriggeredReminderId === due.id) continue;
 
                     lastTriggeredReminderId = due.id;
-                    // Mark as triggered
-                    due.triggered = true;
+                    // If two automatic entries have the exact same local time (for example
+                    // requested time = 10:00 AM), trigger them together only once.
+                    const dueStamp = due.dateTime;
+                    note.reminders.forEach(r => {
+                        if (!r.completed && !r.cancelled && r.dateTime === dueStamp) r.triggered = true;
+                    });
                     storeNote(note).then(() => {
                         showReminderNotification(note, due);
                     });
@@ -2951,13 +2948,16 @@
             for (const note of pending) {
                 const overdue = note.reminders.find(r => {
                     if (r.triggered || r.completed || r.cancelled) return false;
-                    const remDt = new Date(r.dateTime);
+                    const remDt = parseLocalDateTime(r.dateTime);
                     const diff = (remDt - now) / 1000;
                     return diff > -300 && diff <= -10; // overdue up to 5 minutes
                 });
                 if (overdue && !reminderShown && lastTriggeredReminderId !== overdue.id) {
                     lastTriggeredReminderId = overdue.id;
-                    overdue.triggered = true;
+                    const overdueStamp = overdue.dateTime;
+                    note.reminders.forEach(r => {
+                        if (!r.completed && !r.cancelled && r.dateTime === overdueStamp) r.triggered = true;
+                    });
                     storeNote(note).then(() => {
                         showReminderNotification(note, overdue);
                     });
@@ -3001,21 +3001,11 @@
                         rem.completed = true;
                         rem.triggered = true;
                     }
-                    // Cancel all future reminders
-                    const now = new Date();
+                    // DONE means the customer follow-up is complete: cancel every remaining reminder.
                     n.reminders.forEach(r => {
-                        if (!r.completed && !r.cancelled && r.id !== reminder.id) {
-                            const dt = new Date(r.dateTime);
-                            if (dt > now) {
-                                r.cancelled = true;
-                            }
-                        }
+                        if (r.id !== reminder.id && !r.completed) r.cancelled = true;
                     });
-                    // If this was the final reminder or all are done, mark note completed
-                    const allDone = n.reminders.every(r => r.completed || r.cancelled);
-                    if (allDone || reminder.type === 'final') {
-                        n.status = 'completed';
-                    }
+                    n.status = 'completed';
                     await storeNote(n);
                     await loadNotes();
                 }
@@ -3024,46 +3014,12 @@
                 showToast('✅ Reminder completed!', 'success');
             };
 
-            // Snooze button: add 15 minutes
-            document.getElementById('notifSnoozeBtn').onclick = async () => {
-                stopAlarm();
-                notif.classList.remove('show');
-                reminderShown = false;
-                const n = await getNote(note.id);
-                if (n && n.reminders) {
-                    const rem = n.reminders.find(r => r.id === reminder.id);
-                    if (rem) {
-                        const dt = new Date(rem.dateTime);
-                        dt.setMinutes(dt.getMinutes() + 15);
-                        rem.dateTime = dt.toISOString();
-                        rem.triggered = false;
-                        await storeNote(n);
-                        await loadNotes();
-                        showToast('⏰ Snoozed for 15 minutes.', 'info');
-                    }
-                }
-            };
-
-            // Close button
-            document.getElementById('closeNotif').onclick = () => {
-                stopAlarm();
-                notif.classList.remove('show');
-                reminderShown = false;
-            };
-
             // Play alarm
             playAlarm();
             notif.classList.add('show');
 
-            // Auto-close after 2 minutes
+            // Keep the popup and alarm active until CALL or DONE.
             clearTimeout(notif._autoClose);
-            notif._autoClose = setTimeout(() => {
-                if (notif.classList.contains('show')) {
-                    stopAlarm();
-                    notif.classList.remove('show');
-                    reminderShown = false;
-                }
-            }, 120000);
         }
 
         // ============================================================
@@ -3236,51 +3192,5 @@
                 .catch(err => { console.warn('⚠️ Service Worker registration failed:', err); });
         }
 
-        // ============================================================
-        // INIT
-        // ============================================================
-        async function init() {
-            await openDB();
-            initAlarm();
-            loadCustomOptions();
-            await loadNotes();
-
-            // Check reminders every 20 seconds
-            setInterval(checkReminders, 20000);
-
-            console.log('📝 H4 Smart Notepad initialized.');
-            console.log(`📊 ${allNotes.length} notes loaded.`);
-
-            if ('Notification' in window && Notification.permission === 'default') {
-                Notification.requestPermission();
-            }
-
-            // Handle warning dialog resolve
-            document.getElementById('warningSaveAnyway').addEventListener('click', async function() {
-                if (pendingSaveData) {
-                    await performSave(pendingSaveData);
-                }
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', init);
-
-        // ============================================================
-        // EXPOSE GLOBALS
-        // ============================================================
-        window.callNumber = callNumber;
-        window.whatsappNumber = whatsappNumber;
-        window.editNote = editNote;
-        window.markDone = markDone;
-        window.deleteNoteById = deleteNoteById;
-        window.saveNote = saveNote;
-        window.openSheet = openSheet;
-        window.closeSheet = closeSheet;
-        window.playAlarm = playAlarm;
-        window.stopAlarm = stopAlarm;
-        window.addCustomOption = addCustomOption;
-        window.checkReminders = checkReminders;
-        window.loadNotes = loadNotes;
-    </script>
-</body>
-</html>
+        // ====================
+Preview truncated for large file
