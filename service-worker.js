@@ -1,9 +1,9 @@
 // ============================================================
 // H4 Smart Notepad - Service Worker
-// Version: 2.0.0
+// Version: 3.0.0
 // ============================================================
 
-const CACHE_NAME = 'h4-notepad-v2';
+const CACHE_NAME = 'h4-notepad-v3';
 
 const ASSETS_TO_CACHE = [
     './',
@@ -17,7 +17,7 @@ const ASSETS_TO_CACHE = [
 // INSTALL
 // ============================================================
 self.addEventListener('install', event => {
-    console.log('[H4 SW] Installing...');
+    console.log('[H4 SW] Installing v3...');
 
     event.waitUntil(
         caches.open(CACHE_NAME)
@@ -33,7 +33,7 @@ self.addEventListener('install', event => {
 // ACTIVATE
 // ============================================================
 self.addEventListener('activate', event => {
-    console.log('[H4 SW] Activating...');
+    console.log('[H4 SW] Activating v3...');
 
     event.waitUntil(
         caches.keys()
@@ -43,6 +43,7 @@ self.addEventListener('activate', event => {
                         if (cacheName !== CACHE_NAME) {
                             return caches.delete(cacheName);
                         }
+                        return Promise.resolve();
                     })
                 );
             })
@@ -55,11 +56,46 @@ self.addEventListener('activate', event => {
 // ============================================================
 self.addEventListener('fetch', event => {
 
-    // Only handle GET requests
     if (event.request.method !== 'GET') {
         return;
     }
 
+    // --------------------------------------------------------
+    // IMPORTANT:
+    // Always get the latest index.html from the server first.
+    // This prevents old UI from being stuck in cache.
+    // --------------------------------------------------------
+    if (
+        event.request.mode === 'navigate' ||
+        event.request.url.endsWith('/index.html')
+    ) {
+        event.respondWith(
+            fetch(event.request)
+                .then(response => {
+
+                    if (response && response.ok) {
+                        const responseClone = response.clone();
+
+                        caches.open(CACHE_NAME)
+                            .then(cache => {
+                                cache.put('./index.html', responseClone);
+                            })
+                            .catch(() => {});
+                    }
+
+                    return response;
+                })
+                .catch(() => {
+                    return caches.match('./index.html');
+                })
+        );
+
+        return;
+    }
+
+    // --------------------------------------------------------
+    // Other files: cache first, network fallback
+    // --------------------------------------------------------
     event.respondWith(
         caches.match(event.request)
             .then(cachedResponse => {
@@ -71,7 +107,6 @@ self.addEventListener('fetch', event => {
                 return fetch(event.request)
                     .then(response => {
 
-                        // Only cache successful basic responses
                         if (
                             !response ||
                             response.status !== 200 ||
@@ -92,7 +127,6 @@ self.addEventListener('fetch', event => {
                     })
                     .catch(() => {
 
-                        // Offline fallback for navigation requests
                         if (event.request.mode === 'navigate') {
                             return caches.match('./index.html');
                         }
@@ -119,14 +153,12 @@ self.addEventListener('notificationclick', event => {
     notification.close();
 
     event.waitUntil(
-
         clients.matchAll({
             type: 'window',
             includeUncontrolled: true
         })
         .then(clientList => {
 
-            // Preferred URL
             let targetUrl = './';
 
             if (data.noteId) {
@@ -135,7 +167,6 @@ self.addEventListener('notificationclick', event => {
                     encodeURIComponent(data.noteId);
             }
 
-            // Find existing H4 window
             for (const client of clientList) {
 
                 if (
@@ -156,7 +187,6 @@ self.addEventListener('notificationclick', event => {
                 }
             }
 
-            // Open new window
             if (clients.openWindow) {
                 return clients.openWindow(targetUrl);
             }
@@ -202,12 +232,10 @@ self.addEventListener('push', event => {
             try {
                 data.body = event.data.text();
             } catch (e) {}
-
         }
     }
 
     event.waitUntil(
-
         self.registration.showNotification(
             data.title,
             {
@@ -221,6 +249,5 @@ self.addEventListener('push', event => {
                 data: data.data || {}
             }
         )
-
     );
 });
