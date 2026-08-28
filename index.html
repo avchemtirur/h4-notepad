@@ -27,38 +27,30 @@ button, input, select, textarea{font-family:inherit;}
 #app{flex:1; padding:14px 14px 90px;}
 a{color:inherit;}
 
-/* ---------- generic ---------- */
 .h-title{font-size:20px; font-weight:800; margin:2px 0 2px;}
 .h-sub{font-size:13px; color:var(--text2); margin:0 0 16px;}
 .card{background:var(--card); border:1px solid var(--line); border-radius:var(--r); padding:14px;}
 .field{margin-bottom:14px;}
 .field label{display:block; font-size:13px; color:var(--text2); margin-bottom:6px; font-weight:600;}
 .field .req{color:var(--reminder);}
-.field input[type=text], .field input[type=tel], .field input[type=date], .field input[type=time], .field select, .field textarea{
+.field input[type=text], .field input[type=tel], .field input[type=date], .field input[type=time], .field input[type=number], .field select, .field textarea{
   width:100%; background:var(--input); border:1px solid var(--line); color:var(--text);
   border-radius:12px; padding:14px 14px; font-size:16px; min-height:52px;
 }
-.field textarea{min-height:90px; resize:vertical; line-height:1.4;}
-.field textarea.lg{min-height:190px;}
-.field textarea.xl{min-height:230px;}
+.field textarea{min-height:90px; max-height:300px; overflow-y:auto; resize:vertical; line-height:1.4;}
+.field textarea.lg{min-height:150px; max-height:420px;}
+.field textarea.xl{min-height:180px; max-height:520px;}
 .field .hint{font-size:11px; color:var(--text3); margin-top:5px;}
+.field .warn{font-size:12px; color:#F59E0B; margin-top:5px;}
 .field .err{font-size:12px; color:#FF6B6B; margin-top:5px; display:none;}
 .field.invalid input, .field.invalid select{border-color:#FF6B6B;}
 .field.invalid .err{display:block;}
-@media(min-width:700px){
-  .field textarea{min-height:120px;}
-  .field textarea.lg{min-height:260px;}
-  .field textarea.xl{min-height:320px;}
-}
 
-.btn{
-  display:inline-flex; align-items:center; justify-content:center; gap:8px;
-  border:none; border-radius:14px; padding:14px 20px; font-size:15px; font-weight:700;
-  min-height:52px; background:var(--input); color:var(--text); width:100%;
-}
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; border:none; border-radius:14px; padding:14px 20px; font-size:15px; font-weight:700; min-height:52px; background:var(--input); color:var(--text); width:100%;}
 .btn.primary{background:var(--customer-grad); color:#fff;}
+.btn.danger{background:var(--reminder-grad); color:#fff;}
 .btn.ghost{background:transparent; border:1px solid var(--line); color:var(--text2);}
-.btn.sm{min-height:40px; padding:8px 14px; font-size:13px; width:auto;}
+.btn.sm{min-height:38px; padding:8px 14px; font-size:12.5px; width:auto;}
 .btn:disabled{opacity:.4;}
 .btn-row{display:flex; gap:10px;}
 .btn-row .btn{flex:1;}
@@ -66,56 +58,42 @@ a{color:inherit;}
 .badge{display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700; padding:4px 9px; border-radius:20px;}
 .dot{width:8px; height:8px; border-radius:50%; display:inline-block;}
 
-/* ---------- top bar (per view) ---------- */
 .topbar{display:flex; align-items:center; gap:10px; padding:14px 0 10px; position:sticky; top:0; background:var(--bg); z-index:5;}
 .topbar .back{background:var(--card); border:1px solid var(--line); color:var(--text); width:40px; height:40px; border-radius:12px; font-size:18px; flex-shrink:0;}
 .topbar h1{font-size:18px; margin:0; font-weight:800; flex:1;}
+.topbar .tb-act{background:var(--card); border:1px solid var(--line); color:var(--text); width:40px; height:40px; border-radius:12px; font-size:16px; flex-shrink:0; position:relative;}
+.tb-act .cnt{position:absolute; top:-4px; right:-4px; background:var(--reminder); color:#fff; font-size:9px; font-weight:800; border-radius:10px; padding:1px 5px; min-width:16px;}
 
-/* ---------- bottom tab bar ---------- */
-#tabbar{
-  position:fixed; left:0; right:0; bottom:0; z-index:40; background:#0E1319; border-top:1px solid var(--line);
-  display:flex; padding:6px 6px calc(6px + env(safe-area-inset-bottom));
-  max-width:1100px; margin:0 auto;
-}
-#tabbar button{
-  flex:1; background:none; border:none; color:var(--text3); display:flex; flex-direction:column; align-items:center; gap:2px;
-  padding:8px 2px; font-size:10px; font-weight:700; border-radius:12px;
-}
+#tabbar{position:fixed; left:0; right:0; bottom:0; z-index:40; background:#0E1319; border-top:1px solid var(--line); display:flex; padding:6px 6px calc(6px + env(safe-area-inset-bottom)); max-width:1100px; margin:0 auto;}
+#tabbar button{flex:1; background:none; border:none; color:var(--text3); display:flex; flex-direction:column; align-items:center; gap:2px; padding:8px 2px; font-size:10px; font-weight:700; border-radius:12px;}
 #tabbar button .tic{font-size:19px;}
 #tabbar button.active{color:var(--text);}
 #tabbar button.fab{position:relative; top:-14px;}
-#tabbar button.fab .tic{
-  width:48px; height:48px; border-radius:50%; background:var(--customer-grad); display:flex; align-items:center; justify-content:center;
-  font-size:22px; color:#fff; box-shadow:0 6px 18px rgba(59,130,246,.5);
-}
+#tabbar button.fab .tic{width:48px; height:48px; border-radius:50%; background:var(--customer-grad); display:flex; align-items:center; justify-content:center; font-size:22px; color:#fff; box-shadow:0 6px 18px rgba(59,130,246,.5);}
 body.wizard-mode #tabbar{display:none;}
 body.wizard-mode #app{padding-bottom:16px;}
 
-/* ---------- dashboard ---------- */
 .stat-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:16px;}
-@media(min-width:600px){.stat-grid{grid-template-columns:repeat(4,1fr);}}
+@media(min-width:600px){.stat-grid{grid-template-columns:repeat(3,1fr);}}
 .stat-card{background:var(--card); border:1px solid var(--line); border-radius:var(--r); padding:14px; border-top:3px solid transparent;}
 .stat-card .num{font-size:24px; font-weight:800;}
 .stat-card .lbl{font-size:11px; color:var(--text2); font-weight:700; text-transform:uppercase; letter-spacing:.03em;}
+.stat-total{border-top-color:var(--customer);}
 .stat-overdue{border-top-color:var(--reminder);}
 .stat-today{border-top-color:var(--followup);}
-.stat-upcoming{border-top-color:var(--customer);}
+.stat-upcoming{border-top-color:#3B82F6;}
+.stat-followup{border-top-color:var(--followup);}
 .stat-completed{border-top-color:var(--history);}
 
-.missed-banner{
-  background:linear-gradient(135deg,#3a0d0d,#1c0808); border:1px solid #5a1616; border-radius:var(--r);
-  padding:14px; margin-bottom:16px;
-}
+.missed-banner{background:linear-gradient(135deg,#3a0d0d,#1c0808); border:1px solid #5a1616; border-radius:var(--r); padding:14px; margin-bottom:16px;}
 .missed-banner .mb-head{display:flex; align-items:center; gap:8px; font-weight:800; color:#FF8080; margin-bottom:8px;}
 .missed-item{background:rgba(255,255,255,.04); border-radius:12px; padding:10px 12px; margin-bottom:8px;}
 .missed-item:last-child{margin-bottom:0;}
 .missed-item .mi-top{display:flex; justify-content:space-between; font-size:13px; font-weight:700;}
 .missed-item .mi-sub{font-size:12px; color:var(--text2); margin:3px 0 8px;}
+.dismiss-note{font-size:10.5px; color:var(--text3); margin-top:8px;}
 
-.next-action-card{
-  border-radius:var(--r); padding:16px; margin-bottom:16px; background:var(--card); border:1px solid var(--line);
-  border-left:4px solid var(--reminder);
-}
+.next-action-card{border-radius:var(--r); padding:16px; margin-bottom:16px; background:var(--card); border:1px solid var(--line); border-left:4px solid var(--reminder);}
 .next-action-card .na-tag{font-size:11px; font-weight:800; color:var(--reminder); letter-spacing:.06em; margin-bottom:6px;}
 .next-action-card .na-title{font-size:16px; font-weight:800; margin-bottom:4px;}
 .next-action-card .na-meta{font-size:12px; color:var(--text2); margin-bottom:12px;}
@@ -128,25 +106,25 @@ body.wizard-mode #app{padding-bottom:16px;}
 .reminder-status-widget .rsw-l{font-size:13px; font-weight:700;}
 .reminder-status-widget .rsw-status{font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px;}
 
-/* ---------- lists ---------- */
 .list-row{display:flex; align-items:center; gap:12px; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin-bottom:10px;}
-.avatar{width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff; flex-shrink:0; font-size:16px;}
+.avatar{width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff; flex-shrink:0; font-size:16px; overflow:hidden;}
+.avatar img{width:100%; height:100%; object-fit:cover;}
 .list-row .lr-body{flex:1; min-width:0;}
-.list-row .lr-title{font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.list-row .lr-title{font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center; gap:6px;}
 .list-row .lr-sub{font-size:12px; color:var(--text2); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .list-row .lr-arrow{color:var(--text3); font-size:18px;}
-.search-box{margin-bottom:14px;}
+.archived-tag{font-size:9px; background:var(--line); color:var(--text3); padding:2px 6px; border-radius:8px; font-weight:700;}
+.search-row{display:flex; gap:8px; margin-bottom:10px;}
+.search-box{flex:1;}
 .search-box input{width:100%; background:var(--input); border:1px solid var(--line); color:var(--text); border-radius:14px; padding:13px 14px; font-size:15px;}
 .empty-state{text-align:center; color:var(--text3); padding:50px 20px; font-size:13px;}
 .empty-state .ic{font-size:34px; margin-bottom:10px;}
+.filter-chip-row{display:flex; gap:8px; overflow-x:auto; margin-bottom:12px; -webkit-overflow-scrolling:touch;}
+.filter-chip-row::-webkit-scrollbar{display:none;}
 
-/* ---------- category / item cards ---------- */
 .cat-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px;}
 @media(min-width:600px){.cat-grid{grid-template-columns:repeat(3,1fr);}}
-.cat-card{
-  position:relative; background:var(--input); border:2px solid var(--line); border-radius:14px; padding:14px 10px;
-  display:flex; flex-direction:column; align-items:center; gap:6px; color:var(--text); min-height:78px; justify-content:center;
-}
+.cat-card{position:relative; background:var(--input); border:2px solid var(--line); border-radius:14px; padding:14px 10px; display:flex; flex-direction:column; align-items:center; gap:6px; color:var(--text); min-height:78px; justify-content:center;}
 .cat-card .cat-ic{font-size:22px;}
 .cat-card .cat-lbl{font-size:12px; font-weight:700; text-align:center; line-height:1.25;}
 .cat-card.selected{border-color:var(--acc,var(--customer)); background:color-mix(in srgb, var(--acc,var(--customer)) 14%, var(--input));}
@@ -156,7 +134,7 @@ body.wizard-mode #app{padding-bottom:16px;}
 @media(min-width:600px){.item-grid{grid-template-columns:repeat(3,1fr);}}
 .item-card{position:relative; background:var(--input); border:2px solid var(--line); border-radius:16px; padding:16px 10px; display:flex; flex-direction:column; align-items:center; gap:8px; min-height:110px; justify-content:center;}
 .item-card.selected{border-color:var(--item); background:color-mix(in srgb, var(--item) 14%, var(--input));}
-.item-card .ic-thumb{width:52px; height:52px; border-radius:12px; background:#0000; display:flex; align-items:center; justify-content:center; font-size:26px; overflow:hidden; background:rgba(255,255,255,.05);}
+.item-card .ic-thumb{width:52px; height:52px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:26px; overflow:hidden; background:rgba(255,255,255,.05);}
 .item-card .ic-thumb img{width:100%; height:100%; object-fit:cover;}
 .item-card .ic-name{font-size:12px; font-weight:700; text-align:center;}
 .item-card .ic-check{position:absolute; top:8px; right:10px; color:var(--item); font-weight:900;}
@@ -167,10 +145,17 @@ body.wizard-mode #app{padding-bottom:16px;}
 .thumb{position:relative; width:70px; height:70px; border-radius:12px; overflow:hidden; background:var(--input); border:1px solid var(--line);}
 .thumb img{width:100%; height:100%; object-fit:cover;}
 .thumb .rm{position:absolute; top:2px; right:2px; background:rgba(0,0,0,.6); color:#fff; border:none; border-radius:50%; width:20px; height:20px; font-size:11px;}
-.add-thumb{width:70px; height:70px; border-radius:12px; border:1.5px dashed var(--line); background:none; color:var(--text2); font-size:22px;}
+.add-thumb{width:70px; height:70px; border-radius:12px; border:1.5px dashed var(--line); background:none; color:var(--text2); font-size:20px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-direction:column; gap:2px;}
+.add-thumb span{font-size:8px; font-weight:700;}
+.file-chip{display:flex; align-items:center; gap:8px; background:var(--input); border:1px solid var(--line); border-radius:10px; padding:8px 10px; margin-top:6px; font-size:12px;}
+.file-chip .fname{flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.file-chip button{background:none; border:none; color:var(--text3); font-size:13px;}
 
-/* ---------- toggle switch ---------- */
-.switch-row{display:flex; align-items:center; justify-content:space-between; padding:14px; background:var(--card); border:1px solid var(--line); border-radius:14px; margin-bottom:14px;}
+.photo-upload{display:flex; align-items:center; gap:14px; margin-bottom:14px;}
+.photo-circle{width:64px; height:64px; border-radius:50%; background:var(--input); border:1.5px dashed var(--line); display:flex; align-items:center; justify-content:center; font-size:22px; overflow:hidden; flex-shrink:0; cursor:pointer;}
+.photo-circle img{width:100%; height:100%; object-fit:cover;}
+
+.switch-row{display:flex; align-items:center; justify-content:space-between; padding:14px; background:var(--card); border:1px solid var(--line); border-radius:14px; margin-bottom:14px; gap:10px;}
 .switch-row .sr-label{font-weight:700; font-size:14px;}
 .switch-row .sr-sub{font-size:11px; color:var(--text2); margin-top:2px;}
 .switch{position:relative; width:48px; height:28px; flex-shrink:0;}
@@ -180,12 +165,10 @@ body.wizard-mode #app{padding-bottom:16px;}
 .switch input:checked + .track{background:var(--history-grad);}
 .switch input:checked ~ .knob{transform:translateX(20px);}
 
-/* ---------- priority chips ---------- */
 .chip-row{display:flex; gap:8px; flex-wrap:wrap;}
 .chip{background:var(--input); border:1.5px solid var(--line); color:var(--text2); border-radius:20px; padding:9px 15px; font-size:12.5px; font-weight:700;}
 .chip.selected{border-color:var(--acc,var(--reminder)); color:#fff; background:color-mix(in srgb, var(--acc,var(--reminder)) 25%, var(--input));}
 
-/* ---------- wizard ---------- */
 .wiz-top{padding:14px 0 6px;}
 .wiz-top-row{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;}
 .wiz-close{background:var(--card); border:1px solid var(--line); color:var(--text); width:38px; height:38px; border-radius:12px; font-size:16px;}
@@ -198,8 +181,10 @@ body.wizard-mode #app{padding-bottom:16px;}
 .wiz-head p{margin:2px 0 0; font-size:12px; color:var(--text2);}
 .wiz-nav{display:flex; gap:10px; margin-top:22px;}
 .wiz-nav .btn{flex:1;}
+.dup-banner{background:linear-gradient(135deg,#1b2a12,#0f1a0c); border:1px solid #35521f; border-radius:14px; padding:12px 14px; margin-top:8px;}
+.dup-banner .db-title{font-weight:800; color:#8FE28F; font-size:12.5px; margin-bottom:6px;}
+.dup-banner .db-name{font-size:13.5px; font-weight:700; margin-bottom:10px;}
 
-/* ---------- timeline ---------- */
 .timeline{position:relative; padding-left:22px;}
 .timeline::before{content:''; position:absolute; left:6px; top:4px; bottom:4px; width:2px; background:var(--line);}
 .tl-item{position:relative; margin-bottom:16px;}
@@ -211,26 +196,26 @@ body.wizard-mode #app{padding-bottom:16px;}
 .tl-item .tl-imgs{display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;}
 .tl-item .tl-imgs img{width:54px; height:54px; border-radius:8px; object-fit:cover;}
 
-/* profile header */
 .profile-hero{border-radius:var(--r); padding:20px 16px; margin-bottom:14px; position:relative; overflow:hidden;}
-.profile-hero .ph-avatar{width:56px; height:56px; border-radius:50%; background:rgba(255,255,255,.18); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:22px; margin-bottom:10px;}
-.profile-hero h1{margin:0; font-size:20px; font-weight:800;}
+.profile-hero .ph-avatar{width:56px; height:56px; border-radius:50%; background:rgba(255,255,255,.18); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:22px; margin-bottom:10px; overflow:hidden;}
+.profile-hero .ph-avatar img{width:100%; height:100%; object-fit:cover;}
+.profile-hero h1{margin:0; font-size:20px; font-weight:800; display:flex; align-items:center; gap:8px;}
 .profile-hero .ph-cat{font-size:12.5px; opacity:.9; margin-top:2px;}
 .quick-actions{display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin:14px 0 18px;}
 .qa-btn{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:10px 4px; display:flex; flex-direction:column; align-items:center; gap:4px; color:var(--text); font-size:9.5px; font-weight:700;}
 .qa-btn .ic{font-size:18px;}
 
-/* ---------- reminders board ---------- */
 .rem-group-title{display:flex; align-items:center; gap:8px; font-size:13px; font-weight:800; margin:18px 0 10px;}
 .rem-card{background:var(--card); border:1px solid var(--line); border-left:4px solid var(--reminder); border-radius:14px; padding:13px 14px; margin-bottom:10px;}
 .rem-card .rc-top{display:flex; justify-content:space-between; align-items:flex-start; gap:8px;}
 .rem-card .rc-name{font-weight:800; font-size:14px;}
-.rem-card .rc-reason{font-size:12.5px; color:var(--text2); margin:4px 0 10px;}
+.rem-card .rc-reason{font-size:12.5px; color:var(--text2); margin:4px 0 8px;}
 .rem-card .rc-time{font-size:11px; color:var(--text3); font-weight:700;}
-.rem-actions{display:flex; gap:6px; flex-wrap:wrap;}
+.rem-card .rc-links{font-size:11px; margin-top:6px; display:flex; gap:10px;}
+.rem-card .rc-links a{color:var(--customer); font-weight:700;}
+.rem-actions{display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;}
 .rem-actions button{flex:1; min-width:70px; background:var(--input); border:1px solid var(--line); color:var(--text); border-radius:10px; padding:8px 6px; font-size:11px; font-weight:700;}
 
-/* ---------- modal / sheet ---------- */
 .modal-bg{position:fixed; inset:0; background:rgba(0,0,0,.65); z-index:60; display:flex; align-items:flex-end; justify-content:center;}
 .modal-sheet{background:var(--bg); width:100%; max-width:520px; max-height:88vh; overflow-y:auto; border-radius:20px 20px 0 0; padding:18px 16px calc(20px + env(safe-area-inset-bottom)); border-top:1px solid var(--line);}
 .modal-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
@@ -239,9 +224,20 @@ body.wizard-mode #app{padding-bottom:16px;}
 .snooze-opts{display:grid; grid-template-columns:repeat(2,1fr); gap:8px;}
 .snooze-opts button{background:var(--input); border:1px solid var(--line); color:var(--text); border-radius:12px; padding:14px 8px; font-weight:700; font-size:13px;}
 
-.toast{position:fixed; left:50%; top:16px; transform:translateX(-50%); background:#1a222c; border:1px solid var(--line); color:#fff; padding:10px 16px; border-radius:20px; font-size:12.5px; z-index:90; opacity:0; transition:opacity .25s; font-weight:600;}
+.diag-row{display:flex; align-items:flex-start; gap:10px; padding:11px 0; border-bottom:1px solid var(--line);}
+.diag-row:last-child{border-bottom:none;}
+.diag-row .dg{font-size:16px;}
+.diag-row .dg-label{font-weight:700; font-size:13px;}
+.diag-row .dg-note{font-size:11.5px; color:var(--text2); margin-top:2px;}
+.sound-row{display:flex; align-items:center; gap:8px; background:var(--input); border:1px solid var(--line); border-radius:12px; padding:10px 12px; margin-bottom:8px;}
+.sound-row .snd-name{flex:1; font-size:13px; font-weight:700;}
+.sound-row button{background:var(--card); border:1px solid var(--line); color:var(--text); border-radius:8px; padding:6px 10px; font-size:11px; font-weight:700;}
+
+.toast{position:fixed; left:50%; top:16px; transform:translateX(-50%); background:#1a222c; border:1px solid var(--line); color:#fff; padding:10px 16px; border-radius:20px; font-size:12.5px; z-index:90; opacity:0; transition:opacity .25s; font-weight:600; max-width:88vw; text-align:center;}
 .toast.show{opacity:1;}
 .small-muted{font-size:11px; color:var(--text3); line-height:1.5;}
+.native-note{background:var(--card); border:1px solid var(--line); border-left:3px solid var(--reminder); border-radius:var(--r); padding:14px; margin-bottom:16px;}
+.native-note b{color:var(--text);}
 </style>
 </head>
 <body>
@@ -262,12 +258,13 @@ body.wizard-mode #app{padding-bottom:16px;}
 (function(){
 "use strict";
 const $ = s => document.querySelector(s);
+const $all = s => Array.from(document.querySelectorAll(s));
 
 /* ============================================================
-   DATA
+   DATA MODEL
 ============================================================ */
-const LS_KEY = 'h4np_data_v1';
-const DRAFT_KEY = 'h4np_draft_v1';
+const LS_KEY = 'h4np_data_v2';
+const DRAFT_KEY = 'h4np_draft_v2';
 
 function uid(p){ return (p||'id')+'_'+Math.random().toString(36).slice(2,9); }
 function todayISO(){ const d=new Date(); return d.toISOString().slice(0,10); }
@@ -279,15 +276,17 @@ function escapeHtml(s){ return (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'
 function nl2br(s){ return escapeHtml(s||'').replace(/\n/g,'<br>'); }
 function initials(name){ return (name||'?').trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase(); }
 function validMobile(v){ return /^[6-9]\d{9}$/.test((v||'').trim()); }
+function relTime(iso){
+  if(!iso) return 'a while ago';
+  const s = Math.round((Date.now()-new Date(iso).getTime())/1000);
+  if(s<60) return 'just now';
+  if(s<3600) return Math.round(s/60)+' min ago';
+  if(s<86400) return Math.round(s/3600)+' hr ago';
+  return Math.round(s/86400)+' day(s) ago';
+}
+function hashStr(s){ let h=0; for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))|0; return h; }
+const AVATAR_HUES = ['#3B82F6','#8B5CF6','#06B6D4','#F59E0B','#F97316','#22C55E'];
 
-const CUSTOMER_CATEGORIES = [
-  {id:'engineer', icon:'👷', label:'Engineer'}, {id:'mason', icon:'🧱', label:'Mason'},
-  {id:'contractor', icon:'🏗️', label:'Contractor'}, {id:'architect', icon:'📐', label:'Architect'},
-  {id:'builder', icon:'🏢', label:'Builder'}, {id:'home_owner', icon:'🏠', label:'Home Owner'},
-  {id:'plumber', icon:'🔧', label:'Plumber'}, {id:'electrician', icon:'⚡', label:'Electrician'},
-  {id:'interior', icon:'🛋️', label:'Interior Designer'}, {id:'dealer', icon:'🏪', label:'Dealer'},
-  {id:'supplier', icon:'📦', label:'Supplier'}, {id:'other', icon:'✨', label:'Other'}
-];
 const CONTACT_CATEGORIES = [
   {id:'new_enquiry', icon:'🆕', label:'New Enquiry'}, {id:'existing', icon:'👤', label:'Existing Customer'},
   {id:'followup', icon:'🔄', label:'Follow-up'}, {id:'site_visit', icon:'📍', label:'Site Visit'},
@@ -303,24 +302,39 @@ const CONTACT_METHODS = [
 ];
 const NOTE_CATEGORIES = ['General','Enquiry','Product','Price','Site','Complaint','Follow-up','Important','Other'];
 const PRIORITIES = ['Normal','Important','High','Urgent'];
-const SNOOZE_OPTS = [['1h','1 Hour'],['tomorrow','Tomorrow'],['3d','3 Days'],['7d','7 Days'],['custom','Custom Date & Time']];
+const SNOOZE_OPTS = [['1h','1 Hour'],['tomorrow','Tomorrow (same time)'],['3d','3 Days (same time)'],['7d','7 Days (same time)'],['custom','Custom Date & Time']];
 const REMIND_BEFORE = [['0','At time'],['5','5 min before'],['10','10 min before'],['15','15 min before'],['30','30 min before'],['60','1 hour before']];
 const REPEAT_OPTS = [['none','Does not repeat'],['daily','Daily'],['weekly','Weekly'],['monthly','Monthly']];
-
+const BUILTIN_SOUNDS = [
+  {id:'default', name:'Default', builtin:true}, {id:'chime', name:'Chime', builtin:true},
+  {id:'bell', name:'Bell', builtin:true}, {id:'alert', name:'Alert', builtin:true}, {id:'alarm', name:'Alarm', builtin:true}
+];
+function defaultCategories(){
+  return [
+    {id:'engineer', icon:'👷', label:'Engineer', active:true}, {id:'mason', icon:'🧱', label:'Mason', active:true},
+    {id:'contractor', icon:'🏗️', label:'Contractor', active:true}, {id:'architect', icon:'📐', label:'Architect', active:true},
+    {id:'builder', icon:'🏢', label:'Builder', active:true}, {id:'home_owner', icon:'🏠', label:'Home Owner', active:true},
+    {id:'plumber', icon:'🔧', label:'Plumber', active:true}, {id:'electrician', icon:'⚡', label:'Electrician', active:true},
+    {id:'interior', icon:'🛋️', label:'Interior Designer', active:true}, {id:'dealer', icon:'🏪', label:'Dealer', active:true},
+    {id:'supplier', icon:'📦', label:'Supplier', active:true}, {id:'other', icon:'✨', label:'Other', active:true}
+  ];
+}
 function defaultDB(){
   return {
     customers: [],
+    customCategories: defaultCategories(),
     items: [
-      {id:'epoxy', name:'Epoxy', icon:'🧪', image:null, description:'', active:true},
-      {id:'waterproofing', name:'Waterproofing', icon:'💧', image:null, description:'', active:true}
+      {id:'epoxy', name:'Epoxy', icon:'🧪', image:null, description:'', active:true, order:1},
+      {id:'waterproofing', name:'Waterproofing', icon:'💧', image:null, description:'', active:true, order:2}
     ],
     contacts: [], notes: [], followups: [], reminders: [],
+    sounds: [], // custom uploaded sounds only; builtins are in BUILTIN_SOUNDS
     settings: {
-      enableReminders:true, sound:'Default', vibration:true, defaultSnooze:'1h',
-      showPopup:true, showNotification:true, lockScreen:true,
-      showMissedOnOpen:true, playMissedSound:true, showOverdueCount:true
+      enableReminders:true, soundOn:true, defaultSoundId:'default', volume:80, vibration:true,
+      showPopup:true, showNotification:true, lockScreen:true, alarmMode:false,
+      showMissedOnOpen:true, playMissedSound:true, showOverdueCount:true, defaultSnooze:'1h'
     },
-    meta:{ seenMissedAt:null }
+    meta:{ lastActiveAt:null }
   };
 }
 let DB = loadDB();
@@ -329,10 +343,15 @@ function loadDB(){
     const raw = JSON.parse(localStorage.getItem(LS_KEY));
     if(!raw) return defaultDB();
     const d = defaultDB();
-    return Object.assign(d, raw, {settings:Object.assign(d.settings, raw.settings||{})});
+    const merged = Object.assign(d, raw, {
+      settings: Object.assign(d.settings, raw.settings||{}),
+      meta: Object.assign(d.meta, raw.meta||{})
+    });
+    if(!merged.customCategories || !merged.customCategories.length) merged.customCategories = defaultCategories();
+    return merged;
   }catch(e){ return defaultDB(); }
 }
-function saveDB(){ localStorage.setItem(LS_KEY, JSON.stringify(DB)); }
+function saveDB(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(DB)); }catch(e){ toast('Storage full — could not save. Try exporting a backup and removing old images.'); } }
 
 /* ============================================================
    ROUTER / GLOBAL STATE
@@ -341,9 +360,18 @@ let route = {name:'dashboard', params:{}};
 let modal = null;
 let addingNewItem = false;
 let bannerDismissed = false;
+let customerSearch = '';
+let customerFilter = {category:'', item:'', showArchived:false};
+let remFilter = {priority:'', from:'', to:''};
+let historyFilter = 'all';
 
-function nav(name, params){ route={name, params:params||{}}; modal=null; document.body.classList.toggle('wizard-mode', name==='wizard'); render(); window.scrollTo(0,0); }
-function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('show'),1600); }
+function nav(name, params){
+  route={name, params:params||{}}; modal=null;
+  if(name==='customer') historyFilter='all';
+  document.body.classList.toggle('wizard-mode', name==='wizard');
+  render(); window.scrollTo(0,0);
+}
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('show'),1900); }
 
 /* ============================================================
    WIZARD DRAFT
@@ -362,121 +390,229 @@ let draft = null;
 
 function newDraft(){
   return {
-    customer:{name:'', category:'', mobile:'', whatsapp:'', altMobile:'', address:'', location:''},
+    updatedAt: new Date().toISOString(),
+    forceNewDespiteDuplicate:false,
+    customer:{name:'', category:'', mobile:'', whatsapp:'', altMobile:'', address:'', location:'', photo:null},
     items:{selected:[]},
     contact:{category:'', method:'', date:todayISO(), time:nowHHMM(), details:''},
-    note:{title:'', body:'', category:'', images:[]},
-    followup:{required:false, date:'', time:'', reason:'', method:'', priority:'Normal', createNext:false},
-    reminder:{create:false, date:'', time:'', reason:'', method:'', priority:'Normal', repeat:'none', remindBefore:'0'}
+    note:{title:'', body:'', category:'', images:[], attachments:[]},
+    followup:{required:false, date:'', time:'', reason:'', method:'', priority:'Normal'},
+    reminder:{create:false, date:'', time:'', reason:'', method:'', priority:'Normal', repeat:'none', remindBefore:'0', soundId:'default'}
   };
 }
-function loadDraft(){
-  try{ const raw = JSON.parse(localStorage.getItem(DRAFT_KEY)); return raw || newDraft(); }
-  catch(e){ return newDraft(); }
+function loadDraftFromStorage(){
+  try{ const raw = JSON.parse(localStorage.getItem(DRAFT_KEY)); return raw || null; }
+  catch(e){ return null; }
 }
-function saveDraft(){ localStorage.setItem(DRAFT_KEY, JSON.stringify(draft)); }
+function saveDraft(){ draft.updatedAt = new Date().toISOString(); localStorage.setItem(DRAFT_KEY, JSON.stringify(draft)); }
 function clearDraft(){ localStorage.removeItem(DRAFT_KEY); }
 
 function startWizard(resume){
-  draft = resume ? loadDraft() : newDraft();
+  draft = (resume && loadDraftFromStorage()) || newDraft();
   wStep = 1; addingNewItem = false;
   nav('wizard');
 }
-
-/* setPath: data-bind="a.b.c" onto draft */
 function getPath(obj, path){ return path.split('.').reduce((o,k)=>(o==null?undefined:o[k]), obj); }
-function setPath(obj, path, val){
-  const parts = path.split('.'); let o = obj;
-  for(let i=0;i<parts.length-1;i++){ o = o[parts[i]]; }
-  o[parts[parts.length-1]] = val;
-}
+function setPath(obj, path, val){ const parts=path.split('.'); let o=obj; for(let i=0;i<parts.length-1;i++) o=o[parts[i]]; o[parts[parts.length-1]]=val; }
 
 /* ============================================================
-   REMINDER STATUS LOGIC
+   REMINDER STATUS ENGINE  (Pending → Due/Today/Upcoming/Overdue/Missed → Snoozed → Completed)
 ============================================================ */
+function pushHistory(r, event){ r.history = r.history||[]; r.history.push({ts:new Date().toISOString(), event}); }
+
 function reminderStatus(r){
+  const now = new Date();
   if(r.status==='completed') return 'completed';
-  if(r.status==='snoozed' && r.snoozeUntil){
-    return new Date(r.snoozeUntil) > new Date() ? 'snoozed' : 'overdue';
-  }
+  if(r.status==='missed') return 'missed';
+  if(r.snoozeMarker && r.snoozeUntil && new Date(r.snoozeUntil) > now) return 'snoozed';
   const dt = combineDT(r.date, r.time);
   if(!dt) return 'upcoming';
-  const now = new Date();
-  const sameDay = dt.toDateString() === now.toDateString();
-  if(dt < now) return 'overdue';
-  if(sameDay) return 'today';
-  return 'upcoming';
+  if(now < dt) return dt.toDateString()===now.toDateString() ? 'today' : 'upcoming';
+  const graceMs = 5*60000;
+  if(now - dt <= graceMs) return 'due';
+  return 'overdue';
 }
 const STATUS_META = {
   upcoming:{label:'Upcoming', color:'#3B82F6', dot:'🔵'},
   today:{label:'Today', color:'#F97316', dot:'🟠'},
+  due:{label:'Due Now', color:'#EF4444', dot:'🔴'},
   overdue:{label:'Overdue', color:'#EF4444', dot:'🔴'},
+  missed:{label:'Missed', color:'#B91C1C', dot:'⛔'},
   snoozed:{label:'Snoozed', color:'#EAB308', dot:'🟡'},
   completed:{label:'Completed', color:'#22C55E', dot:'🟢'},
   rescheduled:{label:'Rescheduled', color:'#22C55E', dot:'📅'}
 };
-function pushHistory(r, event){ r.history = r.history||[]; r.history.push({ts:new Date().toISOString(), event}); }
+
+/* Missed detection: a reminder is "Missed" only when this app/tab was not open
+   at (or past) its scheduled time — i.e. the device/browser was unavailable to
+   fire it — never just because the app happened to stay open past due time. */
+function detectMissedReminders(){
+  const now = new Date();
+  const last = DB.meta.lastActiveAt ? new Date(DB.meta.lastActiveAt) : null;
+  const wasAway = !last || (now - last) > 3*60000;
+  if(wasAway){
+    DB.reminders.forEach(r=>{
+      if(r.status==='pending'){
+        const effectiveDT = (r.snoozeMarker && r.snoozeUntil) ? new Date(r.snoozeUntil) : combineDT(r.date,r.time);
+        if(effectiveDT && effectiveDT < now){
+          r.status='missed'; r.snoozeMarker=false;
+          pushHistory(r, 'Missed — app/browser was not open at the scheduled time');
+        }
+      }
+    });
+  }
+  DB.meta.lastActiveAt = now.toISOString();
+  saveDB();
+}
+
+function notifyAtForReminder(r){
+  const dt = combineDT(r.date, r.time);
+  if(!dt) return null;
+  const mins = parseInt(r.remindBefore||'0',10);
+  return new Date(dt.getTime() - mins*60000);
+}
+
+function checkDueReminders(){
+  const s = DB.settings;
+  DB.meta.lastActiveAt = new Date().toISOString();
+  if(!s.enableReminders) return;
+  const now = new Date();
+  let changed=false;
+  DB.reminders.forEach(r=>{
+    if(r.status!=='pending') return; // snoozed reminders keep status 'pending', so they ARE re-checked here
+    const notifyAt = notifyAtForReminder(r);
+    if(!notifyAt) return;
+    if(now >= notifyAt && !r._notified){
+      r._notified = true; changed = true;
+      fireReminderAlert(r);
+    }
+  });
+  if(changed) saveDB();
+}
+function fireReminderAlert(r){
+  const s = DB.settings;
+  const c = DB.customers.find(x=>x.id===r.customerId);
+  const dt = combineDT(r.date, r.time);
+  const notifyAt = notifyAtForReminder(r);
+  const showsBoth = notifyAt && dt && Math.abs(notifyAt-dt) > 60000;
+  const bodyLines = [`${c?c.name:'Customer'} — ${r.reason||'Reminder'}`];
+  if(showsBoth) bodyLines.push(`Notify: ${fmtTime(notifyAt.toTimeString().slice(0,5))}  ·  Action time: ${fmtTime(r.time)}`);
+  else bodyLines.push(`⏰ ${fmtTime(r.time)}`);
+  if(s.showNotification && window.Notification && Notification.permission==='granted'){
+    try{ new Notification('🔔 Customer Reminder', {body: bodyLines.join('\n')}); }catch(e){}
+  }
+  if(s.vibration && navigator.vibrate) navigator.vibrate([200,100,200,100,200]);
+  if(s.soundOn) playSound(r.soundId || s.defaultSoundId);
+  if(s.showPopup) toast('🔔 Reminder: '+(c?c.name:'Customer')+' — '+(r.reason||''));
+}
+setInterval(checkDueReminders, 30000);
+
+function playSound(soundId){
+  const custom = DB.sounds.find(x=>x.id===soundId);
+  if(custom && custom.dataUrl){
+    try{ const a = new Audio(custom.dataUrl); a.volume = (DB.settings.volume||80)/100; a.play().catch(()=>{}); }catch(e){}
+  } else {
+    // Built-in tones have no shipped audio asset in this browser build — the native
+    // app would map these to real ringtone resources. We're honest about that here.
+    toast('🔊 "'+ (BUILTIN_SOUNDS.find(b=>b.id===soundId)||{name:soundId}).name +'" would play (built-in tones need the native app to actually sound).');
+  }
+}
+
+/* ============================================================
+   RECURRENCE
+============================================================ */
+function nextOccurrenceDate(dateStr, repeat){
+  const d = new Date(dateStr+'T00:00:00');
+  if(repeat==='daily') d.setDate(d.getDate()+1);
+  else if(repeat==='weekly') d.setDate(d.getDate()+7);
+  else if(repeat==='monthly') d.setMonth(d.getMonth()+1);
+  return d.toISOString().slice(0,10);
+}
+function createNextOccurrence(r){
+  const nd = uid('rem');
+  DB.reminders.push({
+    id:nd, customerId:r.customerId, contactId:r.contactId||null, noteId:r.noteId||null, followupId:r.followupId||null,
+    date: nextOccurrenceDate(r.date, r.repeat), time:r.time, reason:r.reason, method:r.method, priority:r.priority,
+    repeat:r.repeat, remindBefore:r.remindBefore, soundId:r.soundId,
+    scheduledLocalDate:null, scheduledLocalTime:null, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    status:'pending', snoozeMarker:false, snoozeUntil:null,
+    history:[{ts:new Date().toISOString(), event:'Created — recurring from '+r.id}], createdAt:new Date().toISOString()
+  });
+  const created = DB.reminders[DB.reminders.length-1];
+  created.scheduledLocalDate = created.date; created.scheduledLocalTime = created.time;
+  return created;
+}
+
+/* ============================================================
+   CATEGORY / ITEM HELPERS
+============================================================ */
+function categoryLabel(list, id){ const c=list.find(x=>x.id===id); return c?c.label:(id||'—'); }
+function categoryIcon(list, id){ const c=list.find(x=>x.id===id); return c?c.icon:'✨'; }
+function methodIcon(id){ return categoryIcon(CONTACT_METHODS, id) || '📞'; }
+function activeCustomerCategories(){ return DB.customCategories.filter(c=>c.active!==false); }
+function emptyState(ic,title,sub){ return `<div class="empty-state"><div class="ic">${ic}</div><div style="font-weight:700;color:var(--text2);margin-bottom:4px;">${title}</div>${sub}</div>`; }
 
 /* ============================================================
    RENDER: SHELL PIECES
 ============================================================ */
-function topbar(title, backRoute){
+function topbar(title, backRoute, rightHtml){
   return `<div class="topbar">
     ${backRoute?`<button class="back" data-act="nav" data-route="${backRoute}">←</button>`:''}
     <h1>${title}</h1>
+    ${rightHtml||''}
   </div>`;
 }
-function updateTabActive(){
-  document.querySelectorAll('#tabbar [data-route]').forEach(b=>{
-    b.classList.toggle('active', b.dataset.route===route.name);
-  });
-}
+function updateTabActive(){ $all('#tabbar [data-route]').forEach(b=> b.classList.toggle('active', b.dataset.route===route.name)); }
 
 /* ============================================================
    VIEW: DASHBOARD
 ============================================================ */
 function viewDashboard(){
   const rems = DB.reminders.map(r=>({...r, _status:reminderStatus(r)}));
+  const activeCustomers = DB.customers.filter(c=>c.status!=='archived');
   const counts = {
-    overdue: rems.filter(r=>r._status==='overdue').length,
+    total: activeCustomers.length,
+    overdue: rems.filter(r=>r._status==='overdue'||r._status==='due'||r._status==='missed').length,
     today: rems.filter(r=>r._status==='today').length,
     upcoming: rems.filter(r=>r._status==='upcoming').length,
+    followups: DB.followups.filter(f=>f.required).length,
     completed: rems.filter(r=>r._status==='completed').length
   };
-  const missed = rems.filter(r=>r._status==='overdue');
-  const next = rems.filter(r=>r._status==='today'||r._status==='overdue')
+  const missed = rems.filter(r=>r._status==='missed'||r._status==='overdue');
+  const next = rems.filter(r=>['today','due','overdue','missed'].includes(r._status))
     .sort((a,b)=> combineDT(a.date,a.time) - combineDT(b.date,b.time))[0];
+  const permStatus = (window.Notification && Notification.permission==='granted');
+  const recentNotes = DB.notes.slice().sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,3);
 
-  const permStatus = (window.Notification && Notification.permission==='granted') ? 'granted' : 'other';
-
-  let html = `
+  return `
   <div class="h-title">H4 Note Pad</div>
   <div class="h-sub">Customer Management · Notes · Reminders</div>
 
   <div class="reminder-status-widget">
     <div class="rsw-l">🔔 Reminder System</div>
-    <div class="rsw-status" style="background:${permStatus==='granted'?'rgba(34,197,94,.18)':'rgba(249,115,22,.18)'}; color:${permStatus==='granted'?'#22C55E':'#F97316'}">
-      ${permStatus==='granted' ? '🟢 Active' : '🟠 Permission Required'}
+    <div class="rsw-status" style="background:${permStatus?'rgba(34,197,94,.18)':'rgba(249,115,22,.18)'}; color:${permStatus?'#22C55E':'#F97316'}">
+      ${permStatus ? '🟢 Active (app open)' : '🟠 Permission Required'}
     </div>
   </div>
 
   ${missed.length && !bannerDismissed ? `
   <div class="missed-banner">
-    <div class="mb-head">🔴 ${missed.length} MISSED REMINDER${missed.length>1?'S':''}
+    <div class="mb-head">🔴 ${missed.length} OVERDUE / MISSED
       <button class="btn ghost sm" style="margin-left:auto;" data-act="dismissBanner">Dismiss</button>
     </div>
     ${missed.slice(0,4).map(r=>{
-      const c = DB.customers.find(c=>c.id===r.customerId);
+      const c = DB.customers.find(x=>x.id===r.customerId);
       return `<div class="missed-item">
-        <div class="mi-top"><span>${escapeHtml(c?c.name:'Unknown')}${c?` — ${categoryLabel(CUSTOMER_CATEGORIES,c.category)}`:''}</span><span>${fmtTime(r.time)}</span></div>
+        <div class="mi-top"><span>${escapeHtml(c?c.name:'Unknown')}${c?` — ${categoryLabel(DB.customCategories,c.category)}`:''} ${STATUS_META[r._status].dot}</span><span>${fmtTime(r.time)}</span></div>
         <div class="mi-sub">${escapeHtml(r.reason||'Reminder')}</div>
         <div class="rem-actions">
           <button data-act="callCustomer" data-id="${c?c.id:''}">📞 Call</button>
-          <button data-act="completeReminder" data-id="${r.id}">✅ Complete</button>
+          <button data-act="openComplete" data-id="${r.id}">✅ Complete</button>
           <button data-act="openSnooze" data-id="${r.id}">⏰ Snooze</button>
         </div>
       </div>`;
     }).join('')}
+    <div class="dismiss-note">Dismiss only hides this banner — reminders stay Overdue/Missed until you Complete, Snooze, or Reschedule them.</div>
   </div>` : ''}
 
   ${next ? `
@@ -486,53 +622,74 @@ function viewDashboard(){
     <div class="na-meta">📅 ${fmtDate(next.date)} · ⏰ ${fmtTime(next.time)} — ${escapeHtml(next.reason||'')}</div>
     <div class="btn-row">
       <button class="btn primary" data-act="callCustomer" data-id="${next.customerId}">📞 Call Now</button>
-      <button class="btn ghost" data-act="completeReminder" data-id="${next.id}">✅ Done</button>
+      <button class="btn ghost" data-act="openComplete" data-id="${next.id}">✅ Done</button>
     </div>
   </div>` : ''}
 
   <div class="stat-grid">
-    <div class="stat-card stat-overdue"><div class="num">${counts.overdue}</div><div class="lbl">Overdue</div></div>
+    <div class="stat-card stat-total"><div class="num">${counts.total}</div><div class="lbl">Customers</div></div>
     <div class="stat-card stat-today"><div class="num">${counts.today}</div><div class="lbl">Today</div></div>
+    <div class="stat-card stat-overdue"><div class="num">${counts.overdue}</div><div class="lbl">Overdue/Missed</div></div>
     <div class="stat-card stat-upcoming"><div class="num">${counts.upcoming}</div><div class="lbl">Upcoming</div></div>
+    <div class="stat-card stat-followup"><div class="num">${counts.followups}</div><div class="lbl">Follow-ups</div></div>
     <div class="stat-card stat-completed"><div class="num">${counts.completed}</div><div class="lbl">Completed</div></div>
   </div>
 
-  <div class="section-head"><h2>Recent Customers</h2><a data-act="nav" data-route="customers">See all →</a></div>
-  ${DB.customers.length===0
-    ? emptyState('👤','No customers yet','Tap + to add your first customer.')
-    : DB.customers.slice().reverse().slice(0,5).map(customerRow).join('')}
-  `;
-  return html;
-}
-function categoryLabel(list, id){ const c=list.find(x=>x.id===id); return c?c.label:(id||''); }
-function categoryIcon(list, id){ const c=list.find(x=>x.id===id); return c?c.icon:'✨'; }
-function methodIcon(id){ return categoryIcon(CONTACT_METHODS, id) || '📞'; }
-function emptyState(ic,title,sub){ return `<div class="empty-state"><div class="ic">${ic}</div><div style="font-weight:700;color:var(--text2);margin-bottom:4px;">${title}</div>${sub}</div>`; }
+  ${recentNotes.length ? `<div class="section-head"><h2>Recent Notes</h2></div>
+  ${recentNotes.map(n=>{
+    const c = DB.customers.find(x=>x.id===n.customerId);
+    return `<div class="card" style="margin-bottom:10px;" data-act="nav" data-route="customer" data-id="${n.customerId}">
+      <div style="font-weight:700;font-size:13px;">📝 ${escapeHtml(n.title||'Note')} — ${escapeHtml(c?c.name:'')}</div>
+      <div class="small-muted" style="margin-top:4px;">${escapeHtml((n.body||'').slice(0,90))}${(n.body||'').length>90?'…':''}</div>
+    </div>`;
+  }).join('')}` : ''}
 
+  <div class="section-head"><h2>Recent Customers</h2><a data-act="nav" data-route="customers">See all →</a></div>
+  ${activeCustomers.length===0 ? emptyState('👤','No customers yet','Tap + to add your first customer.')
+    : activeCustomers.slice().reverse().slice(0,5).map(customerRow).join('')}
+  `;
+}
 function customerRow(c){
-  const hue = ['#3B82F6','#8B5CF6','#06B6D4','#F59E0B','#F97316','#22C55E'][Math.abs(hashStr(c.id))%6];
+  const hue = AVATAR_HUES[Math.abs(hashStr(c.id))%AVATAR_HUES.length];
   return `<div class="list-row" data-act="nav" data-route="customer" data-id="${c.id}">
-    <div class="avatar" style="background:${hue}">${initials(c.name)}</div>
+    <div class="avatar" style="background:${hue}">${c.photo?`<img src="${c.photo}">`:initials(c.name)}</div>
     <div class="lr-body">
-      <div class="lr-title">${escapeHtml(c.name)}</div>
-      <div class="lr-sub">${categoryIcon(CUSTOMER_CATEGORIES,c.category)} ${categoryLabel(CUSTOMER_CATEGORIES,c.category)} · ${escapeHtml(c.mobile||'')}</div>
+      <div class="lr-title">${escapeHtml(c.name)} ${c.status==='archived'?'<span class="archived-tag">ARCHIVED</span>':''}</div>
+      <div class="lr-sub">${categoryIcon(DB.customCategories,c.category)} ${categoryLabel(DB.customCategories,c.category)} · ${escapeHtml(c.mobile||'')}</div>
     </div>
     <div class="lr-arrow">›</div>
   </div>`;
 }
-function hashStr(s){ let h=0; for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))|0; return h; }
 
 /* ============================================================
-   VIEW: CUSTOMERS LIST
+   VIEW: CUSTOMERS LIST (full-text search + filters)
 ============================================================ */
-let customerSearch = '';
+function customerHaystack(c){
+  const items = (c.items||[]).map(id=>DB.items.find(i=>i.id===id)).filter(Boolean).map(i=>i.name);
+  const contacts = DB.contacts.filter(x=>x.customerId===c.id);
+  const notes = DB.notes.filter(x=>x.customerId===c.id);
+  const reminders = DB.reminders.filter(x=>x.customerId===c.id);
+  return [
+    c.name, c.mobile, c.whatsapp, categoryLabel(DB.customCategories,c.category), c.address, c.location,
+    ...items,
+    ...contacts.map(x=>categoryLabel(CONTACT_CATEGORIES,x.category)+' '+x.details),
+    ...notes.map(x=>x.title+' '+x.body),
+    ...reminders.map(x=>x.reason)
+  ].join(' ').toLowerCase();
+}
 function viewCustomerList(){
   const q = customerSearch.trim().toLowerCase();
-  const list = DB.customers.filter(c => !q || c.name.toLowerCase().includes(q) || (c.mobile||'').includes(q));
+  let list = DB.customers.filter(c => customerFilter.showArchived ? true : c.status!=='archived');
+  if(q) list = list.filter(c => customerHaystack(c).includes(q));
+  if(customerFilter.category) list = list.filter(c=>c.category===customerFilter.category);
+  if(customerFilter.item) list = list.filter(c=>(c.items||[]).includes(customerFilter.item));
+  const activeFilterCount = (customerFilter.category?1:0)+(customerFilter.item?1:0)+(customerFilter.showArchived?1:0);
   return `
-  ${topbar('Customers')}
-  <div class="search-box"><input type="text" placeholder="Search by name or mobile" value="${escapeHtml(customerSearch)}" data-act="searchCustomers"></div>
-  ${list.length===0 ? emptyState('👥','No customers found','Try a different search, or tap + to add one.') : list.slice().reverse().map(customerRow).join('')}
+  ${topbar('Customers', null, `<button class="tb-act" data-act="openCustomerFilter">🔎${activeFilterCount?`<span class="cnt">${activeFilterCount}</span>`:''}</button>`)}
+  <div class="search-row">
+    <div class="search-box"><input type="text" placeholder="Search name, mobile, item, note, contact…" value="${escapeHtml(customerSearch)}" data-act="searchCustomers"></div>
+  </div>
+  ${list.length===0 ? emptyState('👥','No customers found','Try a different search or filter, or tap + to add one.') : list.slice().reverse().map(customerRow).join('')}
   `;
 }
 
@@ -548,30 +705,33 @@ function viewCustomerProfile(id){
   const followups = DB.followups.filter(x=>x.customerId===id);
   const reminders = DB.reminders.filter(x=>x.customerId===id).map(r=>({...r,_status:reminderStatus(r)}));
 
-  const lastContact = contacts.slice().sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt))[0];
+  const lastContact = contacts.slice().sort((a,b)=>(combineDT(b.date,b.time)||new Date(b.createdAt)) - (combineDT(a.date,a.time)||new Date(a.createdAt)))[0];
   const nextRem = reminders.filter(r=>r._status!=='completed').sort((a,b)=>combineDT(a.date,a.time)-combineDT(b.date,b.time))[0];
-
   const items = (c.items||[]).map(iid=>DB.items.find(i=>i.id===iid)).filter(Boolean);
 
-  const timelineEntries = [
-    ...contacts.map(x=>({type:'contact', accent:'contact', ts:x.createdAt, icon:methodIcon(x.method),
+  let timelineEntries = [
+    ...contacts.map(x=>({type:'contact', accent:'contact', ts:(combineDT(x.date,x.time)||new Date(x.createdAt)).toISOString(), icon:methodIcon(x.method),
       title:`${categoryLabel(CONTACT_CATEGORIES,x.category)} · ${categoryLabel(CONTACT_METHODS,x.method)}`, body:x.details})),
     ...notes.map(x=>({type:'note', accent:'notes', ts:x.createdAt, icon:'📝',
-      title:x.title||'Note', body:x.body, images:x.images})),
-    ...followups.map(x=>({type:'followup', accent:'followup', ts:x.createdAt, icon:'🔄',
+      title:x.title||'Note', body:x.body, images:x.images, attachments:x.attachments})),
+    ...followups.map(x=>({type:'followup', accent:'followup', ts:(combineDT(x.date,x.time)||new Date(x.createdAt)).toISOString(), icon:'🔄',
       title:'Follow-up · '+x.priority, body:x.reason})),
-    ...reminders.map(x=>({type:'reminder', accent:'reminder', ts:x.createdAt, icon:'🔔',
+    ...reminders.map(x=>({type:'reminder', accent:'reminder', ts:(combineDT(x.date,x.time)||new Date(x.createdAt)).toISOString(), icon:'🔔',
       title:`Reminder — ${STATUS_META[x._status].label}`, body:`${fmtDate(x.date)} ${fmtTime(x.time)} · ${x.reason||''}`}))
   ].sort((a,b)=> new Date(b.ts) - new Date(a.ts));
 
-  const hue = ['#3B82F6','#8B5CF6','#06B6D4','#F59E0B','#F97316'][Math.abs(hashStr(c.id))%5];
+  const HFILTERS = [['all','All'],['contact','Contacts'],['note','Notes'],['followup','Follow-ups'],['reminder','Reminders'],['attachment','Attachments']];
+  if(historyFilter==='attachment') timelineEntries = timelineEntries.filter(e=>e.type==='note' && ((e.images&&e.images.length)||(e.attachments&&e.attachments.length)));
+  else if(historyFilter!=='all') timelineEntries = timelineEntries.filter(e=>e.type===historyFilter);
+
+  const hue = AVATAR_HUES[Math.abs(hashStr(c.id))%AVATAR_HUES.length];
 
   return `
   ${topbar('Customer', 'customers')}
   <div class="profile-hero" style="background:linear-gradient(135deg, ${hue}, #0B0F14 130%);">
-    <div class="ph-avatar">${initials(c.name)}</div>
-    <h1>${escapeHtml(c.name)}</h1>
-    <div class="ph-cat">${categoryIcon(CUSTOMER_CATEGORIES,c.category)} ${categoryLabel(CUSTOMER_CATEGORIES,c.category)} · ${escapeHtml(c.mobile||'')}</div>
+    <div class="ph-avatar">${c.photo?`<img src="${c.photo}">`:initials(c.name)}</div>
+    <h1>${escapeHtml(c.name)} ${c.status==='archived'?'<span class="archived-tag">ARCHIVED</span>':''}</h1>
+    <div class="ph-cat">${categoryIcon(DB.customCategories,c.category)} ${categoryLabel(DB.customCategories,c.category)} · ${escapeHtml(c.mobile||'')}</div>
   </div>
 
   <div class="quick-actions">
@@ -605,12 +765,14 @@ function viewCustomerProfile(id){
       📱 ${escapeHtml(c.mobile||'—')}<br>
       ${c.whatsapp?`💬 ${escapeHtml(c.whatsapp)}<br>`:''}
       ${c.address?`📍 ${escapeHtml(c.address)}<br>`:''}
-      ${c.location?`🗺️ ${escapeHtml(c.location)}`:''}
+      ${c.location?`🗺️ ${escapeHtml(c.location)}<br>`:''}
     </div>
+    <button class="btn ghost sm" style="margin-top:10px;" data-act="toggleArchive" data-id="${c.id}">${c.status==='archived'?'♻️ Unarchive Customer':'🗄️ Archive Customer'}</button>
   </div>
 
   <div class="section-head"><h2>History</h2></div>
-  ${timelineEntries.length===0 ? emptyState('🕘','No history yet','Add a note, contact, or reminder above.') : `
+  <div class="filter-chip-row">${HFILTERS.map(([k,l])=>`<button type="button" class="chip ${historyFilter===k?'selected':''}" style="--acc:var(--customer)" data-act="setHistoryFilter" data-val="${k}">${l}</button>`).join('')}</div>
+  ${timelineEntries.length===0 ? emptyState('🕘','No history for this filter','Add a note, contact, or reminder above.') : `
   <div class="timeline">
     ${timelineEntries.map(e=>`
       <div class="tl-item" style="--acc:var(--${e.accent})">
@@ -619,6 +781,7 @@ function viewCustomerProfile(id){
           <div class="tl-title">${e.icon} ${escapeHtml(e.title)}</div>
           ${e.body?`<div class="tl-body">${nl2br(e.body)}</div>`:''}
           ${e.images && e.images.length ? `<div class="tl-imgs">${e.images.map(im=>`<img src="${im}">`).join('')}</div>`:''}
+          ${e.attachments && e.attachments.length ? e.attachments.map(a=>`<div class="file-chip"><span>📄</span><span class="fname">${escapeHtml(a.name)}</span><a href="${a.dataUrl}" download="${escapeHtml(a.name)}">⬇</a></div>`).join(''):''}
         </div>
       </div>
     `).join('')}
@@ -630,12 +793,16 @@ function viewCustomerProfile(id){
    VIEW: REMINDERS BOARD
 ============================================================ */
 function viewReminders(){
-  const rems = DB.reminders.map(r=>({...r,_status:reminderStatus(r)}));
+  let rems = DB.reminders.map(r=>({...r,_status:reminderStatus(r)}));
+  if(remFilter.priority) rems = rems.filter(r=>r.priority===remFilter.priority);
+  if(remFilter.from) rems = rems.filter(r=>r.date>=remFilter.from);
+  if(remFilter.to) rems = rems.filter(r=>r.date<=remFilter.to);
   const groups = [
-    ['overdue','🔴 Overdue'], ['today','🟠 Today'], ['snoozed','🟡 Snoozed'],
+    ['missed','⛔ Missed'], ['overdue','🔴 Overdue'], ['due','🔴 Due Now'], ['today','🟠 Today'], ['snoozed','🟡 Snoozed'],
     ['upcoming','🔵 Upcoming'], ['completed','🟢 Completed']
   ];
-  let html = topbar('Reminders');
+  const activeFilterCount = (remFilter.priority?1:0)+(remFilter.from?1:0)+(remFilter.to?1:0);
+  let html = topbar('Reminders', null, `<button class="tb-act" data-act="openReminderFilter">🔎${activeFilterCount?`<span class="cnt">${activeFilterCount}</span>`:''}</button>`);
   let any=false;
   groups.forEach(([key,label])=>{
     const list = rems.filter(r=>r._status===key).sort((a,b)=>combineDT(a.date,a.time)-combineDT(b.date,b.time));
@@ -644,25 +811,31 @@ function viewReminders(){
     html += `<div class="rem-group-title">${label} — ${list.length}</div>`;
     html += list.map(r=>reminderCard(r)).join('');
   });
-  if(!any) html += emptyState('🔔','No reminders yet','Reminders you create from a customer will show up here.');
+  if(!any) html += emptyState('🔔','No reminders match','Reminders you create from a customer will show up here.');
   return html;
 }
 function reminderCard(r){
   const c = DB.customers.find(x=>x.id===r.customerId);
   const meta = STATUS_META[r._status];
   const done = r._status==='completed';
+  const notifyAt = notifyAtForReminder(r);
+  const dt = combineDT(r.date,r.time);
+  const showsBoth = notifyAt && dt && Math.abs(notifyAt-dt) > 60000;
   return `<div class="rem-card" style="border-left-color:${meta.color}">
     <div class="rc-top">
       <div>
-        <div class="rc-name">${escapeHtml(c?c.name:'Unknown')} ${c?`— ${categoryLabel(CUSTOMER_CATEGORIES,c.category)}`:''}</div>
+        <div class="rc-name">${escapeHtml(c?c.name:'Unknown')} ${c?`— ${categoryLabel(DB.customCategories,c.category)}`:''}</div>
         <div class="rc-reason">${methodIcon(r.method)} ${escapeHtml(r.reason||'Reminder')}</div>
       </div>
       <span class="badge" style="background:${meta.color}22; color:${meta.color}">${meta.dot} ${meta.label}</span>
     </div>
-    <div class="rc-time">📅 ${fmtDate(r.date)} · ⏰ ${fmtTime(r.time)} ${r.priority?('· '+r.priority):''}</div>
-    ${!done ? `<div class="rem-actions" style="margin-top:10px;">
+    <div class="rc-time">📅 ${fmtDate(r.date)} · ⏰ ${fmtTime(r.time)} ${r.priority?('· '+r.priority):''}
+      ${showsBoth?`<br>🔔 Notify ${fmtTime(notifyAt.toTimeString().slice(0,5))} · Action ${fmtTime(r.time)}`:''}
+    </div>
+    ${(r.noteId||r.contactId)?`<div class="rc-links">${c?`<a data-act="nav" data-route="customer" data-id="${c.id}">👤 View Customer</a>`:''}</div>`:''}
+    ${!done ? `<div class="rem-actions">
       <button data-act="callCustomer" data-id="${c?c.id:''}">📞 Call</button>
-      <button data-act="completeReminder" data-id="${r.id}">✅ Complete</button>
+      <button data-act="openComplete" data-id="${r.id}">✅ Complete</button>
       <button data-act="openSnooze" data-id="${r.id}">⏰ Snooze</button>
       <button data-act="openReschedule" data-id="${r.id}">📅 Reschedule</button>
     </div>` : ''}
@@ -675,30 +848,45 @@ function reminderCard(r){
 function viewSettings(){
   const s = DB.settings;
   const perm = window.Notification ? Notification.permission : 'unsupported';
+  const storageKb = (JSON.stringify(DB).length/1024).toFixed(1);
   return `
   ${topbar('Settings')}
 
   <div class="section-head"><h2>🔔 Reminder Settings</h2></div>
   ${toggleRow('enableReminders','Enable Reminders','Turn all local reminders on or off', s.enableReminders)}
-
-  <div class="field">
-    <label>Default Reminder Sound</label>
-    <select data-bind-settings="sound">
-      ${['Default','Chime','Bell','Alert'].map(o=>`<option ${s.sound===o?'selected':''}>${o}</option>`).join('')}
+  ${toggleRow('soundOn','Sound','Play a tone when a reminder fires', s.soundOn)}
+  <div class="field"><label>🎵 Default Sound</label>
+    <select data-bind-settings="defaultSoundId">
+      ${BUILTIN_SOUNDS.map(o=>`<option value="${o.id}" ${s.defaultSoundId===o.id?'selected':''}>${o.name}</option>`).join('')}
+      ${DB.sounds.map(o=>`<option value="${o.id}" ${s.defaultSoundId===o.id?'selected':''}>${o.name} (custom)</option>`).join('')}
     </select>
   </div>
-  ${toggleRow('vibration','Vibration','Vibrate when a reminder fires', s.vibration)}
-  <div class="field">
-    <label>Default Snooze Duration</label>
+  <div class="field"><label>🔊 Volume</label>
+    <input type="range" min="0" max="100" value="${s.volume}" data-bind-settings-range="volume" style="width:100%;">
+  </div>
+  ${toggleRow('vibration','📳 Vibration','Vibrate when a reminder fires', s.vibration)}
+  <div class="field"><label>Default Snooze Duration</label>
     <select data-bind-settings="defaultSnooze">
       ${SNOOZE_OPTS.filter(o=>o[0]!=='custom').map(o=>`<option value="${o[0]}" ${s.defaultSnooze===o[0]?'selected':''}>${o[1]}</option>`).join('')}
     </select>
   </div>
+  ${toggleRow('alarmMode','⏰ Alarm Mode',"Requests a louder/insistent style — a browser can't override phone Silent/DND; that needs the native app", s.alarmMode)}
+
+  <div class="section-head"><h2>🎵 Custom Ringtones</h2></div>
+  ${DB.sounds.length===0 ? `<p class="small-muted" style="margin-bottom:8px;">No custom sounds uploaded yet.</p>` :
+    DB.sounds.map(sd=>`<div class="sound-row">
+      <span class="snd-name">${escapeHtml(sd.name)}</span>
+      <button data-act="previewSound" data-id="${sd.id}">▶ Preview</button>
+      <button data-act="renameSound" data-id="${sd.id}">✏️</button>
+      <button data-act="setDefaultSound" data-id="${sd.id}">Set Default</button>
+      <button data-act="deleteSound" data-id="${sd.id}">🗑</button>
+    </div>`).join('')}
+  <label class="btn ghost" style="margin-top:6px; cursor:pointer;">📤 Upload Audio (MP3/WAV/M4A)<input type="file" accept="audio/*" id="uploadSoundInput" style="display:none;"></label>
 
   <div class="section-head"><h2>Notification</h2></div>
   ${toggleRow('showPopup','Show Popup','In-app popup when a reminder is due', s.showPopup)}
   ${toggleRow('showNotification','Show Notification','Browser/OS notification while the app is open', s.showNotification)}
-  ${toggleRow('lockScreen','Lock Screen Notification','Show reminder details on the lock screen', s.lockScreen)}
+  ${toggleRow('lockScreen','Lock Screen Notification','Show reminder details on the lock screen (native app only)', s.lockScreen)}
 
   <div class="section-head"><h2>Missed Reminders</h2></div>
   ${toggleRow('showMissedOnOpen','Show Missed on App Open','Recheck for missed reminders every time you open the app', s.showMissedOnOpen)}
@@ -707,32 +895,75 @@ function viewSettings(){
 
   <div class="card" style="margin:18px 0;">
     <div style="font-weight:800;margin-bottom:6px;">🔔 Notification Permission</div>
-    <div class="small-muted" style="margin-bottom:10px;">
-      Status: <strong style="color:${perm==='granted'?'#22C55E':'#F97316'}">${perm}</strong>
-    </div>
+    <div class="small-muted" style="margin-bottom:10px;">Status: <strong style="color:${perm==='granted'?'#22C55E':'#F97316'}">${perm}</strong></div>
     ${perm!=='granted' ? `<button class="btn primary" data-act="requestNotifPermission">Enable Reminder Notifications</button>` : ''}
-    ${perm==='denied' ? `<p class="small-muted" style="margin-top:8px;">⚠️ Reminder notifications are disabled. Enable notification permission in your browser/site settings to receive customer reminders.</p>`:''}
   </div>
 
-  <div class="card" style="margin-bottom:18px; border-left:3px solid var(--reminder);">
-    <div style="font-weight:800;margin-bottom:6px;">⚡ Reliable Reminders — read this</div>
-    <p class="small-muted">
-      While H4 Note Pad is open in a browser tab, reminders are checked locally and can trigger a
-      notification. Browsers cannot guarantee an alarm fires when your phone is locked or the app/tab
-      is fully closed — that level of reliability (surviving reboot, working with the phone off, etc.)
-      needs this to be packaged as a native Android app using AlarmManager/WorkManager, or a PWA with
-      background push. Every reminder is already saved with everything (date, time, reason, customer,
-      linked note, priority, repeat) that a native implementation would need — no data model changes
-      required to upgrade later.
+  <button class="btn ghost" style="margin-bottom:10px;" data-act="testReminderNow">🔔 TEST NOW — Sound / Vibration / Notification / Popup</button>
+
+  <div class="section-head"><h2>🩺 Reminder Health</h2></div>
+  <div class="card" style="margin-bottom:16px;">${diagnosticsHtml()}</div>
+
+  <div class="native-note">
+    <b>⚡ Reliable Reminders — read this</b>
+    <p class="small-muted" style="margin-top:6px;">
+      While H4 Note Pad is open in a browser tab, reminders are checked locally and can trigger a real
+      notification/vibration/sound. A browser <b>cannot</b> guarantee an alarm fires when your phone is
+      locked, the tab is closed, or the phone reboots — that needs a native Android app using
+      <b>AlarmManager/WorkManager</b>, a <b>BOOT_COMPLETED</b> receiver, exact-alarm permission, battery
+      optimization exemption, and native notification action buttons (Call/Complete/Snooze on the
+      notification itself). None of that is something a static HTML page can do — this build stores
+      everything (timezone, local date/time, repeat rule, remind-before, links to the customer/note/
+      follow-up) so a native rebuild wouldn't need any data-model changes.
     </p>
   </div>
 
+  <div class="section-head"><h2>Customer Categories</h2></div>
+  ${DB.customCategories.map(cat=>`<div class="sound-row">
+    <span style="font-size:16px;">${cat.icon}</span>
+    <span class="snd-name" style="${cat.active===false?'opacity:.45;text-decoration:line-through;':''}">${escapeHtml(cat.label)}</span>
+    <button data-act="renameCategory" data-id="${cat.id}">✏️</button>
+    <button data-act="toggleCategoryActive" data-id="${cat.id}">${cat.active===false?'Enable':'Disable'}</button>
+    <button data-act="deleteCategory" data-id="${cat.id}">🗑</button>
+  </div>`).join('')}
+  <button class="btn ghost" style="margin-top:6px;" data-act="addCategory">➕ Add Category</button>
+
   <div class="section-head"><h2>Item Catalog</h2></div>
-  <div class="item-grid">
-    ${DB.items.map(i=>`<div class="item-card"><div class="ic-thumb">${i.image?`<img src="${i.image}">`:(i.icon||'🧪')}</div><div class="ic-name">${escapeHtml(i.name)}</div></div>`).join('')}
+  ${DB.items.slice().sort((a,b)=>(a.order||0)-(b.order||0)).map((i,idx,arr)=>`<div class="sound-row">
+    <div class="ic-thumb" style="width:34px;height:34px;font-size:16px;">${i.image?`<img src="${i.image}">`:i.icon}</div>
+    <span class="snd-name" style="${i.active===false?'opacity:.45;text-decoration:line-through;':''}">${escapeHtml(i.name)}</span>
+    <button data-act="moveItemUp" data-id="${i.id}" ${idx===0?'disabled':''}>↑</button>
+    <button data-act="moveItemDown" data-id="${i.id}" ${idx===arr.length-1?'disabled':''}>↓</button>
+    <button data-act="editItem" data-id="${i.id}">✏️</button>
+    <button data-act="toggleItemActive" data-id="${i.id}">${i.active===false?'Enable':'Disable'}</button>
+    <button data-act="deleteItem" data-id="${i.id}">🗑</button>
+  </div>`).join('')}
+  <button class="btn ghost" style="margin-top:6px;" data-act="editItem" data-id="">➕ Add Item</button>
+
+  <div class="section-head"><h2>Data</h2></div>
+  <div class="card">
+    <div class="small-muted" style="margin-bottom:10px;">Approx. local storage used: <strong>${storageKb} KB</strong> (browser storage — see the note above about production-scale storage).</div>
+    <div class="btn-row" style="margin-bottom:10px;">
+      <button class="btn ghost" data-act="exportBackup">⬇ Export Backup</button>
+      <label class="btn ghost" style="cursor:pointer;">⬆ Import Backup<input type="file" accept="application/json" id="importBackupInput" style="display:none;"></label>
+    </div>
+    <button class="btn danger" data-act="deleteAllData">🗑 Delete All Data</button>
   </div>
-  <p class="small-muted" style="margin-top:10px;">Add new items directly from the Item step while creating or editing a customer.</p>
   `;
+}
+function diagnosticsHtml(){
+  const s = DB.settings;
+  const notifOk = window.Notification && Notification.permission==='granted';
+  const vibOk = !!navigator.vibrate;
+  const rows = [
+    {ic: notifOk?'🟢':'🔴', label:'Notifications', note: notifOk?'Enabled':'Grant permission above'},
+    {ic: vibOk?'🟢':'🔴', label:'Vibration API', note: vibOk?'Supported by this browser':'Not supported on this device/browser'},
+    {ic: s.soundOn?'🟢':'🔴', label:'Sound', note: s.soundOn?'Enabled in settings':'Turned off in settings'},
+    {ic:'⚪', label:'Works while app/phone is fully closed', note:'Not possible from a web page — needs the native Android app (AlarmManager + boot receiver)'},
+    {ic:'⚪', label:'Battery optimization exemption', note:'Not applicable in a browser — needs the native Android app'},
+    {ic:'⚪', label:'Exact alarm permission', note:'Not applicable in a browser — needs the native Android app'}
+  ];
+  return rows.map(r=>`<div class="diag-row"><span class="dg">${r.ic}</span><div><div class="dg-label">${r.label}</div><div class="dg-note">${r.note}</div></div></div>`).join('');
 }
 function toggleRow(key,label,sub,checked){
   return `<div class="switch-row">
@@ -751,7 +982,7 @@ function viewWizard(){
   <div class="wiz-top">
     <div class="wiz-top-row">
       <button class="wiz-close" data-act="closeWizard">✕</button>
-      <span class="wiz-step-lbl">Step ${wStep} of ${STEPS.length}</span>
+      <span class="wiz-step-lbl">Step ${wStep} of ${STEPS.length} · draft saved ${relTime(draft.updatedAt)}</span>
     </div>
     <div class="wiz-progress"><div class="wiz-progress-fill" style="width:${pct}%; background:var(--${step.accent}-grad)"></div></div>
   </div>
@@ -766,7 +997,6 @@ function viewWizard(){
   </div>
   `;
 }
-
 function wizardStepBody(key){
   switch(key){
     case 'customer': return stepCustomer();
@@ -778,22 +1008,35 @@ function wizardStepBody(key){
     case 'review': return stepReview();
   }
 }
-
+function categoryCards(list, selected, action, accent){
+  return `<div class="cat-grid">${list.map(c=>`
+    <button type="button" class="cat-card ${selected===c.id?'selected':''}" style="--acc:var(--${accent})" data-act="${action}" data-val="${c.id}">
+      <span class="cat-ic">${c.icon}</span><span class="cat-lbl">${c.label}</span>
+      ${selected===c.id?'<span class="cat-check">✓</span>':''}
+    </button>`).join('')}</div>`;
+}
 function stepCustomer(){
   const d = draft.customer;
+  const dup = d.mobile.length===10 && validMobile(d.mobile) ? DB.customers.find(x=>x.mobile===d.mobile.trim()) : null;
   return `
+  <div class="photo-upload">
+    <label class="photo-circle">${d.photo?`<img src="${d.photo}">`:'📷'}<input type="file" accept="image/*" id="custPhotoInput" style="display:none;"></label>
+    <div class="small-muted">Optional customer photo<br>${d.photo?'<span data-act="removeCustomerPhoto" style="color:#FF6B6B;cursor:pointer;">Remove photo</span>':'Tap the circle to add one'}</div>
+  </div>
   <div class="field"><label>Customer Name <span class="req">*</span></label>
     <input type="text" data-bind="customer.name" value="${escapeHtml(d.name)}" placeholder="e.g. Abdul Rahman">
   </div>
   <div class="field"><label>Customer Category <span class="req">*</span></label>
-    ${categoryCards(CUSTOMER_CATEGORIES, d.category, 'selectCustomerCategory', 'customer')}
+    ${categoryCards(activeCustomerCategories(), d.category, 'selectCustomerCategory', 'customer')}
   </div>
   <div class="field"><label>Mobile Number <span class="req">*</span></label>
     <input type="tel" maxlength="10" data-bind="customer.mobile" value="${escapeHtml(d.mobile)}" placeholder="10-digit mobile number">
     <div class="hint">Indian mobile numbers only (starts 6–9, 10 digits).</div>
+    <div id="dupBanner">${dup && !draft.forceNewDespiteDuplicate ? dupBannerHtml(dup) : ''}</div>
   </div>
   <div class="field"><label>WhatsApp Number</label>
-    <input type="tel" data-bind="customer.whatsapp" value="${escapeHtml(d.whatsapp)}" placeholder="If different from mobile">
+    <input type="tel" maxlength="10" data-bind="customer.whatsapp" value="${escapeHtml(d.whatsapp)}" placeholder="If different from mobile">
+    ${d.whatsapp && !validMobile(d.whatsapp) ? `<div class="warn">⚠️ Doesn't look like a valid 10-digit number</div>`:''}
   </div>
   <div class="field"><label>Alternative Number</label>
     <input type="tel" data-bind="customer.altMobile" value="${escapeHtml(d.altMobile)}">
@@ -806,18 +1049,20 @@ function stepCustomer(){
   </div>
   `;
 }
-function categoryCards(list, selected, action, accent){
-  return `<div class="cat-grid">${list.map(c=>`
-    <button type="button" class="cat-card ${selected===c.id?'selected':''}" style="--acc:var(--${accent})" data-act="${action}" data-val="${c.id}">
-      <span class="cat-ic">${c.icon}</span><span class="cat-lbl">${c.label}</span>
-      ${selected===c.id?'<span class="cat-check">✓</span>':''}
-    </button>`).join('')}</div>`;
+function dupBannerHtml(c){
+  return `<div class="dup-banner">
+    <div class="db-title">⚠️ EXISTING CUSTOMER FOUND</div>
+    <div class="db-name">${escapeHtml(c.name)} — ${categoryLabel(DB.customCategories,c.category)}</div>
+    <div class="btn-row">
+      <button class="btn ghost sm" data-act="continueAsNewCustomer">Continue as New</button>
+      <button class="btn primary sm" data-act="openExistingFromDup" data-id="${c.id}">Open Customer</button>
+    </div>
+  </div>`;
 }
-
 function stepItem(){
   const sel = draft.items.selected;
   let html = `<div class="item-grid">`;
-  DB.items.filter(i=>i.active!==false).forEach(i=>{
+  DB.items.filter(i=>i.active!==false).slice().sort((a,b)=>(a.order||0)-(b.order||0)).forEach(i=>{
     const isSel = sel.includes(i.id);
     html += `<div class="item-card ${isSel?'selected':''}" data-act="toggleItem" data-val="${i.id}">
       ${isSel?'<span class="ic-check">✓</span>':''}
@@ -839,10 +1084,9 @@ function stepItem(){
       </div>
     </div>`;
   }
-  html += `<p class="small-muted" style="margin-top:12px;">You can select more than one item — customers often ask about a few things at once.</p>`;
+  html += `<p class="small-muted" style="margin-top:12px;">You can select more than one item.</p>`;
   return html;
 }
-
 function stepContact(){
   const d = draft.contact;
   return `
@@ -853,11 +1097,10 @@ function stepContact(){
     <div class="field" style="flex:1;"><label>Time</label><input type="time" data-bind="contact.time" value="${d.time}"></div>
   </div>
   <div class="field"><label>Contact Details / Conversation</label>
-    <textarea class="lg" data-bind="contact.details" placeholder="Customer-ുമായി എന്താണ് സംസാരിച്ചത് എന്ന് ഇവിടെ എഴുതുക...">${escapeHtml(d.details)}</textarea>
+    <textarea class="lg" data-bind="contact.details" placeholder="What did the customer say?">${escapeHtml(d.details)}</textarea>
   </div>
   `;
 }
-
 function stepNote(){
   const d = draft.note;
   return `
@@ -870,18 +1113,23 @@ function stepNote(){
   <div class="field"><label>Note Category</label>
     <div class="chip-row">${NOTE_CATEGORIES.map(c=>`<button type="button" class="chip ${d.category===c?'selected':''}" style="--acc:var(--notes)" data-act="selectNoteCategory" data-val="${c}">${c}</button>`).join('')}</div>
   </div>
-  <div class="field"><label>Attach Images</label>
+  <div class="field"><label>Photos</label>
     <div class="thumb-row">
       ${d.images.map((im,idx)=>`<div class="thumb"><img src="${im}"><button class="rm" data-act="removeNoteImage" data-idx="${idx}">✕</button></div>`).join('')}
-      <label class="add-thumb" style="display:flex;align-items:center;justify-content:center;cursor:pointer;">📷<input type="file" accept="image/*" multiple id="noteImageInput" style="display:none;"></label>
+      <label class="add-thumb">📷<span>Camera</span><input type="file" accept="image/*" capture="environment" id="noteCameraInput" style="display:none;"></label>
+      <label class="add-thumb">🖼️<span>Gallery</span><input type="file" accept="image/*" multiple id="noteGalleryInput" style="display:none;"></label>
     </div>
     <div class="hint">Photos are auto-compressed before saving.</div>
   </div>
+  <div class="field"><label>Documents (PDF / Doc)</label>
+    ${d.attachments.map((a,idx)=>`<div class="file-chip"><span>📄</span><span class="fname">${escapeHtml(a.name)}</span><button data-act="removeNoteAttachment" data-idx="${idx}">✕</button></div>`).join('')}
+    <label class="btn ghost sm" style="margin-top:6px; cursor:pointer;">📎 Add Document<input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,application/pdf" id="noteDocInput" style="display:none;"></label>
+  </div>
   `;
 }
-
 function stepFollowup(){
   const d = draft.followup;
+  const past = d.date && d.time && combineDT(d.date,d.time) < new Date();
   return `
   ${switchField('followup.required','Follow-up Required', d.required)}
   ${d.required ? `
@@ -889,6 +1137,7 @@ function stepFollowup(){
     <div class="field" style="flex:1;"><label>Follow-up Date</label><input type="date" data-bind="followup.date" value="${d.date}"></div>
     <div class="field" style="flex:1;"><label>Follow-up Time</label><input type="time" data-bind="followup.time" value="${d.time}"></div>
   </div>
+  ${past?`<p class="warn">⚠️ This date/time is in the past.</p>`:''}
   <div class="field"><label>Follow-up Reason</label>
     <textarea data-bind="followup.reason" placeholder="e.g. Call customer to ask about sample result.">${escapeHtml(d.reason)}</textarea>
   </div>
@@ -899,9 +1148,9 @@ function stepFollowup(){
   ` : `<p class="small-muted">Turn this on if you need to reach out to the customer again.</p>`}
   `;
 }
-
 function stepReminder(){
   const d = draft.reminder;
+  const past = d.date && d.time && combineDT(d.date,d.time) < new Date();
   return `
   ${switchField('reminder.create','Create Reminder', d.create)}
   ${d.create ? `
@@ -909,8 +1158,9 @@ function stepReminder(){
     <div class="field" style="flex:1;"><label>Reminder Date</label><input type="date" data-bind="reminder.date" value="${d.date}"></div>
     <div class="field" style="flex:1;"><label>Reminder Time</label><input type="time" data-bind="reminder.time" value="${d.time}"></div>
   </div>
+  ${past?`<p class="warn">⚠️ This date/time is in the past.</p>`:''}
   <div class="field"><label>Reminder Reason</label>
-    <textarea class="lg" data-bind="reminder.reason" placeholder="e.g. Customer used the waterproofing sample. Ask for the result and whether a new quotation is needed.">${escapeHtml(d.reason)}</textarea>
+    <textarea class="lg" data-bind="reminder.reason" placeholder="e.g. Ask for the sample result and whether a quotation is needed.">${escapeHtml(d.reason)}</textarea>
   </div>
   <div class="field"><label>Contact Method</label>${categoryCards(CONTACT_METHODS.slice(0,4), d.method, 'selectReminderMethod','reminder')}</div>
   <div class="field"><label>Priority</label>
@@ -918,9 +1168,16 @@ function stepReminder(){
   </div>
   <div class="field"><label>Remind Me Before</label>
     <select data-bind="reminder.remindBefore">${REMIND_BEFORE.map(o=>`<option value="${o[0]}" ${d.remindBefore===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select>
+    ${d.remindBefore!=='0' && d.date && d.time ? `<div class="hint">🔔 Notify at ${fmtTime(new Date(combineDT(d.date,d.time)-parseInt(d.remindBefore,10)*60000).toTimeString().slice(0,5))} · Action time ${fmtTime(d.time)}</div>`:''}
   </div>
   <div class="field"><label>Repeat</label>
     <select data-bind="reminder.repeat">${REPEAT_OPTS.map(o=>`<option value="${o[0]}" ${d.repeat===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select>
+  </div>
+  <div class="field"><label>Sound</label>
+    <select data-bind="reminder.soundId">
+      ${BUILTIN_SOUNDS.map(o=>`<option value="${o.id}" ${d.soundId===o.id?'selected':''}>${o.name}</option>`).join('')}
+      ${DB.sounds.map(o=>`<option value="${o.id}" ${d.soundId===o.id?'selected':''}>${o.name} (custom)</option>`).join('')}
+    </select>
   </div>
   ${!(window.Notification && Notification.permission==='granted') ? `
   <div class="card" style="border-left:3px solid var(--reminder);">
@@ -931,7 +1188,6 @@ function stepReminder(){
   ` : `<p class="small-muted">Turn this on to set a local reminder linked to this customer and note.</p>`}
   `;
 }
-
 function stepReview(){
   const d = draft;
   const items = d.items.selected.map(id=>DB.items.find(i=>i.id===id)).filter(Boolean);
@@ -939,7 +1195,7 @@ function stepReview(){
   <div class="card" style="margin-bottom:12px;">
     <div style="font-size:11px;font-weight:800;color:var(--customer);text-transform:uppercase;margin-bottom:6px;">Customer</div>
     <div style="font-weight:700;">${escapeHtml(d.customer.name)||'—'}</div>
-    <div class="small-muted">${categoryLabel(CUSTOMER_CATEGORIES,d.customer.category)} · ${escapeHtml(d.customer.mobile)}</div>
+    <div class="small-muted">${categoryLabel(DB.customCategories,d.customer.category)} · ${escapeHtml(d.customer.mobile)}</div>
   </div>
   <div class="card" style="margin-bottom:12px;">
     <div style="font-size:11px;font-weight:800;color:var(--item);text-transform:uppercase;margin-bottom:6px;">Item</div>
@@ -962,7 +1218,7 @@ function stepReview(){
   ${d.reminder.create ? `
   <div class="card" style="margin-bottom:12px;">
     <div style="font-size:11px;font-weight:800;color:var(--reminder);text-transform:uppercase;margin-bottom:6px;">Reminder</div>
-    <div class="small-muted">${fmtDate(d.reminder.date)} ${fmtTime(d.reminder.time)} · ${escapeHtml(d.reminder.reason)}</div>
+    <div class="small-muted">${fmtDate(d.reminder.date)} ${fmtTime(d.reminder.time)} · ${escapeHtml(d.reminder.reason)} ${d.reminder.repeat!=='none'?'· repeats '+d.reminder.repeat:''}</div>
   </div>`:''}
   <p class="small-muted">Saving will link all of the above to one customer record.</p>
   `;
@@ -975,7 +1231,7 @@ function switchField(bindPath,label,checked){
 }
 
 /* ============================================================
-   MODALS (quick add note / contact / reminder, snooze, reschedule)
+   MODALS
 ============================================================ */
 function renderModal(){
   const root = $('#modalRoot');
@@ -986,7 +1242,15 @@ function renderModal(){
   if(modal.type==='addReminder') inner = modalAddReminder();
   if(modal.type==='snooze') inner = modalSnooze();
   if(modal.type==='reschedule') inner = modalReschedule();
+  if(modal.type==='complete') inner = modalComplete();
+  if(modal.type==='customerFilter') inner = modalCustomerFilter();
+  if(modal.type==='reminderFilter') inner = modalReminderFilter();
+  if(modal.type==='duplicateConfirm') inner = modalDuplicateConfirm();
+  if(modal.type==='editItem') inner = modalEditItem();
+  if(modal.type==='editCategory') inner = modalEditCategory();
+  if(modal.type==='renameSound') inner = modalRenameSound();
   root.innerHTML = `<div class="modal-bg" data-act="closeModalBg"><div class="modal-sheet" onclick="event.stopPropagation()">${inner}</div></div>`;
+  autoGrowAll();
 }
 function modalAddNote(){
   const d = modal.data;
@@ -999,7 +1263,7 @@ function modalAddNote(){
   <div class="field"><label>Images</label>
     <div class="thumb-row">
       ${d.images.map((im,idx)=>`<div class="thumb"><img src="${im}"><button class="rm" data-act="mRemoveNoteImage" data-idx="${idx}">✕</button></div>`).join('')}
-      <label class="add-thumb" style="display:flex;align-items:center;justify-content:center;cursor:pointer;">📷<input type="file" accept="image/*" multiple id="mNoteImageInput" style="display:none;"></label>
+      <label class="add-thumb">📷<span>Add</span><input type="file" accept="image/*" multiple id="mNoteImageInput" style="display:none;"></label>
     </div>
   </div>
   <button class="btn primary" data-act="saveModalNote">Save Note</button>`;
@@ -1027,13 +1291,14 @@ function modalAddReminder(){
   <div class="field"><label>Priority</label>
     <div class="chip-row">${PRIORITIES.map(p=>`<button type="button" class="chip ${d.priority===p?'selected':''}" style="--acc:var(--reminder)" data-act="mSelectRemPriority" data-val="${p}">${p}</button>`).join('')}</div>
   </div>
+  <div class="field"><label>Repeat</label>
+    <select id="mRemRepeat">${REPEAT_OPTS.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join('')}</select>
+  </div>
   <button class="btn primary" data-act="saveModalReminder">Save Reminder</button>`;
 }
 function modalSnooze(){
   return `<div class="modal-head"><h3>⏰ Snooze</h3><button class="x" data-act="closeModal">✕</button></div>
-  <div class="snooze-opts">
-    ${SNOOZE_OPTS.map(o=>`<button data-act="doSnooze" data-val="${o[0]}">${o[1]}</button>`).join('')}
-  </div>
+  <div class="snooze-opts">${SNOOZE_OPTS.map(o=>`<button data-act="doSnooze" data-val="${o[0]}">${o[1]}</button>`).join('')}</div>
   <div id="customSnoozeBox"></div>`;
 }
 function modalReschedule(){
@@ -1043,55 +1308,186 @@ function modalReschedule(){
   <div class="field"><label>New Time</label><input type="time" id="rsTime" value="${r.time}"></div>
   <button class="btn primary" data-act="doReschedule">Confirm Reschedule</button>`;
 }
+function modalComplete(){
+  const d = modal.data;
+  const r = DB.reminders.find(x=>x.id===d.id);
+  return `<div class="modal-head"><h3>✅ Complete Reminder</h3><button class="x" data-act="closeModal">✕</button></div>
+  <div class="field"><label>Completion Note</label>
+    <textarea class="lg" id="cCompletionNote" placeholder="e.g. Called customer. Sample result was good. Call again in 7 days.">${escapeHtml(d.note||'')}</textarea>
+  </div>
+  ${r && r.repeat!=='none' ? `<p class="small-muted">This is a repeating (${r.repeat}) reminder — the next occurrence will be created automatically.</p>`:''}
+  ${switchField('__createNext','Create a follow-up reminder', d.createNext)}
+  <div id="cNextFields">${d.createNext?completeNextFields(d):''}</div>
+  <button class="btn primary" data-act="confirmComplete">Mark Complete</button>`;
+}
+function completeNextFields(d){
+  return `
+  <div class="field-row" style="display:flex;gap:10px;">
+    <div class="field" style="flex:1"><label>Next Date</label><input type="date" id="cNextDate" value="${d.nextDate||''}"></div>
+    <div class="field" style="flex:1"><label>Next Time</label><input type="time" id="cNextTime" value="${d.nextTime||''}"></div>
+  </div>
+  <div class="field"><label>Reason</label><textarea id="cNextReason">${escapeHtml(d.nextReason||'')}</textarea></div>`;
+}
+function modalCustomerFilter(){
+  return `<div class="modal-head"><h3>🔎 Filter Customers</h3><button class="x" data-act="closeModal">✕</button></div>
+  <div class="field"><label>Category</label>
+    <select id="fCategory"><option value="">All</option>${DB.customCategories.map(c=>`<option value="${c.id}" ${customerFilter.category===c.id?'selected':''}>${c.icon} ${c.label}</option>`).join('')}</select>
+  </div>
+  <div class="field"><label>Item</label>
+    <select id="fItem"><option value="">All</option>${DB.items.map(i=>`<option value="${i.id}" ${customerFilter.item===i.id?'selected':''}>${i.icon} ${i.name}</option>`).join('')}</select>
+  </div>
+  ${toggleRow('showArchivedTmp','Show Archived Customers','', customerFilter.showArchived)}
+  <div class="btn-row">
+    <button class="btn ghost" data-act="clearCustomerFilter">Clear All</button>
+    <button class="btn primary" data-act="applyCustomerFilter">Apply</button>
+  </div>`.replace('data-bind-settings-toggle="showArchivedTmp"','id="fArchived"');
+}
+function modalReminderFilter(){
+  return `<div class="modal-head"><h3>🔎 Filter Reminders</h3><button class="x" data-act="closeModal">✕</button></div>
+  <div class="field"><label>Priority</label>
+    <select id="rfPriority"><option value="">All</option>${PRIORITIES.map(p=>`<option ${remFilter.priority===p?'selected':''}>${p}</option>`).join('')}</select>
+  </div>
+  <div class="field-row" style="display:flex;gap:10px;">
+    <div class="field" style="flex:1"><label>From</label><input type="date" id="rfFrom" value="${remFilter.from}"></div>
+    <div class="field" style="flex:1"><label>To</label><input type="date" id="rfTo" value="${remFilter.to}"></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn ghost" data-act="clearReminderFilter">Clear All</button>
+    <button class="btn primary" data-act="applyReminderFilter">Apply</button>
+  </div>`;
+}
+function modalDuplicateConfirm(){
+  const c = DB.customers.find(x=>x.id===modal.data.id);
+  return `<div class="modal-head"><h3>⚠️ Customer Already Exists</h3><button class="x" data-act="closeModal">✕</button></div>
+  <p class="small-muted" style="margin-bottom:14px;">A customer with this mobile number is already saved:</p>
+  <div class="card" style="margin-bottom:16px;">
+    <div style="font-weight:700;">${escapeHtml(c.name)}</div>
+    <div class="small-muted">${categoryLabel(DB.customCategories,c.category)} · ${escapeHtml(c.mobile)}</div>
+  </div>
+  <div class="btn-row">
+    <button class="btn ghost" data-act="openExistingFromDup" data-id="${c.id}">Open Existing</button>
+    <button class="btn primary" data-act="forceSaveNewCustomer">Add New Anyway</button>
+  </div>`;
+}
+function modalEditItem(){
+  const d = modal.data;
+  return `<div class="modal-head"><h3>${d.id?'✏️ Edit Item':'➕ Add Item'}</h3><button class="x" data-act="closeModal">✕</button></div>
+  <div class="field"><label>Name</label><input type="text" id="eiName" value="${escapeHtml(d.name||'')}"></div>
+  <div class="field"><label>Icon (emoji)</label><input type="text" id="eiIcon" maxlength="4" value="${escapeHtml(d.icon||'')}"></div>
+  <div class="field"><label>Image</label>${d.image?`<div class="thumb" style="margin-bottom:8px;"><img src="${d.image}"></div>`:''}<input type="file" accept="image/*" id="eiImage"></div>
+  <div class="field"><label>Description</label><textarea id="eiDesc">${escapeHtml(d.description||'')}</textarea></div>
+  <button class="btn primary" data-act="saveEditItem">Save</button>`;
+}
+function modalEditCategory(){
+  const d = modal.data;
+  return `<div class="modal-head"><h3>${d.id?'✏️ Edit Category':'➕ Add Category'}</h3><button class="x" data-act="closeModal">✕</button></div>
+  <div class="field"><label>Icon (emoji)</label><input type="text" id="ecIcon" maxlength="4" value="${escapeHtml(d.icon||'✨')}"></div>
+  <div class="field"><label>Label</label><input type="text" id="ecLabel" value="${escapeHtml(d.label||'')}"></div>
+  <button class="btn primary" data-act="saveEditCategory">Save</button>`;
+}
+function modalRenameSound(){
+  const d = modal.data;
+  return `<div class="modal-head"><h3>✏️ Rename Sound</h3><button class="x" data-act="closeModal">✕</button></div>
+  <div class="field"><label>Name</label><input type="text" id="rsName" value="${escapeHtml(d.name)}"></div>
+  <button class="btn primary" data-act="saveRenameSound">Save</button>`;
+}
 
 /* ============================================================
-   IMAGE COMPRESSION
+   IMAGE / FILE HANDLING
 ============================================================ */
 function compressImage(file, maxDim, quality){
   return new Promise((resolve,reject)=>{
-    const reader = new FileReader();
-    reader.onload = ev=>{
-      const img = new Image();
-      img.onload = ()=>{
-        let w=img.width, h=img.height;
-        if(w>h){ if(w>maxDim){ h=Math.round(h*maxDim/w); w=maxDim; } }
-        else { if(h>maxDim){ w=Math.round(w*maxDim/h); h=maxDim; } }
-        const canvas = document.createElement('canvas');
-        canvas.width=w; canvas.height=h;
-        canvas.getContext('2d').drawImage(img,0,0,w,h);
-        resolve(canvas.toDataURL('image/jpeg', quality||0.75));
+    try{
+      const reader = new FileReader();
+      reader.onload = ev=>{
+        const img = new Image();
+        img.onload = ()=>{
+          let w=img.width, h=img.height;
+          if(w>h){ if(w>maxDim){ h=Math.round(h*maxDim/w); w=maxDim; } }
+          else { if(h>maxDim){ w=Math.round(w*maxDim/h); h=maxDim; } }
+          const canvas = document.createElement('canvas');
+          canvas.width=w; canvas.height=h;
+          canvas.getContext('2d').drawImage(img,0,0,w,h);
+          resolve(canvas.toDataURL('image/jpeg', quality||0.75));
+        };
+        img.onerror = ()=>reject(new Error('bad image'));
+        img.src = ev.target.result;
       };
-      img.onerror = reject;
-      img.src = ev.target.result;
-    };
-    reader.onerror = reject;
+      reader.onerror = ()=>reject(new Error('read failed'));
+      reader.readAsDataURL(file);
+    }catch(e){ reject(e); }
+  });
+}
+function readAsDataUrl(file){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = ()=>resolve(reader.result);
+    reader.onerror = ()=>reject(new Error('read failed'));
     reader.readAsDataURL(file);
+  });
+}
+function handleNoteImages(fileList, targetArr){
+  const isModalTarget = modal && modal.data && modal.data.images === targetArr;
+  Array.from(fileList).forEach(f=>{
+    compressImage(f, 900, 0.75).then(dataUrl=>{
+      targetArr.push(dataUrl);
+      if(isModalTarget){ renderModal(); }
+      else { if(draft && targetArr===draft.note.images) saveDraft(); render(); }
+    }).catch(()=> toast('Could not process that photo'));
+  });
+}
+function handleNoteDoc(file, targetArr){
+  readAsDataUrl(file).then(dataUrl=>{
+    targetArr.push({name:file.name, type:file.type, dataUrl});
+    if(draft) saveDraft();
+    render();
+  }).catch(()=> toast('Could not attach that file'));
+}
+function autoGrowAll(){
+  $all('textarea').forEach(t=>{
+    t.style.height = 'auto';
+    const max = parseFloat(getComputedStyle(t).maxHeight) || 9999;
+    t.style.height = Math.min(t.scrollHeight, max) + 'px';
   });
 }
 
 /* ============================================================
-   ACTIONS
+   ACTIONS: wizard save, duplicate check
 ============================================================ */
+function findCustomerByMobile(mobile){ return DB.customers.find(c=>c.mobile===mobile.trim()); }
+
 function saveCustomerRecord(){
   const d = draft;
   if(!d.customer.name.trim() || !d.customer.category || !validMobile(d.customer.mobile)){
     toast('Please complete the Customer step first'); wStep=1; render(); return;
   }
+  if(!d.forceNewDespiteDuplicate){
+    const dup = findCustomerByMobile(d.customer.mobile);
+    if(dup){ modal={type:'duplicateConfirm', data:{id:dup.id}}; renderModal(); return; }
+  }
+  finalizeCustomerRecord();
+}
+function forceSaveNewCustomer(){ draft.forceNewDespiteDuplicate = true; modal=null; renderModal(); finalizeCustomerRecord(); }
+
+function finalizeCustomerRecord(){
+  const d = draft;
   const customerId = uid('cust');
   const now = new Date().toISOString();
   DB.customers.push({ id:customerId, name:d.customer.name.trim(), category:d.customer.category,
     mobile:d.customer.mobile.trim(), whatsapp:d.customer.whatsapp.trim(), altMobile:d.customer.altMobile.trim(),
     address:d.customer.address.trim(), location:d.customer.location.trim(), items:d.items.selected.slice(),
-    createdAt: now });
+    photo:d.customer.photo||null, status:'active', createdAt: now });
 
   let noteId = null;
   if(d.note.title.trim() || d.note.body.trim()){
     noteId = uid('note');
     DB.notes.push({ id:noteId, customerId, title:d.note.title.trim(), body:d.note.body.trim(),
-      category:d.note.category, images:d.note.images.slice(), createdAt: now });
+      category:d.note.category, images:d.note.images.slice(), attachments:d.note.attachments.slice(), createdAt: now });
   }
+  let contactId = null;
   if(d.contact.category || d.contact.method || d.contact.details.trim()){
-    DB.contacts.push({ id:uid('cont'), customerId, category:d.contact.category, method:d.contact.method,
+    contactId = uid('cont');
+    DB.contacts.push({ id:contactId, customerId, category:d.contact.category, method:d.contact.method,
       date:d.contact.date, time:d.contact.time, details:d.contact.details.trim(), createdAt: now });
   }
   let followupId=null;
@@ -1101,10 +1497,13 @@ function saveCustomerRecord(){
       reason:d.followup.reason.trim(), method:d.followup.method, priority:d.followup.priority, createdAt: now });
   }
   if(d.reminder.create){
-    DB.reminders.push({ id:uid('rem'), customerId, relatedNoteId:noteId, relatedFollowupId:followupId,
+    const rid = uid('rem');
+    DB.reminders.push({ id:rid, customerId, contactId, noteId, followupId,
       date:d.reminder.date, time:d.reminder.time, reason:d.reminder.reason.trim(), method:d.reminder.method,
-      priority:d.reminder.priority, repeat:d.reminder.repeat, remindBefore:d.reminder.remindBefore,
-      status:'pending', history:[{ts:now, event:'Created'}], createdAt: now });
+      priority:d.reminder.priority, repeat:d.reminder.repeat, remindBefore:d.reminder.remindBefore, soundId:d.reminder.soundId,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, scheduledLocalDate:d.reminder.date, scheduledLocalTime:d.reminder.time,
+      status:'pending', snoozeMarker:false, snoozeUntil:null,
+      history:[{ts:now, event:'Created'}], createdAt: now });
   }
 
   saveDB(); clearDraft();
@@ -1119,34 +1518,15 @@ function requestNotifPermission(){
     render();
   });
 }
-
-function checkDueReminders(){
+function testReminderNow(){
   const s = DB.settings;
-  if(!s.enableReminders) return;
-  const now = new Date();
-  let changed=false;
-  DB.reminders.forEach(r=>{
-    if(r.status!=='pending') return;
-    const dt = combineDT(r.date, r.time);
-    if(!dt) return;
-    const remindMin = parseInt(r.remindBefore||'0',10);
-    const fireAt = new Date(dt.getTime() - remindMin*60000);
-    if(now >= fireAt && !r._notified){
-      r._notified = true; changed = true;
-      if(s.showNotification && window.Notification && Notification.permission==='granted'){
-        const c = DB.customers.find(x=>x.id===r.customerId);
-        try{
-          new Notification('🔔 Customer Reminder', {
-            body: `${c?c.name:'Customer'} — ${r.reason||'Reminder'}\n⏰ ${fmtTime(r.time)}`
-          });
-        }catch(e){}
-      }
-      if(s.vibration && navigator.vibrate) navigator.vibrate([200,100,200]);
-    }
-  });
-  if(changed) saveDB();
+  if(s.showNotification && window.Notification && Notification.permission==='granted'){
+    try{ new Notification('🔔 Test Reminder', {body:'This is what a real reminder notification looks like.'}); }catch(e){}
+  }
+  if(s.vibration && navigator.vibrate) navigator.vibrate([200,100,200]);
+  if(s.soundOn) playSound(s.defaultSoundId);
+  if(s.showPopup) toast('🔔 Test reminder fired — check notification/vibration.');
 }
-setInterval(checkDueReminders, 30000);
 
 /* ============================================================
    EVENT DELEGATION
@@ -1161,16 +1541,20 @@ document.addEventListener('click', e=>{
     case 'nav': nav(route_, id?{id}:null); break;
     case 'startWizard': startWizard(false); break;
     case 'closeWizard':
-      if(confirm('Close without saving? Your progress is kept as a draft you can resume.')){ nav('dashboard'); }
+      if(confirm('Close without saving? Your progress is kept as a draft you can resume.')) nav('dashboard');
       break;
     case 'wizNext': wizardNext(); break;
     case 'wizPrev': wStep=Math.max(1,wStep-1); render(); break;
     case 'wizSave': saveCustomerRecord(); break;
 
     case 'selectCustomerCategory': draft.customer.category=val; saveDraft(); render(); break;
+    case 'removeCustomerPhoto': draft.customer.photo=null; saveDraft(); render(); break;
+    case 'continueAsNewCustomer': draft.forceNewDespiteDuplicate=true; saveDraft(); render(); break;
+    case 'openExistingFromDup': clearDraft(); nav('customer',{id}); break;
+    case 'forceSaveNewCustomer': forceSaveNewCustomer(); break;
+
     case 'toggleItem': {
-      const s = draft.items.selected;
-      const i = s.indexOf(val);
+      const s = draft.items.selected; const i = s.indexOf(val);
       if(i>-1) s.splice(i,1); else s.push(val);
       saveDraft(); render(); break;
     }
@@ -1180,18 +1564,23 @@ document.addEventListener('click', e=>{
     case 'selectContactMethod': draft.contact.method=val; saveDraft(); render(); break;
     case 'selectNoteCategory': draft.note.category=val; saveDraft(); render(); break;
     case 'removeNoteImage': draft.note.images.splice(+idx,1); saveDraft(); render(); break;
+    case 'removeNoteAttachment': draft.note.attachments.splice(+idx,1); saveDraft(); render(); break;
     case 'selectFollowupMethod': draft.followup.method=val; saveDraft(); render(); break;
     case 'selectFollowupPriority': draft.followup.priority=val; saveDraft(); render(); break;
     case 'selectReminderMethod': draft.reminder.method=val; saveDraft(); render(); break;
     case 'selectReminderPriority': draft.reminder.priority=val; saveDraft(); render(); break;
     case 'requestNotifPermission': requestNotifPermission(); break;
+    case 'testReminderNow': testReminderNow(); break;
 
-    case 'searchCustomersFocus': break;
     case 'dismissBanner': bannerDismissed = true; render(); break;
+    case 'setHistoryFilter': historyFilter = val; render(); break;
 
     case 'callCustomer': doCall(id); break;
     case 'waCustomer': doWhatsapp(id); break;
-    case 'completeReminder': completeReminder(id); break;
+    case 'toggleArchive': toggleArchive(id); break;
+
+    case 'openComplete': modal={type:'complete', data:{id, note:'', createNext:false, nextDate:todayISO(), nextTime:nowHHMM(), nextReason:''}}; renderModal(); break;
+    case 'confirmComplete': confirmComplete(); break;
     case 'openSnooze': modal={type:'snooze', data:{id}}; renderModal(); break;
     case 'openReschedule': modal={type:'reschedule', data:{id}}; renderModal(); break;
     case 'doSnooze': doSnooze(val); break;
@@ -1210,192 +1599,9 @@ document.addEventListener('click', e=>{
     case 'saveModalNote': saveModalNote(); break;
     case 'saveModalContact': saveModalContact(); break;
     case 'saveModalReminder': saveModalReminder(); break;
-  }
-});
 
-document.addEventListener('input', e=>{
-  const bindPath = e.target.dataset.bind;
-  if(bindPath && draft){ setPath(draft, bindPath, e.target.value); saveDraft(); return; }
-  const toggle = e.target.dataset.bindToggle;
-  if(toggle && draft){ setPath(draft, toggle, e.target.checked); saveDraft(); render(); return; }
-  const setKey = e.target.dataset.bindSettings;
-  if(setKey){ DB.settings[setKey]=e.target.value; saveDB(); return; }
-  const setToggle = e.target.dataset.bindSettingsToggle;
-  if(setToggle){ DB.settings[setToggle]=e.target.checked; saveDB(); return; }
-  if(e.target.id==='customerSearchInput'){ customerSearch = e.target.value; }
-});
-document.addEventListener('change', e=>{
-  if(e.target.matches('[data-act="searchCustomers"]')){ customerSearch = e.target.value; render(); focusSearch(); }
-  if(e.target.id==='noteImageInput'){ handleNoteImages(e.target.files, draft.note.images); }
-  if(e.target.id==='mNoteImageInput'){ handleNoteImages(e.target.files, modal.data.images); }
-  if(e.target.id==='newItemImage'){ /* read on save */ }
-});
-document.addEventListener('keyup', e=>{
-  if(e.target.matches('[data-act="searchCustomers"]')){ customerSearch = e.target.value; render(); focusSearch(); }
-});
-function focusSearch(){ const el = $('#app input[data-act="searchCustomers"]'); if(el){ el.focus(); el.selectionStart = el.selectionEnd = el.value.length; } }
-
-document.addEventListener('click', e=>{
-  if(e.target.closest('label.add-thumb') && e.target.tagName!=='INPUT'){
-    const input = e.target.closest('label.add-thumb').querySelector('input');
-    if(input) input.click();
-  }
-});
-
-function handleNoteImages(fileList, targetArr){
-  Array.from(fileList).forEach(f=>{
-    compressImage(f, 900, 0.75).then(dataUrl=>{
-      targetArr.push(dataUrl);
-      if(targetArr===draft?.note?.images) saveDraft();
-      render();
-    });
-  });
-}
-
-function saveNewItemFromForm(){
-  const name = $('#newItemName').value.trim();
-  if(!name){ toast('Enter an item name'); return; }
-  const icon = $('#newItemIcon').value.trim() || '🧪';
-  const desc = $('#newItemDesc').value.trim();
-  const fileInput = $('#newItemImage');
-  const finish = (imageDataUrl)=>{
-    const newId = uid('item');
-    DB.items.push({id:newId, name, icon, image:imageDataUrl||null, description:desc, active:true});
-    saveDB();
-    draft.items.selected.push(newId);
-    saveDraft();
-    addingNewItem = false;
-    toast('Item added');
-    render();
-  };
-  if(fileInput.files && fileInput.files[0]){
-    compressImage(fileInput.files[0], 500, 0.8).then(finish);
-  } else finish(null);
-}
-
-function wizardNext(){
-  if(wStep===1){
-    const c = draft.customer;
-    if(!c.name.trim()){ toast('Customer name is required'); return; }
-    if(!c.category){ toast('Please select a customer category'); return; }
-    if(!validMobile(c.mobile)){ toast('Enter a valid 10-digit Indian mobile number'); return; }
-  }
-  if(wStep===5 && draft.followup.required){
-    const f = draft.followup;
-    if(!f.date || !f.time || !f.reason.trim()){ toast('Fill in follow-up date, time, and reason'); return; }
-  }
-  if(wStep===6 && draft.reminder.create){
-    const r = draft.reminder;
-    if(!r.date || !r.time || !r.reason.trim()){ toast('Fill in reminder date, time, and reason'); return; }
-  }
-  wStep = Math.min(STEPS.length, wStep+1);
-  render();
-}
-
-function doCall(customerId){
-  const c = DB.customers.find(x=>x.id===customerId);
-  if(!c || !c.mobile){ toast('No mobile number on file'); return; }
-  window.location.href = 'tel:'+c.mobile;
-}
-function doWhatsapp(customerId){
-  const c = DB.customers.find(x=>x.id===customerId);
-  const num = (c&&(c.whatsapp||c.mobile))||'';
-  if(!num){ toast('No WhatsApp number on file'); return; }
-  window.open('https://wa.me/91'+num.replace(/\D/g,''), '_blank');
-}
-function completeReminder(id){
-  const r = DB.reminders.find(x=>x.id===id);
-  if(!r) return;
-  r.status='completed'; pushHistory(r,'Completed');
-  saveDB(); toast('Reminder marked complete'); render();
-}
-function doSnooze(opt){
-  const r = DB.reminders.find(x=>x.id===modal.data.id);
-  if(!r) return;
-  if(opt==='custom'){
-    $('#customSnoozeBox').innerHTML = `
-      <div class="field" style="margin-top:14px;"><label>Custom Date</label><input type="date" id="snoozeDate" value="${todayISO()}"></div>
-      <div class="field"><label>Custom Time</label><input type="time" id="snoozeTime" value="${nowHHMM()}"></div>
-      <button class="btn primary" data-act="doSnoozeCustom">Confirm Snooze</button>`;
-    return;
-  }
-  let until = new Date();
-  if(opt==='1h') until = new Date(Date.now()+3600000);
-  if(opt==='tomorrow'){ until.setDate(until.getDate()+1); }
-  if(opt==='3d'){ until.setDate(until.getDate()+3); }
-  if(opt==='7d'){ until.setDate(until.getDate()+7); }
-  applySnooze(r, until);
-}
-document.addEventListener('click', e=>{
-  if(e.target.closest('[data-act="doSnoozeCustom"]')){
-    const r = DB.reminders.find(x=>x.id===modal.data.id);
-    const date = $('#snoozeDate').value, time = $('#snoozeTime').value;
-    if(!date || !time){ toast('Pick a date and time'); return; }
-    applySnooze(r, combineDT(date,time));
-  }
-});
-function applySnooze(r, untilDate){
-  r.status='snoozed'; r.snoozeUntil = untilDate.toISOString(); r._notified=false;
-  pushHistory(r, 'Snoozed to '+untilDate.toLocaleString());
-  saveDB(); modal=null; toast('Reminder snoozed'); render();
-}
-function doReschedule(){
-  const r = DB.reminders.find(x=>x.id===modal.data.id);
-  const date = $('#rsDate').value, time = $('#rsTime').value;
-  if(!date||!time){ toast('Pick a new date and time'); return; }
-  pushHistory(r, `Rescheduled from ${r.date} ${r.time}`);
-  r.date=date; r.time=time; r.status='pending'; r._notified=false;
-  saveDB(); modal=null; toast('Reminder rescheduled'); render();
-}
-
-function saveModalNote(){
-  const d = modal.data;
-  d.title = $('#mNoteTitle').value.trim();
-  d.body = $('#mNoteBody').value.trim();
-  if(!d.body && !d.title){ toast('Write something first'); return; }
-  DB.notes.push({id:uid('note'), customerId:d.customerId, title:d.title, body:d.body, category:d.category, images:d.images.slice(), createdAt:new Date().toISOString()});
-  saveDB(); modal=null; toast('Note added'); render();
-}
-function saveModalContact(){
-  const d = modal.data;
-  d.date = $('#mContactDate').value; d.time = $('#mContactTime').value; d.details = $('#mContactDetails').value.trim();
-  DB.contacts.push({id:uid('cont'), customerId:d.customerId, category:d.category, method:d.method, date:d.date, time:d.time, details:d.details, createdAt:new Date().toISOString()});
-  saveDB(); modal=null; toast('Contact added'); render();
-}
-function saveModalReminder(){
-  const d = modal.data;
-  d.date = $('#mRemDate').value; d.time = $('#mRemTime').value; d.reason = $('#mRemReason').value.trim();
-  if(!d.date || !d.time){ toast('Pick a date and time'); return; }
-  DB.reminders.push({id:uid('rem'), customerId:d.customerId, date:d.date, time:d.time, reason:d.reason, method:'', priority:d.priority, repeat:'none', remindBefore:'0', status:'pending', history:[{ts:new Date().toISOString(),event:'Created'}], createdAt:new Date().toISOString()});
-  saveDB(); modal=null; toast('Reminder added'); render();
-}
-
-/* ============================================================
-   BOOT
-============================================================ */
-function render(){
-  updateTabActive();
-  $('#app').innerHTML = ({
-    dashboard: viewDashboard,
-    customers: viewCustomerList,
-    customer: ()=>viewCustomerProfile(route.params.id),
-    wizard: viewWizard,
-    reminders: viewReminders,
-    settings: viewSettings
-  }[route.name] || viewDashboard)();
-  updateTabActive();
-}
-
-(function boot(){
-  checkDueReminders();
-  const hasDraft = !!localStorage.getItem(DRAFT_KEY);
-  if(hasDraft){
-    setTimeout(()=>{ if(confirm('You have an unfinished customer draft. Resume it?')) startWizard(true); }, 200);
-  }
-  render();
-})();
-
-})();
-</script>
-</body>
-</html>
+    case 'openCustomerFilter': modal={type:'customerFilter', data:{}}; renderModal(); break;
+    case 'clearCustomerFilter': customerFilter={category:'',item:'',showArchived:false}; modal=null; render(); break;
+    case 'applyCustomerFilter': applyCustomerFilterFromForm(); break;
+    case 'openReminderFilter': modal={type:'reminderFilter', data:{}}; renderModal(); break;
+    case 'clearRemi
