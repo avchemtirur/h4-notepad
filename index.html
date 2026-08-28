@@ -1615,4 +1615,440 @@ document.addEventListener('click', e=>{
     case 'doSnooze': doSnooze(val); break;
     case 'doReschedule': doReschedule(); break;
 
-    case 'openAddNote': modal={type:'addNote', data:{customerId:id,
+    case 'openAddNote': modal={type:'addNote', data:{customerId:id, title:'', body:'', category:'', images:[]}}; renderModal(); break;
+    case 'openAddContact': modal={type:'addContact', data:{customerId:id, category:'', method:'', date:todayISO(), time:nowHHMM(), details:''}}; renderModal(); break;
+    case 'openAddReminder': modal={type:'addReminder', data:{customerId:id, date:todayISO(), time:nowHHMM(), reason:'', priority:'Normal'}}; renderModal(); break;
+    case 'closeModal': modal=null; renderModal(); break;
+    case 'closeModalBg': modal=null; renderModal(); break;
+    case 'mSelectNoteCat': modal.data.category=val; renderModal(); break;
+    case 'mRemoveNoteImage': modal.data.images.splice(+idx,1); renderModal(); break;
+    case 'mSelectContactCat': modal.data.category=val; renderModal(); break;
+    case 'mSelectContactMethod': modal.data.method=val; renderModal(); break;
+    case 'mSelectRemPriority': modal.data.priority=val; renderModal(); break;
+    case 'saveModalNote': saveModalNote(); break;
+    case 'saveModalContact': saveModalContact(); break;
+    case 'saveModalReminder': saveModalReminder(); break;
+
+    case 'openCustomerFilter': modal={type:'customerFilter', data:{}}; renderModal(); break;
+    case 'clearCustomerFilter': customerFilter={category:'',item:'',showArchived:false}; modal=null; render(); break;
+    case 'applyCustomerFilter': applyCustomerFilterFromForm(); break;
+    case 'openReminderFilter': modal={type:'reminderFilter', data:{}}; renderModal(); break;
+    case 'clearReminderFilter': remFilter={priority:'',from:'',to:''}; modal=null; render(); break;
+    case 'applyReminderFilter': applyReminderFilterFromForm(); break;
+
+    case 'editItem': modal={type:'editItem', data: id ? Object.assign({},DB.items.find(x=>x.id===id)) : {}}; renderModal(); break;
+    case 'saveEditItem': saveEditItem(); break;
+    case 'toggleItemActive': { const it=DB.items.find(x=>x.id===id); it.active = it.active===false; saveDB(); render(); break; }
+    case 'deleteItem': { if(confirm('Delete this item from the catalog?')){ DB.items = DB.items.filter(x=>x.id!==id); saveDB(); render(); } break; }
+    case 'moveItemUp': moveItem(id,-1); break;
+    case 'moveItemDown': moveItem(id,1); break;
+
+    case 'addCategory': modal={type:'editCategory', data:{}}; renderModal(); break;
+    case 'renameCategory': modal={type:'editCategory', data:Object.assign({},DB.customCategories.find(x=>x.id===id))}; renderModal(); break;
+    case 'saveEditCategory': saveEditCategory(); break;
+    case 'toggleCategoryActive': { const c=DB.customCategories.find(x=>x.id===id); c.active = c.active===false; saveDB(); render(); break; }
+    case 'deleteCategory': {
+      if(DB.customers.some(c=>c.category===id)){ toast('Category is in use — disable it instead'); break; }
+      if(confirm('Delete this category?')){ DB.customCategories = DB.customCategories.filter(x=>x.id!==id); saveDB(); render(); }
+      break;
+    }
+
+    case 'previewSound': { const s=DB.sounds.find(x=>x.id===id); if(s) playSound(s.id); break; }
+    case 'renameSound': modal={type:'renameSound', data:Object.assign({},DB.sounds.find(x=>x.id===id))}; renderModal(); break;
+    case 'saveRenameSound': saveRenameSound(); break;
+    case 'setDefaultSound': DB.settings.defaultSoundId=id; saveDB(); toast('Default sound updated'); render(); break;
+    case 'deleteSound': if(confirm('Delete this custom sound?')){ DB.sounds=DB.sounds.filter(x=>x.id!==id); if(DB.settings.defaultSoundId===id) DB.settings.defaultSoundId='default'; saveDB(); render(); } break;
+
+    case 'exportBackup': exportBackup(); break;
+    case 'deleteAllData': deleteAllData(); break;
+  }
+});
+
+document.addEventListener('input', e=>{
+  const bindPath = e.target.dataset.bind;
+  if(bindPath && draft){ setPath(draft, bindPath, e.target.value); saveDraft();
+    if(e.target.tagName==='TEXTAREA') autoGrowAll();
+    return; }
+  const toggle = e.target.dataset.bindToggle;
+  if(toggle && draft){ setPath(draft, toggle, e.target.checked); saveDraft(); render(); return; }
+  const setKey = e.target.dataset.bindSettings;
+  if(setKey){ DB.settings[setKey]=e.target.value; saveDB(); return; }
+  const setRange = e.target.dataset.bindSettingsRange;
+  if(setRange){ DB.settings[setRange]=+e.target.value; saveDB(); return; }
+  const setToggle = e.target.dataset.bindSettingsToggle;
+  if(setToggle){ DB.settings[setToggle]=e.target.checked; saveDB(); return; }
+  if(e.target.tagName==='TEXTAREA') autoGrowAll();
+});
+document.addEventListener('change', e=>{
+  if(e.target.matches('[data-act="searchCustomers"]')){ customerSearch = e.target.value; render(); focusSearch(); }
+  if(e.target.id==='noteCameraInput' || e.target.id==='noteGalleryInput'){ handleNoteImages(e.target.files, draft.note.images); }
+  if(e.target.id==='noteDocInput' && e.target.files[0]){ handleNoteDoc(e.target.files[0], draft.note.attachments); }
+  if(e.target.id==='mNoteImageInput'){ handleNoteImages(e.target.files, modal.data.images); }
+  if(e.target.id==='custPhotoInput' && e.target.files[0]){
+    compressImage(e.target.files[0], 400, 0.8).then(url=>{ draft.customer.photo=url; saveDraft(); render(); }).catch(()=>toast('Could not process that photo'));
+  }
+  if(e.target.id==='uploadSoundInput' && e.target.files[0]){
+    const f = e.target.files[0];
+    readAsDataUrl(f).then(url=>{
+      DB.sounds.push({id:uid('snd'), name:f.name.replace(/\.[^.]+$/,''), dataUrl:url});
+      saveDB(); toast('Sound uploaded'); render();
+    }).catch(()=>toast('Could not read that audio file'));
+  }
+  if(e.target.id==='importBackupInput' && e.target.files[0]){ importBackup(e.target.files[0]); }
+  if(e.target.matches('[data-bind-toggle="__createNext"]')){
+    modal.data.createNext = e.target.checked;
+    $('#cNextFields').innerHTML = modal.data.createNext ? completeNextFields(modal.data) : '';
+    autoGrowAll();
+  }
+});
+document.addEventListener('keyup', e=>{
+  if(e.target.matches('[data-act="searchCustomers"]')){ customerSearch = e.target.value; render(); focusSearch(); }
+  if(e.target.dataset.bind==='customer.mobile'){ updateDupBanner(); }
+});
+function focusSearch(){ const el = $('#app input[data-act="searchCustomers"]'); if(el){ el.focus(); el.selectionStart = el.selectionEnd = el.value.length; } }
+function updateDupBanner(){
+  if(!draft) return;
+  const box = $('#dupBanner'); if(!box) return;
+  const d = draft.customer;
+  const dup = d.mobile.length===10 && validMobile(d.mobile) && !draft.forceNewDespiteDuplicate ? findCustomerByMobile(d.mobile) : null;
+  box.innerHTML = dup ? dupBannerHtml(dup) : '';
+}
+
+function saveNewItemFromForm(){
+  const name = $('#newItemName').value.trim();
+  if(!name){ toast('Enter an item name'); return; }
+  const icon = $('#newItemIcon').value.trim() || '🧪';
+  const desc = $('#newItemDesc').value.trim();
+  const fileInput = $('#newItemImage');
+  const finish = (imageDataUrl)=>{
+    const newId = uid('item');
+    const maxOrder = Math.max(0,...DB.items.map(i=>i.order||0));
+    DB.items.push({id:newId, name, icon, image:imageDataUrl||null, description:desc, active:true, order:maxOrder+1});
+    saveDB();
+    draft.items.selected.push(newId);
+    saveDraft();
+    addingNewItem = false;
+    toast('Item added');
+    render();
+  };
+  if(fileInput.files && fileInput.files[0]) compressImage(fileInput.files[0], 500, 0.8).then(finish).catch(()=>finish(null));
+  else finish(null);
+}
+
+function wizardNext(){
+  if(wStep===1){
+    const c = draft.customer;
+    if(!c.name.trim()){ toast('Customer name is required'); return; }
+    if(!c.category){ toast('Please select a customer category'); return; }
+    if(!validMobile(c.mobile)){ toast('Enter a valid 10-digit Indian mobile number'); return; }
+    if(c.whatsapp && !validMobile(c.whatsapp)){ toast('WhatsApp number looks invalid'); return; }
+  }
+  if(wStep===5 && draft.followup.required){
+    const f = draft.followup;
+    if(!f.date || !f.time || !f.reason.trim()){ toast('Fill in follow-up date, time, and reason'); return; }
+  }
+  if(wStep===6 && draft.reminder.create){
+    const r = draft.reminder;
+    if(!r.date || !r.time || !r.reason.trim()){ toast('Fill in reminder date, time, and reason'); return; }
+  }
+  wStep = Math.min(STEPS.length, wStep+1);
+  render();
+}
+
+function doCall(customerId){
+  const c = DB.customers.find(x=>x.id===customerId);
+  if(!c || !c.mobile){ toast('No mobile number on file'); return; }
+  window.location.href = 'tel:'+c.mobile;
+}
+function doWhatsapp(customerId){
+  const c = DB.customers.find(x=>x.id===customerId);
+  const num = (c&&(c.whatsapp||c.mobile))||'';
+  if(!num){ toast('No WhatsApp number on file'); return; }
+  window.open('https://wa.me/91'+num.replace(/\D/g,''), '_blank');
+}
+function toggleArchive(id){
+  const c = DB.customers.find(x=>x.id===id); if(!c) return;
+  const archiving = c.status!=='archived';
+  if(archiving && !confirm('Archive this customer? They will be hidden from the main list but can still be found via search/filter.')) return;
+  c.status = archiving ? 'archived' : 'active';
+  saveDB(); toast(archiving?'Customer archived':'Customer restored'); render();
+}
+
+/* ---- Complete / Snooze / Reschedule ---- */
+function completeReminderCore(r, note){
+  r.status='completed';
+  pushHistory(r, 'Completed'+(note?(': '+note):''));
+  r.completionNote = note||'';
+  if(r.repeat && r.repeat!=='none') createNextOccurrence(r);
+}
+function confirmComplete(){
+  const d = modal.data;
+  const r = DB.reminders.find(x=>x.id===d.id);
+  if(!r) return;
+  const note = $('#cCompletionNote').value.trim();
+  completeReminderCore(r, note);
+
+  if($('#cNextFields') && d.createNext){
+    const nd = $('#cNextDate').value, nt = $('#cNextTime').value, nr = $('#cNextReason').value.trim();
+    if(nd && nt){
+      const fid = uid('fu');
+      DB.followups.push({id:fid, customerId:r.customerId, required:true, date:nd, time:nt, reason:nr, method:r.method, priority:r.priority, createdAt:new Date().toISOString()});
+      DB.reminders.push({id:uid('rem'), customerId:r.customerId, contactId:r.contactId||null, noteId:r.noteId||null, followupId:fid,
+        date:nd, time:nt, reason:nr||('Follow-up on: '+(r.reason||'')), method:r.method, priority:r.priority, repeat:'none', remindBefore:r.remindBefore, soundId:r.soundId,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, scheduledLocalDate:nd, scheduledLocalTime:nt,
+        status:'pending', snoozeMarker:false, snoozeUntil:null, history:[{ts:new Date().toISOString(),event:'Created as follow-up from '+r.id}], createdAt:new Date().toISOString()});
+    }
+  }
+  saveDB(); modal=null; toast('Reminder marked complete'); render();
+}
+/* One-tap completion from a notification action button — no completion-note
+   prompt, since the whole point of the action button is not opening the app. */
+function quickCompleteReminder(id){
+  const r = DB.reminders.find(x=>x.id===id);
+  if(!r){ toast('Reminder not found'); return; }
+  completeReminderCore(r, '');
+  saveDB(); toast('Reminder marked complete'); render();
+}
+function quickSnoozeReminder(id){
+  const r = DB.reminders.find(x=>x.id===id);
+  if(!r){ toast('Reminder not found'); return; }
+  applySnooze(r, new Date(Date.now()+3600000));
+}
+function doSnooze(opt){
+  const r = DB.reminders.find(x=>x.id===modal.data.id);
+  if(!r) return;
+  if(opt==='custom'){
+    $('#customSnoozeBox').innerHTML = `
+      <div class="field" style="margin-top:14px;"><label>Custom Date</label><input type="date" id="snoozeDate" value="${todayISO()}"></div>
+      <div class="field"><label>Custom Time</label><input type="time" id="snoozeTime" value="${nowHHMM()}"></div>
+      <button class="btn primary" data-act="doSnoozeCustom">Confirm Snooze</button>`;
+    return;
+  }
+  const origDT = combineDT(r.date, r.time) || new Date();
+  let until;
+  if(opt==='1h') until = new Date(Date.now()+3600000);
+  else if(opt==='tomorrow'){ until = new Date(origDT); until.setDate(until.getDate()+1); if(until <= new Date()) until.setDate(until.getDate()+1); }
+  else if(opt==='3d'){ until = new Date(origDT); until.setDate(until.getDate()+3); }
+  else if(opt==='7d'){ until = new Date(origDT); until.setDate(until.getDate()+7); }
+  applySnooze(r, until);
+}
+document.addEventListener('click', e=>{
+  if(e.target.closest('[data-act="doSnoozeCustom"]')){
+    const r = DB.reminders.find(x=>x.id===modal.data.id);
+    const date = $('#snoozeDate').value, time = $('#snoozeTime').value;
+    if(!date || !time){ toast('Pick a date and time'); return; }
+    applySnooze(r, combineDT(date,time));
+  }
+});
+function applySnooze(r, untilDate){
+  // FIX: keep status 'pending' (not 'snoozed') so checkDueReminders (which only
+  // looks at status==='pending') will actually re-fire this reminder at the new time.
+  r.date = untilDate.toISOString().slice(0,10);
+  r.time = String(untilDate.getHours()).padStart(2,'0')+':'+String(untilDate.getMinutes()).padStart(2,'0');
+  r.status = 'pending';
+  r.snoozeMarker = true;
+  r.snoozeUntil = untilDate.toISOString();
+  r._notified = false;
+  pushHistory(r, 'Snoozed to '+untilDate.toLocaleString());
+  saveDB(); modal=null; toast('Reminder snoozed'); render();
+}
+function doReschedule(){
+  const r = DB.reminders.find(x=>x.id===modal.data.id);
+  const date = $('#rsDate').value, time = $('#rsTime').value;
+  if(!date||!time){ toast('Pick a new date and time'); return; }
+  pushHistory(r, `Rescheduled from ${r.date} ${r.time}`);
+  r.date=date; r.time=time; r.status='pending'; r.snoozeMarker=false; r.snoozeUntil=null; r._notified=false;
+  saveDB(); modal=null; toast('Reminder rescheduled'); render();
+}
+
+/* ---- Modal quick-add saves ---- */
+function saveModalNote(){
+  const d = modal.data;
+  d.title = $('#mNoteTitle').value.trim();
+  d.body = $('#mNoteBody').value.trim();
+  if(!d.body && !d.title){ toast('Write something first'); return; }
+  DB.notes.push({id:uid('note'), customerId:d.customerId, title:d.title, body:d.body, category:d.category, images:d.images.slice(), attachments:[], createdAt:new Date().toISOString()});
+  saveDB(); modal=null; toast('Note added'); render();
+}
+function saveModalContact(){
+  const d = modal.data;
+  d.date = $('#mContactDate').value; d.time = $('#mContactTime').value; d.details = $('#mContactDetails').value.trim();
+  DB.contacts.push({id:uid('cont'), customerId:d.customerId, category:d.category, method:d.method, date:d.date, time:d.time, details:d.details, createdAt:new Date().toISOString()});
+  saveDB(); modal=null; toast('Contact added'); render();
+}
+function saveModalReminder(){
+  const d = modal.data;
+  d.date = $('#mRemDate').value; d.time = $('#mRemTime').value; d.reason = $('#mRemReason').value.trim();
+  const repeat = $('#mRemRepeat').value;
+  if(!d.date || !d.time){ toast('Pick a date and time'); return; }
+  DB.reminders.push({id:uid('rem'), customerId:d.customerId, contactId:null, noteId:null, followupId:null,
+    date:d.date, time:d.time, reason:d.reason, method:'', priority:d.priority, repeat, remindBefore:'0', soundId:'default',
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, scheduledLocalDate:d.date, scheduledLocalTime:d.time,
+    status:'pending', snoozeMarker:false, snoozeUntil:null, history:[{ts:new Date().toISOString(),event:'Created'}], createdAt:new Date().toISOString()});
+  saveDB(); modal=null; toast('Reminder added'); render();
+}
+
+/* ---- Filters ---- */
+function applyCustomerFilterFromForm(){
+  customerFilter.category = $('#fCategory').value;
+  customerFilter.item = $('#fItem').value;
+  customerFilter.showArchived = $('#fArchived').checked;
+  modal=null; render();
+}
+function applyReminderFilterFromForm(){
+  remFilter.priority = $('#rfPriority').value;
+  remFilter.from = $('#rfFrom').value;
+  remFilter.to = $('#rfTo').value;
+  modal=null; render();
+}
+
+/* ---- Item / Category CRUD ---- */
+function moveItem(id, dir){
+  const list = DB.items.slice().sort((a,b)=>(a.order||0)-(b.order||0));
+  const idx = list.findIndex(x=>x.id===id);
+  const swapIdx = idx+dir;
+  if(swapIdx<0 || swapIdx>=list.length) return;
+  const a = list[idx], b = list[swapIdx];
+  const tmp = a.order; a.order = b.order; b.order = tmp;
+  saveDB(); render();
+}
+function saveEditItem(){
+  const d = modal.data;
+  const name = $('#eiName').value.trim();
+  if(!name){ toast('Enter a name'); return; }
+  const icon = $('#eiIcon').value.trim() || '🧪';
+  const desc = $('#eiDesc').value.trim();
+  const fileInput = $('#eiImage');
+  const finish = (imgUrl)=>{
+    if(d.id){
+      const it = DB.items.find(x=>x.id===d.id);
+      it.name=name; it.icon=icon; it.description=desc; if(imgUrl) it.image=imgUrl;
+    } else {
+      const maxOrder = Math.max(0,...DB.items.map(i=>i.order||0));
+      DB.items.push({id:uid('item'), name, icon, image:imgUrl||null, description:desc, active:true, order:maxOrder+1});
+    }
+    saveDB(); modal=null; toast('Item saved'); render();
+  };
+  if(fileInput.files && fileInput.files[0]) compressImage(fileInput.files[0],500,0.8).then(finish).catch(()=>finish(null));
+  else finish(null);
+}
+function saveEditCategory(){
+  const d = modal.data;
+  const label = $('#ecLabel').value.trim();
+  if(!label){ toast('Enter a label'); return; }
+  const icon = $('#ecIcon').value.trim() || '✨';
+  if(d.id){
+    const cat = DB.customCategories.find(x=>x.id===d.id);
+    cat.label=label; cat.icon=icon;
+  } else {
+    DB.customCategories.push({id:uid('cat'), icon, label, active:true});
+  }
+  saveDB(); modal=null; toast('Category saved'); render();
+}
+function saveRenameSound(){
+  const d = modal.data;
+  const name = $('#rsName').value.trim();
+  if(!name){ toast('Enter a name'); return; }
+  const s = DB.sounds.find(x=>x.id===d.id); if(s) s.name=name;
+  saveDB(); modal=null; toast('Renamed'); render();
+}
+
+/* ---- Backup / Restore ---- */
+function exportBackup(){
+  const blob = new Blob([JSON.stringify(DB,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'h4-notepad-backup-'+todayISO()+'.json';
+  a.click();
+  toast('Backup downloaded');
+}
+function importBackup(file){
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const parsed = JSON.parse(reader.result);
+      if(!parsed || !Array.isArray(parsed.customers)){ toast("That file doesn't look like a valid backup"); return; }
+      if(!confirm('This will replace ALL current data with the backup. Continue?')) return;
+      const d = defaultDB();
+      DB = Object.assign(d, parsed, {settings:Object.assign(d.settings, parsed.settings||{}), meta:Object.assign(d.meta, parsed.meta||{})});
+      if(!DB.customCategories || !DB.customCategories.length) DB.customCategories = defaultCategories();
+      saveDB(); toast('Backup restored'); render();
+    }catch(e){ toast('Could not read that backup file'); }
+  };
+  reader.readAsText(file);
+}
+function deleteAllData(){
+  if(!confirm('Delete ALL customers, notes, contacts, follow-ups, and reminders? This cannot be undone.')) return;
+  if(!confirm('Really sure? Consider exporting a backup first. Delete everything now?')) return;
+  DB = defaultDB(); saveDB(); clearDraft();
+  toast('All data deleted'); nav('dashboard');
+}
+
+/* ============================================================
+   RENDER / BOOT
+============================================================ */
+function render(){
+  updateTabActive();
+  $('#app').innerHTML = ({
+    dashboard: viewDashboard,
+    customers: viewCustomerList,
+    customer: ()=>viewCustomerProfile(route.params.id),
+    wizard: viewWizard,
+    reminders: viewReminders,
+    settings: viewSettings
+  }[route.name] || viewDashboard)();
+  updateTabActive();
+  autoGrowAll();
+}
+
+/* ============================================================
+   SERVICE WORKER — registration + action routing
+============================================================ */
+function registerServiceWorker(){
+  if(!('serviceWorker' in navigator)) return;
+  navigator.serviceWorker.register('./service-worker.js').catch(()=>{
+    // Fails silently on file:// or if not served over HTTPS/localhost — the
+    // app still works, it just falls back to plain Notification() without
+    // action buttons and without offline caching.
+  });
+}
+function handleNotifAction(action, reminderId, customerId){
+  if(action==='call'){ doCall(customerId); nav('dashboard'); }
+  else if(action==='complete'){ quickCompleteReminder(reminderId); nav('reminders'); }
+  else if(action==='snooze'){ quickSnoozeReminder(reminderId); nav('reminders'); }
+  else if(customerId){ nav('customer', {id:customerId}); }
+}
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.addEventListener('message', e=>{
+    const msg = e.data;
+    if(msg && msg.type==='NOTIF_ACTION'){
+      handleNotifAction(msg.action, msg.data && msg.data.reminderId, msg.data && msg.data.customerId);
+    }
+  });
+}
+function handleBootActionParams(){
+  const params = new URLSearchParams(window.location.search);
+  const action = params.get('action');
+  if(!action) return;
+  handleNotifAction(action, params.get('reminderId'), params.get('customerId'));
+  history.replaceState(null, '', window.location.pathname);
+}
+
+(function boot(){
+  registerServiceWorker();
+  detectMissedReminders();
+  checkDueReminders();
+  const hasDraft = !!loadDraftFromStorage();
+  if(hasDraft){
+    const dr = loadDraftFromStorage();
+    setTimeout(()=>{ if(confirm('You have an unfinished customer draft (saved '+relTime(dr.updatedAt)+'). Resume it?')) startWizard(true); }, 200);
+  }
+  render();
+  handleBootActionParams();
+  setInterval(()=>{ DB.meta.lastActiveAt = new Date().toISOString(); saveDB(); }, 20000);
+})();
+
+})();
+</script>
+</body>
+</html>
