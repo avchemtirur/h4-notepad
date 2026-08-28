@@ -498,14 +498,36 @@ function fireReminderAlert(r){
   const bodyLines = [`${c?c.name:'Customer'} — ${r.reason||'Reminder'}`];
   if(showsBoth) bodyLines.push(`Notify: ${fmtTime(notifyAt.toTimeString().slice(0,5))}  ·  Action time: ${fmtTime(r.time)}`);
   else bodyLines.push(`⏰ ${fmtTime(r.time)}`);
-  if(s.showNotification && window.Notification && Notification.permission==='granted'){
-    try{ new Notification('🔔 Customer Reminder', {body: bodyLines.join('\n')}); }catch(e){}
-  }
+  if(s.showNotification) showReminderNotification(r, '🔔 Customer Reminder', bodyLines.join('\n'));
   if(s.vibration && navigator.vibrate) navigator.vibrate([200,100,200,100,200]);
   if(s.soundOn) playSound(r.soundId || s.defaultSoundId);
   if(s.showPopup) toast('🔔 Reminder: '+(c?c.name:'Customer')+' — '+(r.reason||''));
 }
 setInterval(checkDueReminders, 30000);
+
+/* Prefer the service worker's showNotification, which supports action
+   buttons (Call/Complete/Snooze) — plain `new Notification()` can't render
+   those reliably. Falls back to plain Notification if no worker is active
+   (e.g. opened as a local file:// page, where service workers can't register). */
+function showReminderNotification(r, title, body){
+  if(!(window.Notification && Notification.permission==='granted')) return;
+  const options = {
+    body, tag: 'h4np-'+r.id, renotify:true,
+    data: {reminderId: r.id, customerId: r.customerId},
+    actions: [
+      {action:'call', title:'📞 Call'},
+      {action:'complete', title:'✅ Complete'},
+      {action:'snooze', title:'⏰ Snooze 1h'}
+    ]
+  };
+  if(navigator.serviceWorker && navigator.serviceWorker.controller){
+    navigator.serviceWorker.ready.then(reg=>{
+      reg.active.postMessage({type:'SHOW_NOTIFICATION', title, options});
+    }).catch(()=>{ try{ new Notification(title, {body}); }catch(e){} });
+  } else {
+    try{ new Notification(title, {body}); }catch(e){}
+  }
+}
 
 function playSound(soundId){
   const custom = DB.sounds.find(x=>x.id===soundId);
@@ -1521,7 +1543,14 @@ function requestNotifPermission(){
 function testReminderNow(){
   const s = DB.settings;
   if(s.showNotification && window.Notification && Notification.permission==='granted'){
-    try{ new Notification('🔔 Test Reminder', {body:'This is what a real reminder notification looks like.'}); }catch(e){}
+    const options = {body:'This is what a real reminder notification looks like.', tag:'h4np-test', renotify:true,
+      actions:[{action:'call', title:'📞 Call'},{action:'complete', title:'✅ Complete'},{action:'snooze', title:'⏰ Snooze 1h'}]};
+    if(navigator.serviceWorker && navigator.serviceWorker.controller){
+      navigator.serviceWorker.ready.then(reg=> reg.active.postMessage({type:'SHOW_NOTIFICATION', title:'🔔 Test Reminder', options}))
+        .catch(()=>{ try{ new Notification('🔔 Test Reminder', options); }catch(e){} });
+    } else {
+      try{ new Notification('🔔 Test Reminder', options); }catch(e){}
+    }
   }
   if(s.vibration && navigator.vibrate) navigator.vibrate([200,100,200]);
   if(s.soundOn) playSound(s.defaultSoundId);
@@ -1586,22 +1615,4 @@ document.addEventListener('click', e=>{
     case 'doSnooze': doSnooze(val); break;
     case 'doReschedule': doReschedule(); break;
 
-    case 'openAddNote': modal={type:'addNote', data:{customerId:id, title:'', body:'', category:'', images:[]}}; renderModal(); break;
-    case 'openAddContact': modal={type:'addContact', data:{customerId:id, category:'', method:'', date:todayISO(), time:nowHHMM(), details:''}}; renderModal(); break;
-    case 'openAddReminder': modal={type:'addReminder', data:{customerId:id, date:todayISO(), time:nowHHMM(), reason:'', priority:'Normal'}}; renderModal(); break;
-    case 'closeModal': modal=null; renderModal(); break;
-    case 'closeModalBg': modal=null; renderModal(); break;
-    case 'mSelectNoteCat': modal.data.category=val; renderModal(); break;
-    case 'mRemoveNoteImage': modal.data.images.splice(+idx,1); renderModal(); break;
-    case 'mSelectContactCat': modal.data.category=val; renderModal(); break;
-    case 'mSelectContactMethod': modal.data.method=val; renderModal(); break;
-    case 'mSelectRemPriority': modal.data.priority=val; renderModal(); break;
-    case 'saveModalNote': saveModalNote(); break;
-    case 'saveModalContact': saveModalContact(); break;
-    case 'saveModalReminder': saveModalReminder(); break;
-
-    case 'openCustomerFilter': modal={type:'customerFilter', data:{}}; renderModal(); break;
-    case 'clearCustomerFilter': customerFilter={category:'',item:'',showArchived:false}; modal=null; render(); break;
-    case 'applyCustomerFilter': applyCustomerFilterFromForm(); break;
-    case 'openReminderFilter': modal={type:'reminderFilter', data:{}}; renderModal(); break;
-    case 'clearRemi
+    case 'openAddNote': modal={type:'addNote', data:{customerId:id,
